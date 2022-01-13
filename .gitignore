@@ -12,6 +12,7 @@
 *.o
 *.o.*
 *.a
+*.map
 *.lst
 *.elf
 *.bin
@@ -31,6 +32,9 @@
 */*/*/*/*/sdram_flexram_debug/
 */*/*/*/*/sdram_flexram_release/
 
+*/*/*/*/*/flash_debug/
+*/*/*/*/*/flash_release/
+
 */*/*/*/*/*/settings/
 */*/*/*/*/*/debug/
 */*/*/*/*/*/release/
@@ -46,6 +50,9 @@
 */*/*/*/*/*/flexspinor_flexram_sdram_release/
 */*/*/*/*/*/sdram_flexram_debug/
 */*/*/*/*/*/sdram_flexram_release/
+
+*/*/*/*/*/*/flash_debug/
+*/*/*/*/*/*/flash_release/
 
 */*/*/*/*/*/*/settings/
 */*/*/*/*/*/*/debug/
@@ -63,6 +70,10 @@
 */*/*/*/*/*/*/sdram_flexram_debug/
 */*/*/*/*/*/*/sdram_flexram_release/
 
+*/*/*/*/*/*/*/DebugConfig/
+*/*/*/*/*/*/*/flash_debug/
+*/*/*/*/*/*/*/flash_release/
+
 */*/*/*/*/*/*/*/settings/
 */*/*/*/*/*/*/*/debug/
 */*/*/*/*/*/*/*/release/
@@ -79,6 +90,9 @@
 */*/*/*/*/*/*/*/sdram_flexram_debug/
 */*/*/*/*/*/*/*/sdram_flexram_release/
 
+*/*/*/*/*/*/*/*/flash_debug/
+*/*/*/*/*/*/*/*/flash_release/
+
 # IAR temp files
 EW*.tmp
 EW*.tmp.c
@@ -88,5 +102,10 @@ EW*.tmp.c
 *.pbi.cout
 *.pbd
 *.pbd.browse
+
+*.uvgui.*
+*.uvguix.*
+JLinkSettings.JLinkScript
+JLinkSettings.ini
 
 
