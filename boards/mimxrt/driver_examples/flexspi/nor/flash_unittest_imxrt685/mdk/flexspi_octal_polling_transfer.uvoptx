@@ -1243,7 +1243,7 @@
 
   <Group>
     <GroupName>flash_config</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1254,8 +1254,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../flash_config/flash_config.c</PathWithFileName>
-      <FilenameWithoutPath>flash_config.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.c</PathWithFileName>
+      <FilenameWithoutPath>evkmimxrt685_flash_config.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1266,8 +1266,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../../../../../flash_config/flash_config.h</PathWithFileName>
-      <FilenameWithoutPath>flash_config.h</FilenameWithoutPath>
+      <PathWithFileName>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.h</PathWithFileName>
+      <FilenameWithoutPath>evkmimxrt685_flash_config.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

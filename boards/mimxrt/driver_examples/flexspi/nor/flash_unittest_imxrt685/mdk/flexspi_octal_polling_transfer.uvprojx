@@ -629,14 +629,14 @@
           <GroupName>flash_config</GroupName>
           <Files>
             <File>
-              <FileName>flash_config.c</FileName>
+              <FileName>evkmimxrt685_flash_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../flash_config/flash_config.c</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.c</FilePath>
             </File>
             <File>
-              <FileName>flash_config.h</FileName>
+              <FileName>evkmimxrt685_flash_config.h</FileName>
               <FileType>5</FileType>
-              <FilePath>../../../../../flash_config/flash_config.h</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -1360,14 +1360,14 @@
           <GroupName>flash_config</GroupName>
           <Files>
             <File>
-              <FileName>flash_config.c</FileName>
+              <FileName>evkmimxrt685_flash_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../flash_config/flash_config.c</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.c</FilePath>
             </File>
             <File>
-              <FileName>flash_config.h</FileName>
+              <FileName>evkmimxrt685_flash_config.h</FileName>
               <FileType>5</FileType>
-              <FilePath>../../../../../flash_config/flash_config.h</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -2091,14 +2091,14 @@
           <GroupName>flash_config</GroupName>
           <Files>
             <File>
-              <FileName>flash_config.c</FileName>
+              <FileName>evkmimxrt685_flash_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../flash_config/flash_config.c</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.c</FilePath>
             </File>
             <File>
-              <FileName>flash_config.h</FileName>
+              <FileName>evkmimxrt685_flash_config.h</FileName>
               <FileType>5</FileType>
-              <FilePath>../../../../../flash_config/flash_config.h</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -2822,14 +2822,14 @@
           <GroupName>flash_config</GroupName>
           <Files>
             <File>
-              <FileName>flash_config.c</FileName>
+              <FileName>evkmimxrt685_flash_config.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../../../../../flash_config/flash_config.c</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.c</FilePath>
             </File>
             <File>
-              <FileName>flash_config.h</FileName>
+              <FileName>evkmimxrt685_flash_config.h</FileName>
               <FileType>5</FileType>
-              <FilePath>../../../../../flash_config/flash_config.h</FilePath>
+              <FilePath>..\..\..\..\..\flash_config\evkmimxrt685_flash_config.h</FilePath>
             </File>
           </Files>
         </Group>
