@@ -18,12 +18,20 @@ Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i
         <th>Status</th>
     </tr>
     <tr>
-        <td rowspan="1">i.MXRT500</td>
+        <td rowspan="2">i.MXRT500</td>
         <td>NXP EVK_Rev.C1<br>
             CMOS Octal SPI Flash<br>
             U38 - MX25UM51345GXDI00</td>
         <td>PIO1[28:18]<br>
             FLEXSPI0_PortA</td>
+        <td>/</td>
+        <td>Done</td>
+    </tr>
+    <tr>
+        <td>NXP EVK_Rev.C1<br>DDR OPI Xccela PSRAM<br>
+            U108 - APS6408L-OBM-BA</td>
+        <td>PIO5[18:15], PIO4[18:11]<br>
+            FLEXSPI1_PortA</td>
         <td>/</td>
         <td>Done</td>
     </tr>
