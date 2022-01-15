@@ -20,7 +20,7 @@ Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i
     <tr>
         <td rowspan="2">i.MXRT500</td>
         <td>NXP EVK_Rev.C1<br>
-            CMOS Octal SPI Flash<br>
+            200MHz CMOS Octal SPI Flash<br>
             U38 - MX25UM51345GXDI00</td>
         <td>PIO1[28:18]<br>
             FLEXSPI0_PortA</td>
@@ -28,7 +28,8 @@ Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i
         <td>Done</td>
     </tr>
     <tr>
-        <td>NXP EVK_Rev.C1<br>DDR OPI Xccela PSRAM<br>
+        <td>NXP EVK_Rev.C1<br>
+            200MHz DDR OPI Xccela PSRAM<br>
             U108 - APS6408L-OBM-BA</td>
         <td>PIO5[18:15], PIO4[18:11]<br>
             FLEXSPI1_PortA</td>
@@ -38,7 +39,7 @@ Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i
     <tr>
         <td rowspan="2">i.MXRT600</td>
         <td>NXP EVK_Rev.E<br>
-            CMOS Octal SPI Flash<br>
+            200MHz CMOS Octal SPI Flash<br>
             U19 - MX25UM51345GXDI00</td>
         <td>PIO1[14:11], PIO2[23:22,19:17]<br>
             FLEXSPI0_PortB</td>
@@ -47,7 +48,7 @@ Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i
     </tr>
     <tr>
         <td>NXP EVK_Rev.E<br>
-            DDR OPI Xccela PSRAM<br>
+            200MHz DDR OPI Xccela PSRAM<br>
             U108 - APS6408L-OBM-BA</td>
         <td>PIO1[28:18]<br>
             FLEXSPI0_PortA</td>
@@ -55,9 +56,19 @@ Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i
         <td>Done</td>
     </tr>
     <tr>
+        <td rowspan="1">i.MXRT1050</td>
+        <td>NXP EVKB_Rev.A1<br>
+            166MHz Hyper Flash<br>
+            U19- S26KS512SDPBHI020</td>
+        <td>GPIO_SD_B1[11:00]<br>
+            FLEXSPI1_PortA&B</td>
+        <td>/</td>
+        <td>Done</td>
+    </tr>
+    <tr>
         <td rowspan="1">i.MXRT1170</td>
         <td>NXP EVK_Rev.A-B<br>
-            Quad SPI Flash<br>
+            133MHz Quad SPI Flash<br>
             U23 - IS25WP128</td>
         <td>GPIO_SD_B2[11:06]<br>
             FLEXSPI1_PortA</td>
