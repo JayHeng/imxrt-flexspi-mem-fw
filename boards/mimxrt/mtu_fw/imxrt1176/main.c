@@ -7,11 +7,11 @@
  */
 
 #include "fsl_device_registers.h"
-#include "fsl_debug_console.h"
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "board.h"
 #include "fsl_common_arm.h"
+#include "mtu.h"
 
 /*******************************************************************************
  * Definitions
@@ -30,20 +30,14 @@
  */
 int main(void)
 {
-    char ch;
-
     /* Init board hardware. */
     BOARD_ConfigMPU();
     BOARD_InitPins();
     BOARD_BootClockRUN();
-    BOARD_InitDebugConsole();
-
-    PRINTF("hello world from cm7.\r\n");
+    
+    mtu_main();
 
     while (1)
     {
-        ch = GETCHAR();
-        PUTCHAR(ch);
     }
 }
-
