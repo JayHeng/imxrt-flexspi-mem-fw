@@ -15,6 +15,9 @@
  * Definitions
  ******************************************************************************/
 
+//! @brief Serial framing packet constants.
+#define FRAMING_PACKET_TAG_BYTES (4)
+#define FRAMING_PACKET_TAG_VALUE (0x47415446UL)     // ascii "FTAG" Big Endian
 
 /*******************************************************************************
  * API
