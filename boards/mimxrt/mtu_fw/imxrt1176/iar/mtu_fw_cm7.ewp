@@ -2141,6 +2141,9 @@
         <file>
             <name>$PROJ_DIR$\..\pin_mux.h</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\port_flexspi_pin.c</name>
+        </file>
     </group>
     <group>
         <name>CMSIS</name>
@@ -2281,6 +2284,21 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_timer.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_timer.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_uart.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_uart.h</name>
         </file>
     </group>
     <group>
