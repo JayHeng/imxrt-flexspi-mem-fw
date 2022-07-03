@@ -71,9 +71,8 @@ typedef struct _pin_unittest_packet
 {
     flexspi_connection_t memConnection;
     flexspi_unittest_en_t unittestEn;
-    uint8_t reserved0[3];
     uint16_t crcCheckSum;
-    uint8_t reserved1[2];
+    uint8_t reserved0[2];
 } pin_unittest_packet_t;
 
 //! @brief Flexspi memory property option.
