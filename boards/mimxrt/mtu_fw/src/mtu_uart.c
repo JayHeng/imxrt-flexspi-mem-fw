@@ -27,8 +27,8 @@
 
 /*! @brief Welcome string. */
 uint8_t s_tipString[] =
-"i.MXRT117x flexspi memory test set v1.0\r\n\
-Board receives command from UART1 then executes command";
+"i.MXRT117x flexspi memory test set v0.1\r\n\
+Board receives command from UART1 then executes command.";
 
 /*
   Ring buffer for data input and output, in this example, input data are saved

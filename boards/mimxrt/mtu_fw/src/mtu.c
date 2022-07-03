@@ -117,12 +117,12 @@ bool mtu_is_command_valid(void)
     {
         case kCommandTag_PinUnittest:
             isCmdValid = true;
-            printf("--Received Pin Unittest command!\r\n");
+            printf("--Received Pin Unittest command. \r\n");
             break;
 
         case kCommandTag_ConfigSystem:
             isCmdValid = true;
-            printf("--Received Config System command!\r\n");
+            printf("--Received Config System command. \r\n");
             break;
 
         default:
@@ -139,6 +139,7 @@ void mtu_execute_command(void)
         case kCommandTag_PinUnittest:
             bsp_flexspi_pinmux_config(&s_pinUnittestPacket, true);
             mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_flexspi_gpios_toggle);
+            printf("--You can check wave on enabled pins now. \r\n");
             break;
 
         case kCommandTag_ConfigSystem:

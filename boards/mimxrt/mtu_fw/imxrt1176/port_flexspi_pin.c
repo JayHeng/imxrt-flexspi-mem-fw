@@ -137,12 +137,12 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         GPIO_PinInit(GPIO10, 20, &do_config);
                         s_pinInfo[0].gpioGroup = 10;
                         s_pinInfo[0].gpioPin = 17;
-                        s_pinInfo[0].gpioGroup = 10;
-                        s_pinInfo[0].gpioPin = 18;
-                        s_pinInfo[0].gpioGroup = 10;
-                        s_pinInfo[0].gpioPin = 19;
-                        s_pinInfo[0].gpioGroup = 10;
-                        s_pinInfo[0].gpioPin = 20;
+                        s_pinInfo[1].gpioGroup = 10;
+                        s_pinInfo[1].gpioPin = 18;
+                        s_pinInfo[2].gpioGroup = 10;
+                        s_pinInfo[2].gpioPin = 19;
+                        s_pinInfo[3].gpioGroup = 10;
+                        s_pinInfo[3].gpioPin = 20;
                         break;
                     case kFlexspi1_DataA_GPIO_AD_23_20:
                         break;
@@ -154,7 +154,70 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-
+            if (packet->unittestEn.option.B.ss_b)
+            {
+                switch (packet->memConnection.ss_b)
+                {
+                    case kFlexspi1_Ss0A_GPIO_SD_B2_06:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_06_GPIO10_IO15, 0U);
+                        GPIO_PinInit(GPIO10, 15, &do_config);
+                        s_pinInfo[4].gpioGroup = 10;
+                        s_pinInfo[4].gpioPin = 15;
+                        break;
+                    case kFlexspi1_Ss0A_GPIO_AD_18:
+                        break;
+                    case kFlexspi1_Ss1A_GPIO_SD_B1_02:
+                        break;
+                    case kFlexspi1_Ss0B_GPIO_SD_B1_04:
+                        break;
+                    case kFlexspi1_Ss1B_GPIO_AD_35:
+                        break;
+                    case kFlexspi1_Ss1B_GPIO_SD_B1_03:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.sclk)
+            {
+                switch (packet->memConnection.sclk)
+                {
+                    case kFlexspi1_SclkA_GPIO_SD_B2_07:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_07_GPIO10_IO16, 0U);
+                        GPIO_PinInit(GPIO10, 16, &do_config);
+                        s_pinInfo[5].gpioGroup = 10;
+                        s_pinInfo[5].gpioPin = 16;
+                        break;
+                    case kFlexspi1_SclkA_GPIO_AD_19:
+                        break;
+                    case kFlexspi1_SclkB_GPIO_SD_B2_04:
+                        break;
+                    case kFlexspi1_SclkB_GPIO_AD_16:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.dqs)
+            {
+                switch (packet->memConnection.dqs)
+                {
+                    case kFlexspi1_DqsA_GPIO_SD_B2_05:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_05_GPIO10_IO14, 0U);
+                        GPIO_PinInit(GPIO10, 14, &do_config);
+                        s_pinInfo[6].gpioGroup = 10;
+                        s_pinInfo[6].gpioPin = 14;
+                        break;
+                    case kFlexspi1_DqsA_GPIO_AD_17:
+                        break;
+                    case kFlexspi1_DqsA_GPIO_EMC_B2_18:
+                        break;
+                    case kFlexspi1_DqsB_GPIO_SD_B1_05:
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         else if (packet->memConnection.instance == 2)
         {
@@ -186,7 +249,55 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                 default:
                     break;
             }
-
+            switch (packet->memConnection.ss_b)
+            {
+                case kFlexspi1_Ss0A_GPIO_SD_B2_06:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_06_FLEXSPI1_A_SS0_B, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_06_FLEXSPI1_A_SS0_B, 0x0AU);
+                    break;
+                case kFlexspi1_Ss0A_GPIO_AD_18:
+                    break;
+                case kFlexspi1_Ss1A_GPIO_SD_B1_02:
+                    break;
+                case kFlexspi1_Ss0B_GPIO_SD_B1_04:
+                    break;
+                case kFlexspi1_Ss1B_GPIO_AD_35:
+                    break;
+                case kFlexspi1_Ss1B_GPIO_SD_B1_03:
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.sclk)
+            {
+                case kFlexspi1_SclkA_GPIO_SD_B2_07:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_07_FLEXSPI1_A_SCLK, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_07_FLEXSPI1_A_SCLK, 0x0AU);
+                    break;
+                case kFlexspi1_SclkA_GPIO_AD_19:
+                    break;
+                case kFlexspi1_SclkB_GPIO_SD_B2_04:
+                    break;
+                case kFlexspi1_SclkB_GPIO_AD_16:
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.dqs)
+            {
+                case kFlexspi1_DqsA_GPIO_SD_B2_05:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS, 0x0AU);
+                    break;
+                case kFlexspi1_DqsA_GPIO_AD_17:
+                    break;
+                case kFlexspi1_DqsA_GPIO_EMC_B2_18:
+                    break;
+                case kFlexspi1_DqsB_GPIO_SD_B1_05:
+                    break;
+                default:
+                    break;
+            }
         }
         else if (packet->memConnection.instance == 2)
         {

@@ -26,8 +26,9 @@ enum _command_tags
     kCommandTag_PinUnittest     = 0x01,
     kCommandTag_ConfigSystem    = 0x02,
     kCommandTag_GetMemInfo      = 0x03,
-    kCommandTag_RunPerfTest     = 0x04,
-    kCommandTag_RunStressTest   = 0x05,
+    kCommandTag_RunRwTest       = 0x04,
+    kCommandTag_RunPerfTest     = 0x05,
+    kCommandTag_RunStressTest   = 0x06,
 
     //! Maximum linearly incrementing command tag value.
     kLastCommandTag = kCommandTag_RunStressTest,
