@@ -7,8 +7,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include "mtu.h"
 #include "fsl_flexspi.h"
-#include "app.h"
+#include "port_flexspi_mem.h"
 #if (defined CACHE_MAINTAIN) && (CACHE_MAINTAIN == 1)
 #include "fsl_cache.h"
 #endif

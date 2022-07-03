@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
 
 /*******************************************************************************
  * Definitions
@@ -101,6 +102,14 @@ typedef struct _config_system_packet
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
 } config_system_packet_t;
+
+typedef struct _rw_test_packet
+{
+    uint32_t memStart;
+    uint32_t memLen;
+    uint16_t crcCheckSum;
+    uint8_t reserved1[2];
+} rw_test_packet_t;
 
 /*******************************************************************************
  * API

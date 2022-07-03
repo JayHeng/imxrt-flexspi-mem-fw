@@ -1,12 +1,12 @@
 /*
- * Copyright 2021 NXP
+ * Copyright 2022 NXP
  * All rights reserved.
  *
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
-#ifndef _APP_H_
-#define _APP_H_
+#ifndef _PORT_FLEXSPI_MEM_H_
+#define _PORT_FLEXSPI_MEM_H_
 
 /*******************************************************************************
  * Definitions
@@ -81,4 +81,4 @@ static inline void flexspi_clock_init(void)
 }
 /*${prototype:end}*/
 
-#endif /* _APP_H_ */
+#endif /* _PORT_FLEXSPI_MEM_H_ */

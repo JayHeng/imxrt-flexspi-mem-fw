@@ -6,11 +6,11 @@
  */
 
 #include <ctype.h>
-#include <stdio.h>
 #include "mtu.h"
 #include "mtu_pin.h"
 #include "mtu_uart.h"
 #include "mtu_timer.h"
+#include "mtu_flexspi_nor_test.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -33,6 +33,9 @@ pin_unittest_packet_t s_pinUnittestPacket;
 
 /*! @brief Config system packet. */
 config_system_packet_t s_configSystemPacket;
+
+/*! @brief R/W Test packet. */
+rw_test_packet_t s_rwTestPacket;
 
 /*******************************************************************************
  * Code
@@ -86,6 +89,13 @@ void mtu_get_command_from_buffer(void)
                             cmdPacket = (uint8_t *)&s_configSystemPacket;
                             break;
 
+                        case kCommandTag_RunRwTest:
+                            isCmdTagFound = true;
+                            remainingCmdBytes = sizeof(rw_test_packet_t);
+                            memset(&s_rwTestPacket, 0x0, sizeof(s_rwTestPacket));
+                            cmdPacket = (uint8_t *)&s_rwTestPacket;
+                            break;
+
                         default:
                             isPacketTagFound = false;
                             break;
@@ -93,13 +103,20 @@ void mtu_get_command_from_buffer(void)
                 }
                 else
                 {
-                    *cmdPacket = g_demoRingBuffer[g_txIndex];
-                    cmdPacket++;
-                    remainingCmdBytes--;
-                    if (!remainingCmdBytes)
+                    if (remainingCmdBytes)
                     {
-                        g_txIndex++;
-                        g_txIndex %= DEMO_RING_BUFFER_SIZE;
+                        *cmdPacket = g_demoRingBuffer[g_txIndex];
+                        cmdPacket++;
+                        remainingCmdBytes--;
+                        if (!remainingCmdBytes)
+                        {
+                            g_txIndex++;
+                            g_txIndex %= DEMO_RING_BUFFER_SIZE;
+                            break;
+                        }
+                    }
+                    else
+                    {
                         break;
                     }
                 }
@@ -125,6 +142,11 @@ bool mtu_is_command_valid(void)
             printf("--Received Config System command. \r\n");
             break;
 
+        case kCommandTag_RunRwTest:
+            isCmdValid = true;
+            printf("--Received R/W test command. \r\n");
+            break;
+
         default:
             break;
     }
@@ -145,6 +167,11 @@ void mtu_execute_command(void)
         case kCommandTag_ConfigSystem:
             mtu_deinit_timer();
             bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
+            mtu_init_flash();
+            break;
+
+        case kCommandTag_RunRwTest:
+            mtu_rw_flash();
             break;
 
         default:

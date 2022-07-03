@@ -7,11 +7,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include "mtu.h"
 #include "fsl_flexspi.h"
-#include "app.h"
-#include "fsl_debug_console.h"
+#include "port_flexspi_mem.h"
 #include "fsl_cache.h"
-
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "board.h"
@@ -126,21 +125,14 @@ const uint32_t customLUT[CUSTOM_LUT_LENGTH] = {
         FLEXSPI_LUT_SEQ(kFLEXSPI_Command_SDR, kFLEXSPI_1PAD, 0xC7, kFLEXSPI_Command_STOP, kFLEXSPI_1PAD, 0),
 };
 
-
-int main(void)
+status_t mtu_init_flash(void)
 {
-    uint32_t i = 0;
     status_t status;
     uint8_t vendorID = 0;
 
-    BOARD_ConfigMPU();
-    BOARD_InitPins();
-    BOARD_BootClockRUN();
-    BOARD_InitDebugConsole();
-
     flexspi_nor_flash_init(EXAMPLE_FLEXSPI);
 
-    PRINTF("\r\nFLEXSPI example started!\r\n");
+    printf("--FLEXSPI module initialized.\r\n");
 
     /* Get vendor ID. */
     status = flexspi_nor_get_vendor_id(EXAMPLE_FLEXSPI, &vendorID);
@@ -148,19 +140,25 @@ int main(void)
     {
         return status;
     }
-    PRINTF("Vendor ID: 0x%x\r\n", vendorID);
+    printf("--Vendor ID: 0x%x\r\n", vendorID);
+    
+    return kStatus_Success;
+}
 
-#if !(defined(XIP_EXTERNAL_FLASH))
+status_t mtu_rw_flash(void)
+{
+    uint32_t i = 0;
+    status_t status;
+
+#if 0
     /* Erase whole chip . */
-    PRINTF("Erasing whole chip over FlexSPI...\r\n");
-
+    printf("--Erasing whole chip over FlexSPI...\r\n");
     status = flexspi_nor_erase_chip(EXAMPLE_FLEXSPI);
     if (status != kStatus_Success)
     {
         return status;
     }
-    PRINTF("Erase finished !\r\n");
-
+    printf("--Erase whole chip finished !\r\n");
 #endif
 
     /* Enter quad mode. */
@@ -171,12 +169,12 @@ int main(void)
     }
 
     /* Erase sectors. */
-    PRINTF("Erasing Serial NOR over FlexSPI...\r\n");
+    printf("--Erasing Serial NOR over FlexSPI...\r\n");
     status = flexspi_nor_flash_erase_sector(EXAMPLE_FLEXSPI, EXAMPLE_SECTOR * SECTOR_SIZE);
     if (status != kStatus_Success)
     {
-        PRINTF("Erase sector failure !\r\n");
-        return -1;
+        printf("--Erase sector failure !\r\n");
+        return status;
     }
 
     memset(s_nor_program_buffer, 0xFFU, sizeof(s_nor_program_buffer));
@@ -188,12 +186,12 @@ int main(void)
 
     if (memcmp(s_nor_program_buffer, s_nor_read_buffer, sizeof(s_nor_program_buffer)))
     {
-        PRINTF("Erase data -  read out data value incorrect !\r\n ");
-        return -1;
+        printf("--Erase sector data -  read out data value incorrect !\r\n ");
+        return status;
     }
     else
     {
-        PRINTF("Erase data - successfully. \r\n");
+        printf("--Erase sector data - successfully. \r\n");
     }
 
     for (i = 0; i < 0xFFU; i++)
@@ -205,8 +203,8 @@ int main(void)
         flexspi_nor_flash_page_program(EXAMPLE_FLEXSPI, EXAMPLE_SECTOR * SECTOR_SIZE, (void *)s_nor_program_buffer);
     if (status != kStatus_Success)
     {
-        PRINTF("Page program failure !\r\n");
-        return -1;
+        printf("--Page program failure !\r\n");
+        return status;
     }
 
     DCACHE_InvalidateByRange(EXAMPLE_FLEXSPI_AMBA_BASE + EXAMPLE_SECTOR * SECTOR_SIZE, FLASH_PAGE_SIZE);
@@ -216,15 +214,13 @@ int main(void)
 
     if (memcmp(s_nor_read_buffer, s_nor_program_buffer, sizeof(s_nor_program_buffer)) != 0)
     {
-        PRINTF("Program data -  read out data value incorrect !\r\n ");
-        return -1;
+        printf("--Program page data -  read out data value incorrect !\r\n ");
+        return status;
     }
     else
     {
-        PRINTF("Program data - successfully. \r\n");
+        printf("--Program page data - successfully. \r\n");
     }
-
-    while (1)
-    {
-    }
+    
+    return kStatus_Success;
 }
