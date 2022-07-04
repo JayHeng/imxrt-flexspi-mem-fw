@@ -1,0 +1,230 @@
+/*
+ * Copyright 2019-2020 NXP
+ * All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+__ExecDeviceReset()
+{
+    __probeCmd("dap.w 0xE000EDF0 0xA05F0003 0");
+    if ((__probeCmd("dap.r 0xE000EDF0 0") & 0x00030000) == 0x00030000)
+    {
+        __message "CM7 has been halted";
+    }
+    else
+    {
+        __message "CM7 has not been halted";
+    }
+}
+
+_Flexspi_reset()
+{
+  __var reg;
+   reg = __readMemory32(0x400CC000, "Memory");
+  __writeMemory32((reg | 0x1), 0x400CC000, "Memory");   
+  do
+  {
+    reg = __readMemory32(0x400CC000, "Memory");
+  }while((reg & 0x1) != 0); 
+}
+
+_clock_init()
+{
+    __var reg;
+    __var val;
+
+    // Set flash root clock
+    reg = 0x40CC0A00;
+    // use sys pll3 pfd0 divided by 2: 332Mhz
+    val = 0x401;
+    __writeMemory32(val, reg, "Memory");
+	
+	__message "clock init done\n";
+}
+
+_flash_pinInit()
+{
+  // Config IOMUX for PSRAM
+  __writeMemory32(0x00000011, 0x400E81C8, "Memory");// FLEXSPI1_A_DQS
+  __writeMemory32(0x00000011, 0x400E81CC, "Memory");// FLEXSPI1_A_SS0_B
+  __writeMemory32(0x00000011, 0x400E81D0, "Memory");// FLEXSPI1_A_SCLK
+  __writeMemory32(0x00000011, 0x400E81D4, "Memory");// FLEXSPI1_A_DATA00
+  __writeMemory32(0x00000011, 0x400E81D8, "Memory");// FLEXSPI1_A_DATA01
+  __writeMemory32(0x00000011, 0x400E81DC, "Memory");// FLEXSPI1_A_DATA02
+  __writeMemory32(0x00000011, 0x400E81E0, "Memory");// FLEXSPI1_A_DATA03
+  __writeMemory32(0x00000011, 0x400E81C0, "Memory");// FLEXSPI1_B_DATA00
+  __writeMemory32(0x00000011, 0x400E81BC, "Memory");// FLEXSPI1_B_DATA01
+  __writeMemory32(0x00000011, 0x400E81B8, "Memory");// FLEXSPI1_B_DATA02
+  __writeMemory32(0x00000011, 0x400E81B4, "Memory");// FLEXSPI1_B_DATA03
+  
+  //IOMUX input daisy
+  __writeMemory32(0x00000002, 0x400E8550, "Memory");//FLEXSPI1_I_DQS_FA_SELECT_INPUT
+  __writeMemory32(0x00000001, 0x400E8554, "Memory");//FLEXSPI1_I_IO_FA_SELECT_INPUT_0 
+  __writeMemory32(0x00000001, 0x400E8558, "Memory");//FLEXSPI1_I_IO_FA_SELECT_INPUT_1 
+  __writeMemory32(0x00000001, 0x400E855C, "Memory");//FLEXSPI1_I_IO_FA_SELECT_INPUT_2
+  __writeMemory32(0x00000001, 0x400E8560, "Memory");//FLEXSPI1_I_IO_FA_SELECT_INPUT_3 
+  __writeMemory32(0x00000001, 0x400E8574, "Memory");//FLEXSPI1_I_SCK_FA_SELECT_INPUT
+  __writeMemory32(0x00000001, 0x400E8564, "Memory");//FLEXSPI1_I_IO_FB_SELECT_INPUT_0
+  __writeMemory32(0x00000001, 0x400E8568, "Memory");//FLEXSPI1_I_IO_FB_SELECT_INPUT_1
+  __writeMemory32(0x00000001, 0x400E856C, "Memory");//FLEXSPI1_I_IO_FB_SELECT_INPUT_2
+  __writeMemory32(0x00000001, 0x400E8570, "Memory");//FLEXSPI1_I_IO_FB_SELECT_INPUT_3
+  
+  // PAD ctrl
+  __writeMemory32(0x00000008, 0x400E840C, "Memory");// FLEXSPI1_A_DQS
+  __writeMemory32(0x0000000c, 0x400E8410, "Memory");// FLEXSPI1_A_SS0_B
+  __writeMemory32(0x0000000c, 0x400E8414, "Memory");// FLEXSPI1_A_SCLK
+  __writeMemory32(0x0000000c, 0x400E8418, "Memory");// FLEXSPI1_A_DATA00
+  __writeMemory32(0x0000000c, 0x400E841C, "Memory");// FLEXSPI1_A_DATA01
+  __writeMemory32(0x0000000c, 0x400E8420, "Memory");// FLEXSPI1_A_DATA02
+  __writeMemory32(0x0000000c, 0x400E8424, "Memory");// FLEXSPI1_A_DATA03
+  __writeMemory32(0x0000000c, 0x400E8404, "Memory");// FLEXSPI1_B_DATA00
+  __writeMemory32(0x0000000c, 0x400E8400, "Memory");// FLEXSPI1_B_DATA01
+  __writeMemory32(0x0000000c, 0x400E83FC, "Memory");// FLEXSPI1_B_DATA02
+  __writeMemory32(0x0000000c, 0x400E83F8, "Memory");// FLEXSPI1_B_DATA03
+}
+
+_flash_Init()
+{
+  // Config FlexSPI Registers
+
+  __writeMemory32(0xFFFF3030, 0x400CC000, "Memory"); // MCR0 
+  _Flexspi_reset();
+  __writeMemory32(0xFFFF3032, 0x400CC000, "Memory"); // MCR0
+  __writeMemory32(0xFFFFFFFF, 0x400CC004, "Memory"); // MCR1
+  __writeMemory32(0x200001F7, 0x400CC008, "Memory"); // MCR2
+  __writeMemory32(0x00000078, 0x400CC00C, "Memory"); // AHBCR prefetch enable
+  __writeMemory32(0x80000020, 0x400CC020, "Memory"); // AHBRXBUF0CR0
+  __writeMemory32(0x80000020, 0x400CC024, "Memory"); // AHBRXBUF1CR0
+  __writeMemory32(0x80000020, 0x400CC028, "Memory"); // AHBRXBUF2CR0
+  __writeMemory32(0x80000020, 0x400CC02C, "Memory"); // AHBRXBUF3CR0
+  __writeMemory32(0x00000000, 0x400CC0B8, "Memory"); // IPRXFCR
+  __writeMemory32(0x00000000, 0x400CC0BC, "Memory"); // IPTXFCR
+  __writeMemory32(0x00000000, 0x400CC060, "Memory"); // FLASHA1CR0
+  __writeMemory32(0x00000000, 0x400CC064, "Memory"); // FLASHA2CR0
+  __writeMemory32(0x00000000, 0x400CC068, "Memory"); // FLASHB1CR0
+  __writeMemory32(0x00000000, 0x400CC06C, "Memory"); // FLASHB2CR0
+  
+  __writeMemory32(0x00008000, 0x400CC060, "Memory"); // FLASHA1CR0
+  __writeMemory32(0x00052063, 0x400CC070, "Memory"); // FLASHA1CR1 
+  __writeMemory32(0x00000100, 0x400CC080, "Memory"); // FLASHA1CR2
+  __writeMemory32(0x00000079, 0x400CC0C0, "Memory"); // DLLACR
+  __writeMemory32(0x00000006, 0x400CC094, "Memory"); // FLASHCR4   
+  __writeMemory32(0xFFFF3030, 0x400CC000, "Memory"); // MCR0
+  __writeMemory32(0x5AF05AF0, 0x400CC018, "Memory"); // LUTKEY
+  __writeMemory32(0x00000002, 0x400CC01C, "Memory"); // LUTCR
+  __writeMemory32(0x870087a0, 0x400CC200, "Memory"); // LUT[0]
+  __writeMemory32(0x8f088b16, 0x400CC204, "Memory"); // LUT[1]
+  __writeMemory32(0xa704b31e, 0x400CC208, "Memory"); // LUT[2]
+  __writeMemory32(0x00000000, 0x400CC20C, "Memory"); // LUT[3] 
+  __writeMemory32(0x87008720, 0x400CC210, "Memory"); // LUT[4]
+  __writeMemory32(0x8f088b16, 0x400CC214, "Memory"); // LUT[5]
+  __writeMemory32(0xa304b31e, 0x400CC218, "Memory"); // LUT[6]
+  __writeMemory32(0x00000000, 0x400CC21C, "Memory"); // LUT[7]
+  __writeMemory32(0x870087c0, 0x400CC220, "Memory"); // LUT[8]
+  __writeMemory32(0x87048700, 0x400CC224, "Memory"); // LUT[9]
+  __writeMemory32(0x87008700, 0x400CC228, "Memory"); // LUT[10]
+  __writeMemory32(0xa704b31e, 0x400CC22C, "Memory"); // LUT[11]
+  __writeMemory32(0x87008740, 0x400CC230, "Memory"); // LUT[12]
+  __writeMemory32(0x87048700, 0x400CC234, "Memory"); // LUT[13]
+  __writeMemory32(0x87008700, 0x400CC238, "Memory"); // LUT[14]
+  __writeMemory32(0x0000a308, 0x400CC23C, "Memory"); // LUT[15]
+  __writeMemory32(0x00000000, 0x400CC240, "Memory"); // LUT[16]
+  __writeMemory32(0x00000000, 0x400CC244, "Memory"); // LUT[17]
+  __writeMemory32(0x00000000, 0x400CC248, "Memory"); // LUT[18]
+  __writeMemory32(0x00000000, 0x400CC24C, "Memory"); // LUT[19]
+  __writeMemory32(0x87008780, 0x400CC250, "Memory");//20
+  __writeMemory32(0x8f088b16, 0x400CC254, "Memory");//21
+  __writeMemory32(0xa704b31e, 0x400CC258, "Memory");//22
+  __writeMemory32(0x00000000, 0x400CC25C, "Memory");//23
+  __writeMemory32(0x87008700, 0x400CC260, "Memory");//24
+  __writeMemory32(0x8f088b16, 0x400CC264, "Memory");//25
+  __writeMemory32(0xa304b31e, 0x400CC268, "Memory");//26
+  __writeMemory32(0x00000000, 0x400CC26C, "Memory");//27
+  __writeMemory32(0x5AF05AF0, 0x400CC018, "Memory"); // LUTKEY
+  __writeMemory32(0x00000001, 0x400CC01C, "Memory"); // LUTCR
+ 
+  _Flexspi_reset();
+  
+  __message "Flash init done\n";
+}
+
+clearIRQ()
+{
+    __var reg, i;
+
+    reg = 0xE000E100; /* NVIC Base */
+
+    /* Disable all IRQ: ICERn */
+    i = 0x80;
+    while (i <= 0x9C)
+    {
+        __writeMemory32(0xFFFFFFFF, reg + i, "AP0_Memory");
+        i = i + 4;
+    }
+
+    /* Clear pending IRQ: ICPRn */
+    i = 0x180;
+    while (i <= 0x19C)
+    {
+        __writeMemory32(0xFFFFFFFF, reg + i, "AP0_Memory");
+        i = i+4;
+    }
+
+    __message "IRQ is cleared";
+}
+
+restoreFlexRAM()
+{
+    __var base;
+    __var value;
+
+    base = 0x400E4000;
+
+    value = __readMemory32(base + 0x44, "AP0_Memory");
+    value &= ~(0xFFFF);
+    value |= 0xFFAA;
+    __writeMemory32(value, base + 0x44, "AP0_Memory");
+    value = __readMemory32(base + 0x48, "AP0_Memory");
+    value &= ~(0xFFFF);
+    value |= 0xFFAA;
+    __writeMemory32(value, base + 0x48, "AP0_Memory");
+
+    value = __readMemory32(base + 0x40, "AP0_Memory");
+    value &= ~(0xFF << 8);
+    value |= 0x7 | (0xaa << 8);
+    __writeMemory32(value, base + 0x40, "AP0_Memory");
+    __message "FlexRAM configuration is restored";
+}
+
+resetCM7()
+{
+    __var t;
+    __probeCmd("dap.w 0x2001ff04 0x207e11 0");
+    __probeCmd("dap.w 0x400e404c 0x4003FE 0");
+
+    __probeCmd("dap.w 0x40c042a4 1 0");
+    t = __probeCmd("dap.r 0x40c042b0 0");
+    while (t & 0x1)
+    {
+        t = __probeCmd("dap.r 0x40c042b0 0");
+    }
+    __message("CM7 SRC reset done");
+}
+
+execUserPreload()
+{
+    clearIRQ();
+
+    restoreFlexRAM();
+    _clock_init();
+	_flash_pinInit();
+	_flash_Init();
+}
+
+_ExecDeviceCoreConnect()
+{
+    __probeCmd("dap.w 0x2001ff04 0x207e11 0");
+    __probeCmd("dap.w 0x400e404c 0x4003FE 0");
+}
+
