@@ -27,7 +27,7 @@
 
 /*! @brief Welcome string. */
 uint8_t s_tipString[] =
-"i.MXRT117x flexspi memory test set v0.1\r\n\
+"i.MXRT117x flexspi memory test set FW v0.1\r\n\
 Board receives command from UART1 then executes command.";
 
 /*
