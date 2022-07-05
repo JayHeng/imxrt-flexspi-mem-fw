@@ -20,7 +20,7 @@
  * API
  ******************************************************************************/
 
-void mtu_init_timer(uint32_t pulseInMs, void *callback);
+void mtu_init_timer(uint32_t taskCycleInMs, void *callback);
 
 void mtu_deinit_timer(void);
 

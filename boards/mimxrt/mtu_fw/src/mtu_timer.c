@@ -35,11 +35,8 @@ void (*timer_task)(void);
 
 void SysTick_Handler(void)
 {
-    if (s_currentCounter != 0U)
-    {
-        s_currentCounter--;
-    }
-    else
+    s_currentCounter--;
+    if (!s_currentCounter)
     {
         s_currentCounter = s_maxCounter;
         if (timer_task)
@@ -49,8 +46,11 @@ void SysTick_Handler(void)
     }
 }
 
-void mtu_init_timer(uint32_t pulseInMs, void *callback)
+void mtu_init_timer(uint32_t taskCycleInMs, void *callback)
 {
+    s_maxCounter = taskCycleInMs;
+    s_currentCounter = taskCycleInMs;
+    timer_task = (void (*)(void))callback;
     /* Set systick reload value to generate 1ms interrupt */
     if (SysTick_Config(SystemCoreClock / 1000U))
     {
@@ -58,9 +58,6 @@ void mtu_init_timer(uint32_t pulseInMs, void *callback)
         {
         }
     }
-    s_maxCounter = pulseInMs;
-    s_currentCounter = pulseInMs;
-    timer_task = (void (*)(void))callback;
 }
 
 void mtu_deinit_timer(void)

@@ -159,6 +159,7 @@ void mtu_execute_command(void)
     switch (s_currentCmdTag)
     {
         case kCommandTag_PinUnittest:
+            mtu_deinit_timer();
             bsp_flexspi_pinmux_config(&s_pinUnittestPacket, true);
             mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_flexspi_gpios_toggle);
             printf("--You can check wave on enabled pins now. \r\n");
