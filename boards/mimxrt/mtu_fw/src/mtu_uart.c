@@ -106,4 +106,9 @@ void mtu_init_uart(void)
     EnableIRQ(BOARD_UART_IRQ);
 }
 
+void mtu_uart_sendhex(uint8_t *src, uint32_t lenInBytes)
+{
+    LPUART_WriteBlocking(DEMO_LPUART, src, lenInBytes);
+}
+
 

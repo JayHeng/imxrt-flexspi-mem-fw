@@ -11,6 +11,7 @@
 #include "fsl_gpio.h"
 #include "mtu.h"
 #include "mtu_pin.h"
+#include "mtu_uart.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -307,6 +308,9 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
 
 void bsp_flexspi_gpios_toggle(void)
 {
+    uint8_t convValue = bsp_adc_get_conv_value();
+    mtu_uart_sendhex(&convValue, sizeof(convValue));
+  
     GPIO_Type *gpioBase[] = GPIO_BASE_PTRS;
     for (uint32_t i = 0; i < sizeof(s_pinInfo) / sizeof(pin_info_t); i++)
     {

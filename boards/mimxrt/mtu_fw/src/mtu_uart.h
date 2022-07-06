@@ -31,4 +31,6 @@ extern volatile uint16_t g_rxIndex;
 
 void mtu_init_uart(void);
 
+void mtu_uart_sendhex(uint8_t *src, uint32_t lenInBytes);
+
 #endif /* __MTU_UART__ */

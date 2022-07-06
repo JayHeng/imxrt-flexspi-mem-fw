@@ -127,6 +127,19 @@ void mtu_get_command_from_buffer(void)
     }
 }
 
+void mtu_switch_print_mode(bool isAsciiMode)
+{
+    SDK_DelayAtLeastUs(1000000, SystemCoreClock);
+    if (isAsciiMode)
+    {
+        printf("Switch_To_ASCII_Mode\r\n");
+    }
+    else
+    {
+        printf("Switch_To_Hex_Mode\r\n");
+    }
+}
+
 bool mtu_is_command_valid(void)
 {
     bool isCmdValid = false;
@@ -134,16 +147,19 @@ bool mtu_is_command_valid(void)
     {
         case kCommandTag_PinUnittest:
             isCmdValid = true;
+            mtu_switch_print_mode(true);
             printf("--Received Pin Unittest command. \r\n");
             break;
 
         case kCommandTag_ConfigSystem:
             isCmdValid = true;
+            mtu_switch_print_mode(true);
             printf("--Received Config System command. \r\n");
             break;
 
         case kCommandTag_RunRwTest:
             isCmdValid = true;
+            mtu_switch_print_mode(true);
             printf("--Received R/W test command. \r\n");
             break;
 
@@ -159,14 +175,18 @@ void mtu_execute_command(void)
     switch (s_currentCmdTag)
     {
         case kCommandTag_PinUnittest:
+            printf("--You can check wave on enabled pins now. \r\n");
+            printf("--adc1_in0 can be used to sample pin wave. \r\n");
+            mtu_switch_print_mode(false);
             mtu_deinit_timer();
             bsp_flexspi_pinmux_config(&s_pinUnittestPacket, true);
+            bsp_adc_init();
             mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_flexspi_gpios_toggle);
-            printf("--You can check wave on enabled pins now. \r\n");
             break;
 
         case kCommandTag_ConfigSystem:
             mtu_deinit_timer();
+            bsp_adc_deinit();
             bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
             mtu_init_flash();
             break;
