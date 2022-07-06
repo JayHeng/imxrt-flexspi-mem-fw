@@ -2142,6 +2142,9 @@
             <name>$PROJ_DIR$\..\pin_mux.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\port_adc_conv.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\port_flexspi_mem.h</name>
         </file>
         <file>
@@ -2269,6 +2272,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_iomuxc.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_lpadc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_lpadc.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_lpuart.c</name>

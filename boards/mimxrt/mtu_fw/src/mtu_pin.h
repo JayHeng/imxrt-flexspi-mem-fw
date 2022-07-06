@@ -29,4 +29,10 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest);
 
 void bsp_flexspi_gpios_toggle(void);
 
+void bsp_adc_init(void);
+
+uint8_t bsp_adc_get_conv_value(void);
+
+void bsp_adc_deinit(void);
+
 #endif /* __MTU_PIN__ */
