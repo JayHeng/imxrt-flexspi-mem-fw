@@ -10,7 +10,9 @@
 #include "mtu_pin.h"
 #include "mtu_uart.h"
 #include "mtu_timer.h"
+#if MTU_FEATURE_FLASH
 #include "mtu_flexspi_nor_test.h"
+#endif
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -177,22 +179,34 @@ void mtu_execute_command(void)
         case kCommandTag_PinUnittest:
             printf("--You can check wave on enabled pins now. \r\n");
             printf("--adc1_in0 can be used to sample pin wave. \r\n");
+#if MTU_FEATURE_PINTEST
+#if MTU_FEATURE_PINTEST_WAVE
             mtu_switch_print_mode(false);
+#endif
             mtu_deinit_timer();
             bsp_flexspi_pinmux_config(&s_pinUnittestPacket, true);
+#if MTU_FEATURE_PINTEST_WAVE
             bsp_adc_init();
+#endif
             mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_flexspi_gpios_toggle);
+#endif
             break;
 
         case kCommandTag_ConfigSystem:
+#if MTU_FEATURE_PINTEST
             mtu_deinit_timer();
             bsp_adc_deinit();
+#endif
+#if MTU_FEATURE_FLASH
             bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
             mtu_init_flash();
+#endif
             break;
 
         case kCommandTag_RunRwTest:
+#if MTU_FEATURE_FLASH
             mtu_rw_flash();
+#endif
             break;
 
         default:
