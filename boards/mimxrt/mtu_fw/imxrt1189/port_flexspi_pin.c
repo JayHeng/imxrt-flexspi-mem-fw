@@ -69,7 +69,14 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
 {
     CLOCK_EnableClock(kCLOCK_Iomuxc1);
     CLOCK_EnableClock(kCLOCK_Iomuxc2);
-    
+
+#if MTU_USE_EVK_SOCKET
+    rgpio_pin_config_t do1_config = {kRGPIO_DigitalOutput, 0};
+    IOMUXC_SetPinMux(IOMUXC_GPIO_AD_04_GPIO4_IO04, 0U);
+    RGPIO_PinInit(RGPIO4, 4, &do1_config);
+    RGPIO_PinWrite(RGPIO4, 4, 1);
+#endif
+
     if (isPintest)
     {
         pin_unittest_packet_t *packet = (pin_unittest_packet_t *)configPacket;

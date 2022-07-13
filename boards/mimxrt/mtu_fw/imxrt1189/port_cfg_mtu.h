@@ -12,6 +12,9 @@
  * Definitions
  ******************************************************************************/
 
+#define MTU_SELFTEST             (1)
+#define MTU_USE_EVK_SOCKET       (1)
+
 #define MTU_FEATURE_PINTEST      (1)
 #define MTU_FEATURE_PINTEST_WAVE (0)
 

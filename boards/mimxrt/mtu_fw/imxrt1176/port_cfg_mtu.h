@@ -12,6 +12,8 @@
  * Definitions
  ******************************************************************************/
 
+#define MTU_SELFTEST             (0)
+
 #define MTU_FEATURE_PINTEST      (1)
 #define MTU_FEATURE_PINTEST_WAVE (1)
 

@@ -28,10 +28,28 @@
  ******************************************************************************/
 
 /*! @brief Current command tag. */
-uint8_t s_currentCmdTag = 0;
+uint8_t s_currentCmdTag = kCommandTag_PinUnittest;
 
 /*! @brief Pin unit test packet. */
+#if MTU_SELFTEST
+pin_unittest_packet_t s_pinUnittestPacket = 
+{
+  .memConnection = {.instance = 1,
+                    .dataLow4bit = 0x10,
+                    .dataHigh4bit = 0xFF,
+                    .ss_b = 0x10,
+                    .sclk = 0x10,
+                    .dqs = 0x10,
+                    .sclk_n = 0xFF,
+                    .rst_b = 0xFF,
+                    },
+  .unittestEn = {.pulseInMs = 10,
+                 .option.U = 0x7F
+                 },
+};
+#else
 pin_unittest_packet_t s_pinUnittestPacket;
+#endif
 
 /*! @brief Config system packet. */
 config_system_packet_t s_configSystemPacket;
@@ -225,11 +243,16 @@ void mtu_main(void)
 
     while(1)
     {
+#if !MTU_SELFTEST
         mtu_get_command_from_buffer();
         if (mtu_is_command_valid())
         {
             mtu_execute_command();
         }
+#else
+        mtu_execute_command();
+        while(1);
+#endif
     }
 }
 
