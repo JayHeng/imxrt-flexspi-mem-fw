@@ -2053,7 +2053,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>mtu_fw_cm33_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -2138,6 +2138,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\pin_mux.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\port_cfg_mtu.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\port_flexspi_pin.c</name>
         </file>
     </group>
     <group>
@@ -2275,7 +2281,28 @@
     <group>
         <name>source</name>
         <file>
-            <name>$PROJ_DIR$\..\hello_world.c</name>
+            <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_timer.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_timer.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_uart.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_uart.h</name>
         </file>
     </group>
     <group>

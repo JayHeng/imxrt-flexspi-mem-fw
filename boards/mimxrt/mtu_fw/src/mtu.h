@@ -12,6 +12,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
+#include "fsl_device_registers.h"
+#include "fsl_common.h"
+#include "fsl_common_arm.h"
 #include "port_cfg_mtu.h"
 
 /*******************************************************************************

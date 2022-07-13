@@ -6,11 +6,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "fsl_device_registers.h"
-#include "fsl_debug_console.h"
 #include "pin_mux.h"
 #include "clock_config.h"
 #include "board.h"
+#include "mtu.h"
 
 /*******************************************************************************
  * Definitions
@@ -29,19 +28,14 @@
  */
 int main(void)
 {
-    char ch;
-
     /* Init board hardware. */
     BOARD_ConfigMPU();
     BOARD_InitBootPins();
     BOARD_InitBootClocks();
-    BOARD_InitDebugConsole();
 
-    PRINTF("hello world.\r\n");
+    mtu_main();
 
     while (1)
     {
-        ch = GETCHAR();
-        PUTCHAR(ch);
     }
 }

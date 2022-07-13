@@ -195,7 +195,9 @@ void mtu_execute_command(void)
         case kCommandTag_ConfigSystem:
 #if MTU_FEATURE_PINTEST
             mtu_deinit_timer();
+#if MTU_FEATURE_PINTEST_WAVE
             bsp_adc_deinit();
+#endif
 #endif
 #if MTU_FEATURE_FLASH
             bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
