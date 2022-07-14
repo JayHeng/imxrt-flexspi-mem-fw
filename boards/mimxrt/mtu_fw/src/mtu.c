@@ -196,9 +196,9 @@ void mtu_execute_command(void)
     {
         case kCommandTag_PinUnittest:
             printf("--You can check wave on enabled pins now. \r\n");
-            printf("--adc1_in0 can be used to sample pin wave. \r\n");
 #if MTU_FEATURE_PINTEST
 #if MTU_FEATURE_PINTEST_WAVE
+            bsp_adc_echo_info();
             mtu_switch_print_mode(false);
 #endif
             mtu_deinit_timer();

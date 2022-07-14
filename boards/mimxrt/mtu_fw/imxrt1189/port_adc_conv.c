@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2016, Freescale Semiconductor, Inc.
- * Copyright 2016-2020 NXP
+ * Copyright 2016-2022 NXP
  * All rights reserved.
  *
  *
@@ -16,14 +16,18 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define DEMO_LPADC_BASE         LPADC1
-#define DEMO_LPADC_USER_CHANNEL 0U
-#define DEMO_LPADC_USER_CMDID   1U /* CMD1 */
-#define DEMO_LPADC_VREF_SOURCE  kLPADC_ReferenceVoltageAlt1
+#define DEMO_LPADC_BASE                    ADC1
+#define DEMO_LPADC_USER_CHANNEL            7U
+#define DEMO_LPADC_USER_CMDID              1U /* CMD1 */
+#define DEMO_LPADC_VREF_SOURCE             kLPADC_ReferenceVoltageAlt1
+#define DEMO_LPADC_USE_HIGH_RESOLUTION     true
+#define DEMO_LPADC_OFFSET_CALIBRATION_MODE kLPADC_OffsetCalibration16bitMode
 
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
+
+void BOARD_InitADCClock(void);
 
 /*******************************************************************************
  * Variables
@@ -41,9 +45,18 @@ lpadc_conv_result_t s_mLpadcResultConfigStruct;
 /*******************************************************************************
  * Code
  ******************************************************************************/
+void BOARD_InitADCClock(void)
+{
+    clock_root_config_t adc1ClkRoot;
+    adc1ClkRoot.mux      = 1U;
+    adc1ClkRoot.div      = 7U;
+    adc1ClkRoot.clockOff = false;
+    CLOCK_SetRootClock(kCLOCK_Root_Adc1, &adc1ClkRoot);
+}
+
 void bsp_adc_echo_info(void)
 {
-    printf("--adc1_in0(GPIO_AD_06) can be used to sample pin wave. \r\n");
+    printf("--adc1_in7(GPIO_AD_02) can be used to sample pin wave. \r\n");
 }
 
 /*!
@@ -56,14 +69,13 @@ void bsp_adc_init(void)
     lpadc_conv_command_config_t mLpadcCommandConfigStruct;
 
     IOMUXC_SetPinConfig(
-        IOMUXC_GPIO_AD_06_GPIO_MUX3_IO05,       /* GPIO_AD_06 PAD functional properties : */
-        0x02U);                                 /* Slew Rate Field: Slow Slew Rate
-                                                   Drive Strength Field: high drive strength
+        IOMUXC_GPIO_AD_02_GPIO4_IO02,           /* GPIO_AD_02 PAD functional properties : */
+        0x02U);                                 /* Slew Rate Field: Fast Slew Rate
+                                                   Drive Strength Field: high driver
                                                    Pull / Keep Select Field: Pull Disable, Highz
                                                    Pull Up / Down Config. Field: Weak pull down
                                                    Open Drain Field: Disabled
-                                                   Domain write protection: Both cores are allowed
-                                                   Domain write protection lock: Neither of DWP bits is locked */
+                                                   Force ibe off Field: Disabled */
 
     LPADC_GetDefaultConfig(&mLpadcConfigStruct);
     mLpadcConfigStruct.enableAnalogPreliminary = true;
@@ -84,6 +96,11 @@ void bsp_adc_init(void)
     LPADC_SetOffsetValue(DEMO_LPADC_BASE, DEMO_LPADC_OFFSET_VALUE_A, DEMO_LPADC_OFFSET_VALUE_B);
 #endif /* DEMO_LPADC_DO_OFFSET_CALIBRATION */
 #endif /* FSL_FEATURE_LPADC_HAS_OFSTRIM */
+
+#if defined(FSL_FEATURE_LPADC_HAS_CTRL_CALOFSMODE) && FSL_FEATURE_LPADC_HAS_CTRL_CALOFSMODE
+    LPADC_SetOffsetCalibrationMode(DEMO_LPADC_BASE, DEMO_LPADC_OFFSET_CALIBRATION_MODE);
+    LPADC_DoOffsetCalibration(DEMO_LPADC_BASE);
+#endif /* FSL_FEATURE_LPADC_HAS_CTRL_CALOFSMODE */
     /* Request gain calibration. */
     LPADC_DoAutoCalibration(DEMO_LPADC_BASE);
 #endif /* FSL_FEATURE_LPADC_HAS_CTRL_CALOFS */

@@ -20,8 +20,10 @@
 enum _flexspi1_data_line_sel
 {
     kFlexspi1_DataA_GPIO_B2_13_10      = 0x00,
+    kFlexspi1_DataA_GPIO_B2_06_03      = 0x01,
 
     kFlexspi1_DataB_GPIO_SD_B2_11_08   = 0x10,
+    kFlexspi1_DataB_GPIO_SD_B2_03_00   = 0x11,
 };
 
 enum _flexspi1_ss_b_sel
@@ -188,6 +190,50 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
+            if (packet->unittestEn.option.B.dataHigh4bit)
+            {
+                switch (packet->memConnection.dataHigh4bit)
+                {
+                    case kFlexspi1_DataA_GPIO_B2_06_03:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_B2_06_GPIO6_IO20, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_B2_05_GPIO6_IO19, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_B2_04_GPIO6_IO18, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_B2_03_GPIO6_IO17, 0U);
+                        RGPIO_PinInit(RGPIO6, 20, &do_config);
+                        RGPIO_PinInit(RGPIO6, 19, &do_config);
+                        RGPIO_PinInit(RGPIO6, 18, &do_config);
+                        RGPIO_PinInit(RGPIO6, 17, &do_config);
+                        s_pinInfo[7].gpioGroup = 6;
+                        s_pinInfo[7].gpioPin = 20;
+                        s_pinInfo[8].gpioGroup = 6;
+                        s_pinInfo[8].gpioPin = 19;
+                        s_pinInfo[9].gpioGroup = 6;
+                        s_pinInfo[9].gpioPin = 18;
+                        s_pinInfo[10].gpioGroup = 6;
+                        s_pinInfo[10].gpioPin = 17;
+                        break;
+                    case kFlexspi1_DataB_GPIO_SD_B2_03_00:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_03_GPIO5_IO13, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_02_GPIO5_IO12, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_01_GPIO5_IO11, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_00_GPIO5_IO10, 0U);
+                        RGPIO_PinInit(RGPIO5, 13, &do_config);
+                        RGPIO_PinInit(RGPIO5, 12, &do_config);
+                        RGPIO_PinInit(RGPIO5, 11, &do_config);
+                        RGPIO_PinInit(RGPIO5, 10, &do_config);
+                        s_pinInfo[7].gpioGroup = 5;
+                        s_pinInfo[7].gpioPin = 13;
+                        s_pinInfo[8].gpioGroup = 5;
+                        s_pinInfo[8].gpioPin = 12;
+                        s_pinInfo[9].gpioGroup = 5;
+                        s_pinInfo[9].gpioPin = 11;
+                        s_pinInfo[10].gpioGroup = 5;
+                        s_pinInfo[10].gpioPin = 10;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         else if (packet->memConnection.instance == 2)
         {
@@ -258,6 +304,31 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                 case kFlexspi1_DqsB_GPIO_SD_B2_05:
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_BUS2BIT_B_DQS, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.dataHigh4bit)
+            {
+                case kFlexspi1_DataA_GPIO_B2_06_03:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_B2_06_FLEXSPI1_BUS2BIT_A_DATA07, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_B2_05_FLEXSPI1_BUS2BIT_A_DATA06, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_B2_04_FLEXSPI1_BUS2BIT_A_DATA05, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_B2_03_FLEXSPI1_BUS2BIT_A_DATA04, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_B2_06_FLEXSPI1_BUS2BIT_A_DATA07, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_B2_05_FLEXSPI1_BUS2BIT_A_DATA06, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_B2_04_FLEXSPI1_BUS2BIT_A_DATA05, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_B2_03_FLEXSPI1_BUS2BIT_A_DATA04, 0x0AU);
+                    break;
+                case kFlexspi1_DataB_GPIO_SD_B2_03_00:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_03_FLEXSPI1_BUS2BIT_B_DATA07, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_02_FLEXSPI1_BUS2BIT_B_DATA06, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_01_FLEXSPI1_BUS2BIT_B_DATA05, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_00_FLEXSPI1_BUS2BIT_B_DATA04, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_03_FLEXSPI1_BUS2BIT_B_DATA07, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_02_FLEXSPI1_BUS2BIT_B_DATA06, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_01_FLEXSPI1_BUS2BIT_B_DATA05, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_00_FLEXSPI1_BUS2BIT_B_DATA04, 0x0AU);
                     break;
                 default:
                     break;
