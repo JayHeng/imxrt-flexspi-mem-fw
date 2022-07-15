@@ -35,15 +35,15 @@ uint8_t s_currentCmdTag = kCommandTag_PinUnittest;
 pin_unittest_packet_t s_pinUnittestPacket = 
 {
   .memConnection = {.instance = 1,
-                    .dataLow4bit = 0x10,
+                    .dataLow4bit = 0x00,
                     .dataHigh4bit = 0xFF,
-                    .ss_b = 0x10,
-                    .sclk = 0x10,
-                    .dqs = 0x10,
+                    .ss_b = 0x00,
+                    .sclk = 0x00,
+                    .dqs = 0x00,
                     .sclk_n = 0xFF,
-                    .rst_b = 0xFF,
+                    .rst_b = 0x00,
                     },
-  .unittestEn = {.pulseInMs = 10,
+  .unittestEn = {.pulseInMs = 1000,
                  .option.U = 0x7F
                  },
 };

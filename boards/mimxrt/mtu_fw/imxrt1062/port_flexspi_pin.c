@@ -161,6 +161,21 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
+            if (packet->unittestEn.option.B.rst_b)
+            {
+                switch (packet->memConnection.rst_b)
+                {
+                    case kFlexspi1_Rst_GPIO_AD_B0_09:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B0_09_GPIO1_IO09, 0U);
+                        //IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B0_09_GPIO1_IO09, 0x10B0U); 
+                        GPIO_PinInit(GPIO1, 9, &do_config);
+                        s_pinInfo[7].gpioGroup = 1;
+                        s_pinInfo[7].gpioPin = 9;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         else if (packet->memConnection.instance == 2)
         {
