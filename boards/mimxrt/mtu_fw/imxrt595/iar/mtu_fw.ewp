@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>RTDescription</name>
-                    <state>0</state>
+                    <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
                 </option>
                 <option>
                     <name>OGProductVersion</name>
@@ -99,7 +99,7 @@
                 <option>
                     <name>GBECoreSlave</name>
                     <version>30</version>
-                    <state>58</state>
+                    <state>59</state>
                 </option>
                 <option>
                     <name>OGUseCmsis</name>
@@ -336,6 +336,7 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/..</state>
+                    <state>$PROJ_DIR$/../../src</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT595S/drivers</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT595S</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT595S/utilities/str</state>
@@ -990,7 +991,7 @@
                 </option>
                 <option>
                     <name>IlinkTrustzoneImportLibraryOut</name>
-                    <state>###Unitialized###</state>
+                    <state>mtu_fw_import_lib.o</state>
                 </option>
                 <option>
                     <name>OILinkExtraOption</name>
@@ -1125,7 +1126,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>8.30.2.18207</state>
+                    <state>9.10.2.39304</state>
                 </option>
                 <option>
                     <name>OGChipSelectEditMenu</name>
@@ -1171,7 +1172,7 @@
                 <option>
                     <name>CoreVariant</name>
                     <version>30</version>
-                    <state>58</state>
+                    <state>59</state>
                 </option>
                 <option>
                     <name>GFPUDeviceSlave</name>
@@ -1194,7 +1195,7 @@
                 <option>
                     <name>GFPUCoreSlave2</name>
                     <version>30</version>
-                    <state>58</state>
+                    <state>59</state>
                 </option>
                 <option>
                     <name>OGCMSISPackSelectDevice</name>
@@ -1391,6 +1392,7 @@
                 <option>
                     <name>CCIncludePath2</name>
                     <state>$PROJ_DIR$/..</state>
+                    <state>$PROJ_DIR$/../../src</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT595S/drivers</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT595S</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT595S/utilities/str</state>
@@ -1424,7 +1426,7 @@
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>1</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCPosIndRopi</name>
@@ -2131,6 +2133,12 @@
         <file>
             <name>$PROJ_DIR$\..\pin_mux.h</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\port_cfg_mtu.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\port_flexspi_pin.c</name>
+        </file>
     </group>
     <group>
         <name>CMSIS</name>
@@ -2304,6 +2312,27 @@
         <name>source</name>
         <file>
             <name>$PROJ_DIR$\..\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_timer.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_timer.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_uart.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_usart.c</name>
         </file>
     </group>
     <group>
