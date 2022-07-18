@@ -2316,6 +2316,9 @@
             <name>$PROJ_DIR$\..\..\src\mtu_flexspi_nor_test.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_lpuart.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>
         </file>
         <file>
@@ -2323,9 +2326,6 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_timer.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\..\src\mtu_uart.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_uart.h</name>

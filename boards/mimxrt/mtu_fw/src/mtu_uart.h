@@ -16,7 +16,7 @@
  ******************************************************************************/
 
 /*! @brief Used UART instance. */
-#define DEMO_LPUART ((LPUART_Type *)BOARD_DEBUG_UART_BASEADDR)
+#define DEMO_UART ((void *)BOARD_DEBUG_UART_BASEADDR)
 
 /*! @brief Ring buffer size (Unit: Byte). */
 #define DEMO_RING_BUFFER_SIZE 512

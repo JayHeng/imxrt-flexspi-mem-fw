@@ -49,7 +49,7 @@ volatile uint16_t g_rxIndex; /* Index of the memory to save new arrived command 
 size_t __write(int handle, const unsigned char *buf, size_t size)
 {
     /* Send data. */  
-    (void)LPUART_WriteBlocking(DEMO_LPUART, buf, size);
+    (void)LPUART_WriteBlocking(DEMO_UART, buf, size);
 
     return size;
 }
@@ -62,9 +62,9 @@ void BOARD_UART_IRQ_HANDLER(void)
     uint16_t tmptxIndex = g_txIndex;
 
     /* If new data arrived. */
-    if ((kLPUART_RxDataRegFullFlag)&LPUART_GetStatusFlags(DEMO_LPUART))
+    if ((kLPUART_RxDataRegFullFlag)&LPUART_GetStatusFlags(DEMO_UART))
     {
-        data = LPUART_ReadByte(DEMO_LPUART);
+        data = LPUART_ReadByte(DEMO_UART);
 
         /* If ring buffer is not full, add data to ring buffer. */
         if (((tmprxIndex + 1) % DEMO_RING_BUFFER_SIZE) != tmptxIndex)
@@ -95,20 +95,20 @@ void mtu_init_uart(void)
     config.enableTx     = true;
     config.enableRx     = true;
 
-    LPUART_Init(DEMO_LPUART, &config, BOARD_DebugConsoleSrcFreq());
+    LPUART_Init(DEMO_UART, &config, BOARD_DEBUG_UART_CLK_FREQ);
 
     /* Send s_tipString out. */
-    LPUART_WriteBlocking(DEMO_LPUART, s_tipString, sizeof(s_tipString) / sizeof(s_tipString[0]));
+    LPUART_WriteBlocking(DEMO_UART, s_tipString, sizeof(s_tipString) / sizeof(s_tipString[0]));
     printf("\r\n");
     
     /* Enable RX interrupt. */
-    LPUART_EnableInterrupts(DEMO_LPUART, kLPUART_RxDataRegFullInterruptEnable);
+    LPUART_EnableInterrupts(DEMO_UART, kLPUART_RxDataRegFullInterruptEnable);
     EnableIRQ(BOARD_UART_IRQ);
 }
 
 void mtu_uart_sendhex(uint8_t *src, uint32_t lenInBytes)
 {
-    LPUART_WriteBlocking(DEMO_LPUART, src, lenInBytes);
+    LPUART_WriteBlocking(DEMO_UART, src, lenInBytes);
 }
 
 
