@@ -242,21 +242,6 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.rst_b)
-            {
-                switch (packet->memConnection.rst_b)
-                {
-                    case kFlexspi1_Rst_PIO0_26:
-                        IOPCTL_PinMuxSet(IOPCTL, 0U, 26U, IOPCTRL_FUNC0);
-                        GPIO_PortInit(GPIO, 0);
-                        GPIO_PinInit(GPIO, 0, 26, &do_config);
-                        s_pinInfo[7].gpioGroup = 0;
-                        s_pinInfo[7].gpioPin = 26;
-                        break;
-                    default:
-                        break;
-                }
-            }
             if (packet->unittestEn.option.B.dataHigh4bit)
             {
                 switch (packet->memConnection.dataHigh4bit)
@@ -298,6 +283,21 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         s_pinInfo[9].gpioPin = 18;
                         s_pinInfo[10].gpioGroup = 2;
                         s_pinInfo[10].gpioPin = 17;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.rst_b)
+            {
+                switch (packet->memConnection.rst_b)
+                {
+                    case kFlexspi1_Rst_PIO0_26:
+                        IOPCTL_PinMuxSet(IOPCTL, 0U, 26U, IOPCTRL_FUNC0);
+                        GPIO_PortInit(GPIO, 0);
+                        GPIO_PinInit(GPIO, 0, 26, &do_config);
+                        s_pinInfo[11].gpioGroup = 0;
+                        s_pinInfo[11].gpioPin = 26;
                         break;
                     default:
                         break;

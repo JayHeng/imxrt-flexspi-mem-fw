@@ -2128,6 +2128,9 @@
             <name>$PROJ_DIR$\..\pin_mux.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\port_adc_conv.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\port_cfg_mtu.h</name>
         </file>
         <file>
@@ -2246,6 +2249,12 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT685S\drivers\fsl_iopctl.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT685S\drivers\fsl_lpadc.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT685S\drivers\fsl_lpadc.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT685S\drivers\fsl_power.c</name>
