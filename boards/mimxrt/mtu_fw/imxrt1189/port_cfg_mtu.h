@@ -15,6 +15,8 @@
 #define MTU_SELFTEST             (0)
 #define MTU_USE_EVK_SOCKET       (1)
 
+#define MTU_FEATURE_PACKET_CRC   (1)
+
 #define MTU_FEATURE_PINTEST      (1)
 #define MTU_FEATURE_PINTEST_WAVE (1)
 

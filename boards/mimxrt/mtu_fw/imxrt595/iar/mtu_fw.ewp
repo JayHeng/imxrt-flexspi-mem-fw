@@ -2329,6 +2329,12 @@
             <name>$PROJ_DIR$\..\..\src\mtu.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_crc16.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_crc16.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>
         </file>
         <file>

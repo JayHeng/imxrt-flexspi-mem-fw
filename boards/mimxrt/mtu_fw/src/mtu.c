@@ -10,6 +10,9 @@
 #include "mtu_pin.h"
 #include "mtu_uart.h"
 #include "mtu_timer.h"
+#if MTU_FEATURE_PACKET_CRC
+#include "mtu_crc16.h"
+#endif
 #if MTU_FEATURE_FLASH
 #include "mtu_flexspi_nor_test.h"
 #endif
@@ -22,6 +25,11 @@
  * Prototypes
  ******************************************************************************/
 
+static void mtu_get_command_from_buffer(void);
+static void mtu_switch_print_mode(bool isAsciiMode);
+static bool mtu_is_packet_crc16_valid(const uint8_t *data, uint32_t length, uint16_t expectedCrc);
+static bool mtu_is_command_valid(void);
+static void mtu_execute_command(void);
    
 /*******************************************************************************
  * Variables
@@ -35,15 +43,15 @@ uint8_t s_currentCmdTag = kCommandTag_PinUnittest;
 pin_unittest_packet_t s_pinUnittestPacket = 
 {
   .memConnection = {.instance = 1,
-                    .dataLow4bit = 0x00,
-                    .dataHigh4bit = 0xFF,
-                    .ss_b = 0x00,
-                    .sclk = 0x00,
-                    .dqs = 0x00,
+                    .dataLow4bit = 0x10,
+                    .dataHigh4bit = 0x11,
+                    .ss_b = 0x10,
+                    .sclk = 0x10,
+                    .dqs = 0xFF,
                     .sclk_n = 0xFF,
                     .rst_b = 0x00,
                     },
-  .unittestEn = {.pulseInMs = 1000,
+  .unittestEn = {.pulseInMs = 10,
                  .option.U = 0x7F
                  },
 };
@@ -61,7 +69,7 @@ rw_test_packet_t s_rwTestPacket;
  * Code
  ******************************************************************************/
 
-void mtu_get_command_from_buffer(void)
+static void mtu_get_command_from_buffer(void)
 {
     bool isPacketTagFound = false;
     bool isCmdTagFound = false;
@@ -147,7 +155,7 @@ void mtu_get_command_from_buffer(void)
     }
 }
 
-void mtu_switch_print_mode(bool isAsciiMode)
+static void mtu_switch_print_mode(bool isAsciiMode)
 {
     SDK_DelayAtLeastUs(1000000, SystemCoreClock);
     if (isAsciiMode)
@@ -160,37 +168,95 @@ void mtu_switch_print_mode(bool isAsciiMode)
     }
 }
 
-bool mtu_is_command_valid(void)
+//! @brief Calculate crc over command packet.
+#if MTU_FEATURE_PACKET_CRC
+static bool mtu_is_packet_crc16_valid(const uint8_t *data, uint32_t length, uint16_t expectedCrc)
+{
+    uint16_t calculatedCrc;
+
+    // Initialize the CRC16 information
+    crc16_data_t crcInfo;
+    crc16_init(&crcInfo);
+
+    // Run CRC on any payload bytes
+    crc16_update(&crcInfo, (uint8_t *)data, length);
+
+    // Finalize the CRC calculations
+    crc16_finalize(&crcInfo, &calculatedCrc);
+
+    return (calculatedCrc == expectedCrc);
+}
+#endif
+
+static bool mtu_is_command_valid(void)
 {
     bool isCmdValid = false;
+#if MTU_FEATURE_PACKET_CRC
+    const uint8_t *crcStart;
+    uint32_t crcLength;
+    uint16_t expectedCrc;
+#endif
+    mtu_switch_print_mode(true);
     switch (s_currentCmdTag)
     {
         case kCommandTag_PinUnittest:
+#if MTU_FEATURE_PACKET_CRC
+            crcStart = (const uint8_t *)(&s_pinUnittestPacket);
+            crcLength = (const uint8_t *)(&s_pinUnittestPacket.crcCheckSum) - crcStart;
+            expectedCrc = s_pinUnittestPacket.crcCheckSum;
+            isCmdValid = mtu_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+#else
             isCmdValid = true;
-            mtu_switch_print_mode(true);
-            printf("--Received Pin Unittest command. \r\n");
+#endif
+            if (isCmdValid)
+            {
+                printf("--Received Pin Unittest command. \r\n");
+            }
             break;
 
         case kCommandTag_ConfigSystem:
+#if MTU_FEATURE_PACKET_CRC
+            crcStart = (const uint8_t *)(&s_configSystemPacket);
+            crcLength = (const uint8_t *)(&s_configSystemPacket.crcCheckSum) - crcStart;
+            expectedCrc = s_configSystemPacket.crcCheckSum;
+            isCmdValid = mtu_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+#else
             isCmdValid = true;
-            mtu_switch_print_mode(true);
-            printf("--Received Config System command. \r\n");
+#endif
+            if (isCmdValid)
+            {
+                printf("--Received Config System command. \r\n");
+            }
             break;
 
         case kCommandTag_RunRwTest:
+#if MTU_FEATURE_PACKET_CRC
+            crcStart = (const uint8_t *)(&s_rwTestPacket);
+            crcLength = (const uint8_t *)(&s_rwTestPacket.crcCheckSum) - crcStart;
+            expectedCrc = s_rwTestPacket.crcCheckSum;
+            isCmdValid = mtu_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+#else
             isCmdValid = true;
-            mtu_switch_print_mode(true);
-            printf("--Received R/W test command. \r\n");
+#endif
+            if (isCmdValid)
+            {
+                printf("--Received R/W test command. \r\n");
+            }
             break;
 
         default:
             break;
     }
-    
+
+    if (!isCmdValid)
+    {
+        printf("--Received command packet, but invalid CRC found. \r\n");
+    }
+
     return isCmdValid;
 }
 
-void mtu_execute_command(void)
+static void mtu_execute_command(void)
 {
     switch (s_currentCmdTag)
     {
