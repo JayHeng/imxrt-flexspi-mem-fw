@@ -1,11 +1,44 @@
-# imxrt-flexspi-mem-unittest
-Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i.MXRT全平台FlexSPI NOR Flash/HyperRAM/PSRAM读写单元测试例程 
+# imxrt-flexspi-mem-fw
 
-> * IAR EWARM v9.10.2 
-> * Keil MDK v5.31  
+## 1. 工程源文件组织
 
-备注：
+```text
+// 程序配置选项
+\boards\mimxrt\mtu_fw\xxxDevice\port_cfg_mtu.h
 
+// 程序主逻辑，MCU 端从串口接收上位机命令包，处理命令，打印命令处理结果
+\boards\mimxrt\mtu_fw\src\mtu.c
+
+// 不同命令包数据格式定义
+    命令1. pin_unittest_packet_t
+    命令2. config_system_packet_t
+    命令4. rw_test_packet_t
+\boards\mimxrt\mtu_fw\src\mtu.h
+
+// 软件实现的 CRC16 校验命令包完整性
+\boards\mimxrt\mtu_fw\src\mtu_crc16.c/h
+
+// 用于命令包接收实现的串口驱动
+   1. 中断方式接收上位机数据存进 512 字节 RingBuf
+   2. 查询方式发送数据给上位机（print打印或者hex数据发送）
+\boards\mimxrt\mtu_fw\src\mtu_lpuart.c
+\boards\mimxrt\mtu_fw\src\mtu_usart.c
+\boards\mimxrt\mtu_fw\src\mtu_uart.h
+
+// 命令4之 R/W Test 实现
+\boards\mimxrt\mtu_fw\src\mtu_flexspi_nor_test.c/h
+\boards\mimxrt\mtu_fw\src\mtu_flexspi_nor_ops.c
+
+// 命令1之 Pin Unittest 实现
+   1. 根据命令包数据配置指定 GPIO，方波翻转测试连通性，可 ADC 采集回来画波形
+   2. 这里涉及到 MCU 端给上位机发送数据模式切换（一般信息打印/ADC 采集值）
+\boards\mimxrt\mtu_fw\src\mtu_pin.h
+\boards\mimxrt\mtu_fw\src\mtu_timer.c/h
+\boards\mimxrt\mtu_fw\xxxDevice\port_adc_conv.c
+\boards\mimxrt\mtu_fw\xxxDevice\port_flexspi_pin.c
+```
+
+### 附录1、板卡测试
 > * i.MXRT三位数系列 FlexSPI 编号从 0 开始
 > * i.MXRT四位数系列 FlexSPI 编号从 1 开始
 
@@ -76,4 +109,3 @@ Collect NOR Flash/HyperRAM/PSRAM unit test projects for i.MXRT FlexSPI | 收集i
         <td>Done</td>
     </tr>
 </table>
-
