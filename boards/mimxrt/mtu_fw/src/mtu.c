@@ -36,7 +36,8 @@ static void mtu_execute_command(void);
  ******************************************************************************/
 
 /*! @brief Current command tag. */
-uint8_t s_currentCmdTag = kCommandTag_PinUnittest;
+uint8_t s_currentCmdTag = kInvalidCommandTag;
+uint8_t s_lastCmdTag    = kInvalidCommandTag;
 
 /*! @brief Pin unit test packet. */
 #if MTU_SELFTEST
@@ -100,8 +101,8 @@ static void mtu_get_command_from_buffer(void)
             {
                 if (!isCmdTagFound)
                 {
-                    s_currentCmdTag = g_demoRingBuffer[g_txIndex];
-                    switch (s_currentCmdTag)
+                    uint8_t currentCmdTag = g_demoRingBuffer[g_txIndex];
+                    switch (currentCmdTag)
                     {
                         case kCommandTag_PinUnittest:
                             isCmdTagFound = true;
@@ -124,9 +125,19 @@ static void mtu_get_command_from_buffer(void)
                             cmdPacket = (uint8_t *)&s_rwTestPacket;
                             break;
 
+                        case kCommandTag_TestStop:
+                            isCmdTagFound = true;
+                            remainingCmdBytes = 0;
+                            break;
+
                         default:
                             isPacketTagFound = false;
                             break;
+                    }
+                    if (isCmdTagFound)
+                    {
+                        s_lastCmdTag = s_currentCmdTag;
+                        s_currentCmdTag = currentCmdTag;
                     }
                 }
                 else
@@ -196,7 +207,6 @@ static bool mtu_is_command_valid(void)
     uint32_t crcLength;
     uint16_t expectedCrc;
 #endif
-    mtu_switch_print_mode(true);
     switch (s_currentCmdTag)
     {
         case kCommandTag_PinUnittest:
@@ -244,6 +254,10 @@ static bool mtu_is_command_valid(void)
             }
             break;
 
+        case kCommandTag_TestStop:
+            isCmdValid = true;
+            break;
+
         default:
             break;
     }
@@ -261,8 +275,8 @@ static void mtu_execute_command(void)
     switch (s_currentCmdTag)
     {
         case kCommandTag_PinUnittest:
-            printf("--You can check wave on enabled pins now. \r\n");
 #if MTU_FEATURE_PINTEST
+            printf("--You can check wave on enabled pins now. \r\n");
 #if MTU_FEATURE_PINTEST_WAVE
             bsp_adc_echo_info();
             mtu_switch_print_mode(false);
@@ -277,12 +291,6 @@ static void mtu_execute_command(void)
             break;
 
         case kCommandTag_ConfigSystem:
-#if MTU_FEATURE_PINTEST
-            mtu_deinit_timer();
-#if MTU_FEATURE_PINTEST_WAVE
-            bsp_adc_deinit();
-#endif
-#endif
 #if MTU_FEATURE_FLASH
             bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
             mtu_init_flash();
@@ -293,6 +301,22 @@ static void mtu_execute_command(void)
 #if MTU_FEATURE_FLASH
             mtu_rw_flash();
 #endif
+            break;
+
+        case kCommandTag_TestStop:
+            {
+                if (s_lastCmdTag == kCommandTag_PinUnittest)
+                {
+#if MTU_FEATURE_PINTEST
+                    mtu_deinit_timer();
+#if MTU_FEATURE_PINTEST_WAVE
+                    bsp_adc_deinit();
+                    mtu_switch_print_mode(true);
+#endif
+#endif
+                }
+                printf("--Received stop command. \r\n");
+            }
             break;
 
         default:

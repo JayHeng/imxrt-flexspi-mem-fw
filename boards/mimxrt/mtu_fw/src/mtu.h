@@ -35,8 +35,10 @@ enum _command_tags
     kCommandTag_RunPerfTest     = 0x05,
     kCommandTag_RunStressTest   = 0x06,
 
+    kCommandTag_TestStop        = 0xF0,
+
     //! Maximum linearly incrementing command tag value.
-    kLastCommandTag = kCommandTag_RunStressTest,
+    kInvalidCommandTag,
 };
 
 //! @brief Flexspi pin connection sel code.
