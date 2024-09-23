@@ -16,8 +16,8 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define DEMO_LPADC_BASE                    ADC1
-#define DEMO_LPADC_USER_CHANNEL            7U
+#define DEMO_LPADC_BASE                    ADC2
+#define DEMO_LPADC_USER_CHANNEL            6U
 #define DEMO_LPADC_USER_CMDID              1U /* CMD1 */
 #define DEMO_LPADC_VREF_SOURCE             kLPADC_ReferenceVoltageAlt1
 #define DEMO_LPADC_USE_HIGH_RESOLUTION     true
@@ -47,16 +47,16 @@ lpadc_conv_result_t s_mLpadcResultConfigStruct;
  ******************************************************************************/
 void BOARD_InitADCClock(void)
 {
-    clock_root_config_t adc1ClkRoot;
-    adc1ClkRoot.mux      = 1U;
-    adc1ClkRoot.div      = 7U;
-    adc1ClkRoot.clockOff = false;
-    CLOCK_SetRootClock(kCLOCK_Root_Adc1, &adc1ClkRoot);
+    clock_root_config_t adcClkRoot;
+    adcClkRoot.mux      = 1U;
+    adcClkRoot.div      = 7U;
+    adcClkRoot.clockOff = false;
+    CLOCK_SetRootClock(kCLOCK_Root_Adc2, &adcClkRoot);
 }
 
 void bsp_adc_echo_info(void)
 {
-    printf("--adc1_in7(GPIO_AD_02) can be used to sample pin wave. \r\n");
+    printf("--adc2_in6(GPIO_AD_30) can be used to sample pin wave. \r\n");
 }
 
 /*!
@@ -69,7 +69,7 @@ void bsp_adc_init(void)
     lpadc_conv_command_config_t mLpadcCommandConfigStruct;
 
     IOMUXC_SetPinConfig(
-        IOMUXC_GPIO_AD_02_GPIO4_IO02,           /* GPIO_AD_02 PAD functional properties : */
+        IOMUXC_GPIO_AD_30_GPIO4_IO30,           /* GPIO_AD_30 PAD functional properties : */
         0x02U);                                 /* Slew Rate Field: Fast Slew Rate
                                                    Drive Strength Field: high driver
                                                    Pull / Keep Select Field: Pull Disable, Highz
