@@ -180,15 +180,18 @@ static void mtu_get_command_from_buffer(void)
 
 static void mtu_switch_print_mode(bool isAsciiMode)
 {
-    SDK_DelayAtLeastUs(1000000, SystemCoreClock);
+    // Host GUI will get data from UART every 1s, let's delay 2.5s+2.5s here to make sure
+    //  below magic word are in one transfer
+    SDK_DelayAtLeastUs(2500000, SystemCoreClock);
     if (isAsciiMode)
     {
-        printf("Switch_To_ASCII_Mode\r\n");
+        printf("Switch_To_ASCII_Mode");
     }
     else
     {
-        printf("Switch_To_Hex_Mode\r\n");
+        printf("Switch_To_HEX8B_Mode");
     }
+    SDK_DelayAtLeastUs(2500000, SystemCoreClock);
 }
 
 //! @brief Calculate crc over command packet.
