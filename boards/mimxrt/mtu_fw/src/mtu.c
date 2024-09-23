@@ -81,10 +81,12 @@ static void mtu_get_command_from_buffer(void)
     while(1)
     {
         uint16_t tmprxIndex = g_rxIndex;
+        // To check whether ringbuf is empty, if no, read one byte each time
         if (tmprxIndex != g_txIndex)
         {
             if (!isPacketTagFound)
             {
+                // Validate packet tag (4bytes)
                 packetTag += (uint32_t)g_demoRingBuffer[g_txIndex] << (gotTagBytes * 8);
                 gotTagBytes++;
                 if (gotTagBytes == FRAMING_PACKET_TAG_BYTES)
@@ -101,6 +103,7 @@ static void mtu_get_command_from_buffer(void)
             {
                 if (!isCmdTagFound)
                 {
+                    // Validate cmd tag
                     uint8_t currentCmdTag = g_demoRingBuffer[g_txIndex];
                     switch (currentCmdTag)
                     {
@@ -134,14 +137,23 @@ static void mtu_get_command_from_buffer(void)
                             isPacketTagFound = false;
                             break;
                     }
+                    // Record last cmd (used for 'Test Stop' cmd)
                     if (isCmdTagFound)
                     {
                         s_lastCmdTag = s_currentCmdTag;
                         s_currentCmdTag = currentCmdTag;
                     }
+                    // If it is 'Test Stop' cmd, it has no more packet bytes, so need to break here
+                    if (!remainingCmdBytes)
+                    {
+                        g_txIndex++;
+                        g_txIndex %= DEMO_RING_BUFFER_SIZE;
+                        break;
+                    }
                 }
                 else
                 {
+                    // Fill packet data bytes for current cmd
                     if (remainingCmdBytes)
                     {
                         *cmdPacket = g_demoRingBuffer[g_txIndex];
