@@ -18,8 +18,6 @@
 #define MTU_FEATURE_PACKET_CRC   (1)
 
 #define MTU_FEATURE_PINTEST      (1)
-#define MTU_FEATURE_PINTEST_WAVE (1)
-
 #define MTU_FEATURE_FLASH        (0)
 
 #endif /* _PORT_CFG_MTU_H_ */

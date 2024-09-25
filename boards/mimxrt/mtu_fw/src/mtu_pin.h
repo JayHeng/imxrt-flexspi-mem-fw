@@ -30,7 +30,6 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest);
 
 void bsp_flexspi_gpios_toggle(void);
 
-#if MTU_FEATURE_PINTEST_WAVE
 void bsp_adc_echo_info(void);
 
 void bsp_adc_init(void);
@@ -38,6 +37,5 @@ void bsp_adc_init(void);
 uint8_t bsp_adc_get_conv_value(void);
 
 void bsp_adc_deinit(void);
-#endif
 
 #endif /* __MTU_PIN__ */

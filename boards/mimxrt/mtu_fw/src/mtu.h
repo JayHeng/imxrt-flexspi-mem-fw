@@ -57,7 +57,9 @@ typedef struct _flexspi_connection
 //! @brief Flexspi pin uint test option.
 typedef struct _flexspi_unittest_en
 {
-    uint32_t pulseInMs;
+    uint32_t pulseInMs;        // Set Pulse time to toggle GPIO
+    uint8_t enableAdcSample;   // Whether to use ADC to sample GPIO
+    uint8_t reserved0[3];
     union
     {
         struct
@@ -116,6 +118,14 @@ typedef struct _rw_test_packet
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
 } rw_test_packet_t;
+
+/*******************************************************************************
+ * Variables
+ ******************************************************************************/
+
+extern pin_unittest_packet_t s_pinUnittestPacket;
+extern config_system_packet_t s_configSystemPacket;
+extern rw_test_packet_t s_rwTestPacket;
 
 /*******************************************************************************
  * API

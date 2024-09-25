@@ -292,15 +292,17 @@ static void mtu_execute_command(void)
         case kCommandTag_PinUnittest:
 #if MTU_FEATURE_PINTEST
             printf("--You can check wave on enabled pins now. \r\n");
-#if MTU_FEATURE_PINTEST_WAVE
-            bsp_adc_echo_info();
-            mtu_switch_print_mode(false);
-#endif
+            if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+            {
+                bsp_adc_echo_info();
+                mtu_switch_print_mode(false);
+            }
             mtu_deinit_timer();
             bsp_flexspi_pinmux_config(&s_pinUnittestPacket, true);
-#if MTU_FEATURE_PINTEST_WAVE
-            bsp_adc_init();
-#endif
+            if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+            {
+                bsp_adc_init();
+            }
             mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_flexspi_gpios_toggle);
 #endif
             break;
@@ -324,10 +326,11 @@ static void mtu_execute_command(void)
                 {
 #if MTU_FEATURE_PINTEST
                     mtu_deinit_timer();
-#if MTU_FEATURE_PINTEST_WAVE
-                    bsp_adc_deinit();
-                    mtu_switch_print_mode(true);
-#endif
+                    if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+                    {
+                        bsp_adc_deinit();
+                        mtu_switch_print_mode(true);
+                    }
 #endif
                 }
                 printf("--Received stop command. \r\n");

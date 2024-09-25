@@ -433,10 +433,11 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
 
 void bsp_flexspi_gpios_toggle(void)
 {
-#if MTU_FEATURE_PINTEST_WAVE
-    uint8_t convValue = bsp_adc_get_conv_value();
-    mtu_uart_sendhex(&convValue, sizeof(convValue));
-#endif
+    if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+    {
+        uint8_t convValue = bsp_adc_get_conv_value();
+        mtu_uart_sendhex(&convValue, sizeof(convValue));
+    }
   
     RGPIO_Type *gpioBase[] = RGPIO_BASE_PTRS;
     for (uint32_t i = 0; i < sizeof(s_pinInfo) / sizeof(pin_info_t); i++)
