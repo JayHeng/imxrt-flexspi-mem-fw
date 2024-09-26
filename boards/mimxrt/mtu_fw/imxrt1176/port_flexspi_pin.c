@@ -199,9 +199,9 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs)
+            if (packet->unittestEn.option.B.dqs0)
             {
-                switch (packet->memConnection.dqs)
+                switch (packet->memConnection.dqs0)
                 {
                     case kFlexspi1_DqsA_GPIO_SD_B2_05:
                         IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_05_GPIO10_IO14, 0U);
@@ -284,7 +284,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                 default:
                     break;
             }
-            switch (packet->memConnection.dqs)
+            switch (packet->memConnection.dqs0)
             {
                 case kFlexspi1_DqsA_GPIO_SD_B2_05:
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS, 1U);

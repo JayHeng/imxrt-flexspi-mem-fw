@@ -227,9 +227,9 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs)
+            if (packet->unittestEn.option.B.dqs0)
             {
-                switch (packet->memConnection.dqs)
+                switch (packet->memConnection.dqs0)
                 {
                     case kFlexspi1_DqsA_PIO1_28:
                         IOPCTL_PinMuxSet(IOPCTL, 1U, 17U, IOPCTRL_FUNC0);
@@ -352,7 +352,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                 default:
                     break;
             }
-            switch (packet->memConnection.dqs)
+            switch (packet->memConnection.dqs0)
             {
                 case kFlexspi1_DqsA_PIO1_28:
                     IOPCTL_PinMuxSet(IOPCTL, 1U, 28U, IOPCTRL_FUNC1);
