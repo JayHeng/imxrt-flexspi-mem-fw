@@ -47,11 +47,13 @@ typedef struct _flexspi_connection
     uint8_t instance;
     uint8_t dataLow4bit;
     uint8_t dataHigh4bit;
+    uint8_t dataTop8bit;
     uint8_t ss_b;
     uint8_t sclk;
     uint8_t dqs;
     uint8_t sclk_n;
     uint8_t rst_b;
+    uint8_t reserved0[3];
 } flexspi_connection_t;
 
 //! @brief Flexspi pin uint test option.
@@ -66,12 +68,13 @@ typedef struct _flexspi_unittest_en
         {
             uint32_t dataLow4bit : 1;
             uint32_t dataHigh4bit : 1;
+            uint32_t dataTop8bit : 1;
             uint32_t ss_b : 1;
             uint32_t sclk : 1;
             uint32_t dqs : 1;
             uint32_t sclk_n : 1;
             uint32_t rst_b : 1;
-            uint32_t reserved : 25;
+            uint32_t reserved0 : 24;
         } B;
         uint32_t U;
     } option;
