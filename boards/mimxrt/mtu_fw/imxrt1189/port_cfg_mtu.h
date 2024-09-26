@@ -13,7 +13,8 @@
  ******************************************************************************/
 
 #define MTU_SELFTEST             (0)
-#define MTU_USE_EVK_SOCKET       (1)
+#define MTU_USE_EVK_SOCKET       (0)
+#define MTU_USE_MEM_DC_MUX       (1)
 
 #define MTU_FEATURE_PACKET_CRC   (1)
 

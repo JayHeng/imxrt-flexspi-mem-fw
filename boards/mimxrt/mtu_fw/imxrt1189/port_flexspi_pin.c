@@ -52,9 +52,83 @@ enum _flexspi1_dqs_sel
     kFlexspi1_DqsB_GPIO_B1_03      = 0x11,
 };
 
-
 /////////////////////////////////////////////////////////////
+enum _flexspi2_data_line_sel
+{
+    kFlexspi2_DataA_GPIO_EMC_B1_38_35       = 0x00,
+    kFlexspi2_DataA_GPIO_AON_27_24          = 0x01,
 
+    kFlexspi2_DataB_GPIO_EMC_B1_33_30       = 0x10,
+    kFlexspi2_DataB_GPIO_AON_18_15          = 0x11,
+    kFlexspi2_DataB_GPIO_EMC_B1_25_22       = 0x12,
+};
+
+enum _flexspi2_ss_b_sel
+{
+    kFlexspi2_Ss0A_GPIO_EMC_B1_39   = 0x00,
+    kFlexspi2_Ss0A_GPIO_AON_22      = 0x01,
+    kFlexspi2_Ss1A_GPIO_EMC_B1_26   = 0x02,
+    kFlexspi2_Ss1A_GPIO_AON_20      = 0x03,
+    kFlexspi2_Ss1A_GPIO_AON_19      = 0x04,
+
+    kFlexspi2_Ss0B_GPIO_EMC_B1_28   = 0x10,
+    kFlexspi2_Ss0B_GPIO_AON_21      = 0x11,
+    kFlexspi2_Ss1B_GPIO_EMC_B1_27   = 0x12,
+};
+
+enum _flexspi2_sclk_sel
+{
+    kFlexspi2_SclkA_GPIO_EMC_B1_41  = 0x00,
+    kFlexspi2_SclkA_GPIO_AON_23     = 0x01,
+
+    kFlexspi2_SclkB_GPIO_EMC_B1_34  = 0x10,
+    kFlexspi2_SclkB_GPIO_AON_19     = 0x11,
+};
+
+enum _flexspi2_dqs_sel
+{
+    kFlexspi2_DqsA_GPIO_EMC_B1_40   = 0x00,
+    kFlexspi2_DqsA_GPIO_AON_21      = 0x01,
+    kFlexspi2_DqsA_GPIO_AON_28      = 0x02,
+
+    kFlexspi2_DqsB_GPIO_EMC_B1_29   = 0x10,
+    kFlexspi2_DqsB_GPIO_AON_20      = 0x11,
+    kFlexspi2_DqsB_GPIO_AON_28      = 0x12,
+    kFlexspi2_DqsB_GPIO_EMC_B1_21   = 0x13,
+};
+
+#if MTU_USE_MEM_DC_MUX
+#define MTU_USE_MEM_DC_MUX1_FSPI2_PORTA           \
+    {                                             \
+        RGPIO_PinWrite(RGPIO4, 22, 0);            \
+    }
+
+#define MTU_USE_MEM_DC_MUX2_FSPI2_PORTA           \
+    {                                             \
+        RGPIO_PinWrite(RGPIO4, 22, 0);            \
+    }
+
+#define MTU_USE_MEM_DC_MUX1_FSPI2_PORTB           \
+    {                                             \
+        RGPIO_PinWrite(RGPIO4, 22, 1);            \
+    }
+
+#define MTU_USE_MEM_DC_MUX2_FSPI2_PORTB           \
+    {                                             \
+        RGPIO_PinWrite(RGPIO4, 22, 1);            \
+    }
+
+#define MTU_USE_MEM_DC_MUX3_FSPI2_PORTB           \
+    {                                             \
+        RGPIO_PinWrite(RGPIO4, 22, 1);            \
+    }
+#else
+#define MTU_USE_MEM_DC_MUX1_FSPI2_PORTA  {}
+#define MTU_USE_MEM_DC_MUX2_FSPI2_PORTA  {}
+#define MTU_USE_MEM_DC_MUX1_FSPI2_PORTB  {}
+#define MTU_USE_MEM_DC_MUX2_FSPI2_PORTB  {}
+#define MTU_USE_MEM_DC_MUX3_FSPI2_PORTB  {}
+#endif
 
 /*******************************************************************************
  * Prototypes
@@ -65,7 +139,7 @@ enum _flexspi1_dqs_sel
  * Variables
  ******************************************************************************/
 
-pin_info_t s_pinInfo[13];
+pin_info_t s_pinInfo[MTU_MAX_PINS];
 
 
 /*******************************************************************************
@@ -82,6 +156,14 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
     IOMUXC_SetPinMux(IOMUXC_GPIO_AD_04_GPIO4_IO04, 0U);
     RGPIO_PinInit(RGPIO4, 4, &do1_config);
     RGPIO_PinWrite(RGPIO4, 4, 1);
+#elif MTU_USE_MEM_DC_MUX
+    rgpio_pin_config_t do1_config = {kRGPIO_DigitalOutput, 0};
+    IOMUXC_SetPinMux(IOMUXC_GPIO_AD_23_GPIO4_IO23, 0U);
+    RGPIO_PinInit(RGPIO4, 23, &do1_config);
+    RGPIO_PinWrite(RGPIO4, 23, 0);
+    IOMUXC_SetPinMux(IOMUXC_GPIO_AD_22_GPIO4_IO22, 0U);
+    RGPIO_PinInit(RGPIO4, 22, &do1_config);
+    RGPIO_PinWrite(RGPIO4, 22, 0);
 #endif
 
     if (isPintest)
@@ -296,6 +378,355 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
         }
         else if (packet->memConnection.instance == 2)
         {
+            if (packet->unittestEn.option.B.dataLow4bit)
+            {
+                switch (packet->memConnection.dataLow4bit)
+                {
+                    case kFlexspi2_DataA_GPIO_EMC_B1_38_35:
+                        MTU_USE_MEM_DC_MUX1_FSPI2_PORTA
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_38_GPIO3_IO06, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_37_GPIO3_IO05, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_36_GPIO3_IO04, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_35_GPIO3_IO03, 0U);
+                        RGPIO_PinInit(RGPIO3, 6, &do_config);
+                        RGPIO_PinInit(RGPIO3, 5, &do_config);
+                        RGPIO_PinInit(RGPIO3, 4, &do_config);
+                        RGPIO_PinInit(RGPIO3, 3, &do_config);
+                        s_pinInfo[0].gpioGroup = 3;
+                        s_pinInfo[0].gpioPin = 6;
+                        s_pinInfo[1].gpioGroup = 3;
+                        s_pinInfo[1].gpioPin = 5;
+                        s_pinInfo[2].gpioGroup = 3;
+                        s_pinInfo[2].gpioPin = 4;
+                        s_pinInfo[3].gpioGroup = 3;
+                        s_pinInfo[3].gpioPin = 3;
+                        break;
+                    case kFlexspi2_DataA_GPIO_AON_27_24:
+                        MTU_USE_MEM_DC_MUX2_FSPI2_PORTA
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_27_GPIO1_IO27, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_26_GPIO1_IO26, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_25_GPIO1_IO25, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_24_GPIO1_IO24, 0U);
+                        RGPIO_PinInit(RGPIO1, 27, &do_config);
+                        RGPIO_PinInit(RGPIO1, 26, &do_config);
+                        RGPIO_PinInit(RGPIO1, 25, &do_config);
+                        RGPIO_PinInit(RGPIO1, 24, &do_config);
+                        s_pinInfo[0].gpioGroup = 1;
+                        s_pinInfo[0].gpioPin = 27;
+                        s_pinInfo[1].gpioGroup = 1;
+                        s_pinInfo[1].gpioPin = 26;
+                        s_pinInfo[2].gpioGroup = 1;
+                        s_pinInfo[2].gpioPin = 25;
+                        s_pinInfo[3].gpioGroup = 1;
+                        s_pinInfo[3].gpioPin = 24;
+                        break;
+                    case kFlexspi2_DataB_GPIO_EMC_B1_33_30:
+                        MTU_USE_MEM_DC_MUX1_FSPI2_PORTA
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_33_GPIO3_IO01, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_32_GPIO3_IO00, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_31_GPIO2_IO31, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_30_GPIO2_IO30, 0U);
+                        RGPIO_PinInit(RGPIO3, 1, &do_config);
+                        RGPIO_PinInit(RGPIO3, 0, &do_config);
+                        RGPIO_PinInit(RGPIO2, 31, &do_config);
+                        RGPIO_PinInit(RGPIO2, 30, &do_config);
+                        s_pinInfo[0].gpioGroup = 3;
+                        s_pinInfo[0].gpioPin = 1;
+                        s_pinInfo[1].gpioGroup = 3;
+                        s_pinInfo[1].gpioPin = 0;
+                        s_pinInfo[2].gpioGroup = 2;
+                        s_pinInfo[2].gpioPin = 31;
+                        s_pinInfo[3].gpioGroup = 2;
+                        s_pinInfo[3].gpioPin = 30;
+                        break;
+                    case kFlexspi2_DataB_GPIO_AON_18_15:
+                        MTU_USE_MEM_DC_MUX2_FSPI2_PORTA
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_18_GPIO1_IO18, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_17_GPIO1_IO17, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_16_GPIO1_IO16, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_15_GPIO1_IO15, 0U);
+                        RGPIO_PinInit(RGPIO1, 18, &do_config);
+                        RGPIO_PinInit(RGPIO1, 17, &do_config);
+                        RGPIO_PinInit(RGPIO1, 16, &do_config);
+                        RGPIO_PinInit(RGPIO1, 15, &do_config);
+                        s_pinInfo[0].gpioGroup = 1;
+                        s_pinInfo[0].gpioPin = 18;
+                        s_pinInfo[1].gpioGroup = 1;
+                        s_pinInfo[1].gpioPin = 17;
+                        s_pinInfo[2].gpioGroup = 1;
+                        s_pinInfo[2].gpioPin = 16;
+                        s_pinInfo[3].gpioGroup = 1;
+                        s_pinInfo[3].gpioPin = 15;
+                        break;
+                    case kFlexspi2_DataB_GPIO_EMC_B1_25_22:
+                        MTU_USE_MEM_DC_MUX3_FSPI2_PORTB
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_25_GPIO2_IO25, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_24_GPIO2_IO24, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_23_GPIO2_IO23, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_22_GPIO2_IO22, 0U);
+                        RGPIO_PinInit(RGPIO2, 25, &do_config);
+                        RGPIO_PinInit(RGPIO2, 24, &do_config);
+                        RGPIO_PinInit(RGPIO2, 23, &do_config);
+                        RGPIO_PinInit(RGPIO2, 22, &do_config);
+                        s_pinInfo[0].gpioGroup = 2;
+                        s_pinInfo[0].gpioPin = 25;
+                        s_pinInfo[1].gpioGroup = 2;
+                        s_pinInfo[1].gpioPin = 24;
+                        s_pinInfo[2].gpioGroup = 2;
+                        s_pinInfo[2].gpioPin = 23;
+                        s_pinInfo[3].gpioGroup = 2;
+                        s_pinInfo[3].gpioPin = 22;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.ss_b)
+            {
+                switch (packet->memConnection.ss_b)
+                {
+                    case kFlexspi2_Ss0A_GPIO_EMC_B1_39:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_39_GPIO3_IO07, 0U);
+                        RGPIO_PinInit(RGPIO3, 7, &do_config);
+                        s_pinInfo[4].gpioGroup = 3;
+                        s_pinInfo[4].gpioPin = 7;
+                        break;
+                    case kFlexspi2_Ss0A_GPIO_AON_22:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_22_GPIO1_IO22, 0U);
+                        RGPIO_PinInit(RGPIO1, 22, &do_config);
+                        s_pinInfo[4].gpioGroup = 1;
+                        s_pinInfo[4].gpioPin = 22;
+                        break;
+                    case kFlexspi2_Ss1A_GPIO_EMC_B1_26:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_26_GPIO2_IO26, 0U);
+                        RGPIO_PinInit(RGPIO2, 26, &do_config);
+                        s_pinInfo[4].gpioGroup = 2;
+                        s_pinInfo[4].gpioPin = 26;
+                        break;
+                    case kFlexspi2_Ss1A_GPIO_AON_20:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_20_GPIO1_IO20, 0U);
+                        RGPIO_PinInit(RGPIO1, 20, &do_config);
+                        s_pinInfo[4].gpioGroup = 1;
+                        s_pinInfo[4].gpioPin = 20;
+                        break;
+                    case kFlexspi2_Ss1A_GPIO_AON_19:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_19_GPIO1_IO19, 0U);
+                        RGPIO_PinInit(RGPIO1, 19, &do_config);
+                        s_pinInfo[4].gpioGroup = 1;
+                        s_pinInfo[4].gpioPin = 19;
+                        break;
+                    case kFlexspi2_Ss0B_GPIO_EMC_B1_28:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_28_GPIO2_IO28, 0U);
+                        RGPIO_PinInit(RGPIO2, 28, &do_config);
+                        s_pinInfo[4].gpioGroup = 2;
+                        s_pinInfo[4].gpioPin = 28;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.sclk)
+            {
+                switch (packet->memConnection.sclk)
+                {
+                    case kFlexspi2_SclkA_GPIO_EMC_B1_41:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_41_GPIO3_IO09, 0U);
+                        RGPIO_PinInit(RGPIO3, 9, &do_config);
+                        s_pinInfo[5].gpioGroup = 3;
+                        s_pinInfo[5].gpioPin = 9;
+                        break;
+                    case kFlexspi2_SclkA_GPIO_AON_23:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_23_GPIO1_IO23, 0U);
+                        RGPIO_PinInit(RGPIO1, 23, &do_config);
+                        s_pinInfo[5].gpioGroup = 1;
+                        s_pinInfo[5].gpioPin = 23;
+                        break;
+                    case kFlexspi2_SclkB_GPIO_EMC_B1_34:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_34_GPIO3_IO02, 0U);
+                        RGPIO_PinInit(RGPIO3, 2, &do_config);
+                        s_pinInfo[5].gpioGroup = 3;
+                        s_pinInfo[5].gpioPin = 2;
+                        break;
+                    case kFlexspi2_SclkB_GPIO_AON_19:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_19_GPIO1_IO19, 0U);
+                        RGPIO_PinInit(RGPIO1, 19, &do_config);
+                        s_pinInfo[5].gpioGroup = 1;
+                        s_pinInfo[5].gpioPin = 19;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.dqs0)
+            {
+                switch (packet->memConnection.dqs0)
+                {
+                    case kFlexspi2_DqsA_GPIO_EMC_B1_40:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_40_GPIO3_IO08, 0U);
+                        RGPIO_PinInit(RGPIO3, 8, &do_config);
+                        s_pinInfo[6].gpioGroup = 3;
+                        s_pinInfo[6].gpioPin = 8;
+                        break;
+                    case kFlexspi2_DqsA_GPIO_AON_21:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_21_GPIO1_IO21, 0U);
+                        RGPIO_PinInit(RGPIO1, 21, &do_config);
+                        s_pinInfo[6].gpioGroup = 1;
+                        s_pinInfo[6].gpioPin = 21;
+                        break;
+                    case kFlexspi2_DqsA_GPIO_AON_28:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_28_DUMMY_GPIO1_IO28, 0U);
+                        RGPIO_PinInit(RGPIO1, 28, &do_config);
+                        s_pinInfo[6].gpioGroup = 1;
+                        s_pinInfo[6].gpioPin = 28;
+                        break;
+                    case kFlexspi2_DqsB_GPIO_EMC_B1_29:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_29_GPIO2_IO29, 0U);
+                        RGPIO_PinInit(RGPIO2, 29, &do_config);
+                        s_pinInfo[6].gpioGroup = 2;
+                        s_pinInfo[6].gpioPin = 29;
+                        break;
+                    case kFlexspi2_DqsB_GPIO_AON_20:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_20_GPIO1_IO20, 0U);
+                        RGPIO_PinInit(RGPIO1, 20, &do_config);
+                        s_pinInfo[6].gpioGroup = 1;
+                        s_pinInfo[6].gpioPin = 20;
+                        break;
+                    case kFlexspi2_DqsB_GPIO_AON_28:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_28_DUMMY_GPIO1_IO28, 0U);
+                        RGPIO_PinInit(RGPIO1, 28, &do_config);
+                        s_pinInfo[6].gpioGroup = 1;
+                        s_pinInfo[6].gpioPin = 28;
+                        break;
+                    case kFlexspi2_DqsB_GPIO_EMC_B1_21:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_21_GPIO2_IO21, 0U);
+                        RGPIO_PinInit(RGPIO2, 21, &do_config);
+                        s_pinInfo[6].gpioGroup = 2;
+                        s_pinInfo[6].gpioPin = 21;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.dataHigh4bit)
+            {
+                switch (packet->memConnection.dataHigh4bit)
+                {
+                    case kFlexspi2_DataB_GPIO_EMC_B1_33_30:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_33_GPIO3_IO01, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_32_GPIO3_IO00, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_31_GPIO2_IO31, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_30_GPIO2_IO30, 0U);
+                        RGPIO_PinInit(RGPIO3, 1, &do_config);
+                        RGPIO_PinInit(RGPIO3, 0, &do_config);
+                        RGPIO_PinInit(RGPIO2, 31, &do_config);
+                        RGPIO_PinInit(RGPIO2, 30, &do_config);
+                        s_pinInfo[7].gpioGroup = 3;
+                        s_pinInfo[7].gpioPin = 1;
+                        s_pinInfo[8].gpioGroup = 3;
+                        s_pinInfo[8].gpioPin = 0;
+                        s_pinInfo[9].gpioGroup = 2;
+                        s_pinInfo[9].gpioPin = 31;
+                        s_pinInfo[10].gpioGroup = 2;
+                        s_pinInfo[10].gpioPin = 30;
+                        break;
+                    case kFlexspi2_DataB_GPIO_AON_18_15:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_18_GPIO1_IO18, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_17_GPIO1_IO17, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_16_GPIO1_IO16, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_15_GPIO1_IO15, 0U);
+                        RGPIO_PinInit(RGPIO1, 18, &do_config);
+                        RGPIO_PinInit(RGPIO1, 17, &do_config);
+                        RGPIO_PinInit(RGPIO1, 16, &do_config);
+                        RGPIO_PinInit(RGPIO1, 15, &do_config);
+                        s_pinInfo[7].gpioGroup = 1;
+                        s_pinInfo[7].gpioPin = 18;
+                        s_pinInfo[8].gpioGroup = 1;
+                        s_pinInfo[8].gpioPin = 17;
+                        s_pinInfo[9].gpioGroup = 1;
+                        s_pinInfo[9].gpioPin = 16;
+                        s_pinInfo[10].gpioGroup = 1;
+                        s_pinInfo[10].gpioPin = 15;
+                        break;
+                    case kFlexspi2_DataB_GPIO_EMC_B1_25_22:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_25_GPIO2_IO25, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_24_GPIO2_IO24, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_23_GPIO2_IO23, 0U);
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_22_GPIO2_IO22, 0U);
+                        RGPIO_PinInit(RGPIO2, 25, &do_config);
+                        RGPIO_PinInit(RGPIO2, 24, &do_config);
+                        RGPIO_PinInit(RGPIO2, 23, &do_config);
+                        RGPIO_PinInit(RGPIO2, 22, &do_config);
+                        s_pinInfo[7].gpioGroup = 2;
+                        s_pinInfo[7].gpioPin = 25;
+                        s_pinInfo[8].gpioGroup = 2;
+                        s_pinInfo[8].gpioPin = 24;
+                        s_pinInfo[9].gpioGroup = 2;
+                        s_pinInfo[9].gpioPin = 23;
+                        s_pinInfo[10].gpioGroup = 2;
+                        s_pinInfo[10].gpioPin = 22;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.dataTop8bit)
+            {
+            }
+            if (packet->unittestEn.option.B.sclk_n)
+            {
+                switch (packet->memConnection.sclk_n)
+                {
+                    case kFlexspi2_SclkB_GPIO_EMC_B1_34:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_34_GPIO3_IO02, 0U);
+                        RGPIO_PinInit(RGPIO3, 2, &do_config);
+                        s_pinInfo[19].gpioGroup = 3;
+                        s_pinInfo[19].gpioPin = 2;
+                        break;
+                    case kFlexspi2_SclkB_GPIO_AON_19:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_19_GPIO1_IO19, 0U);
+                        RGPIO_PinInit(RGPIO1, 19, &do_config);
+                        s_pinInfo[19].gpioGroup = 1;
+                        s_pinInfo[19].gpioPin = 19;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.dqs1)
+            {
+                switch (packet->memConnection.dqs1)
+                {
+                    case kFlexspi2_DqsB_GPIO_EMC_B1_29:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_29_GPIO2_IO29, 0U);
+                        RGPIO_PinInit(RGPIO2, 29, &do_config);
+                        s_pinInfo[20].gpioGroup = 2;
+                        s_pinInfo[20].gpioPin = 29;
+                        break;
+                    case kFlexspi2_DqsB_GPIO_AON_20:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_20_GPIO1_IO20, 0U);
+                        RGPIO_PinInit(RGPIO1, 20, &do_config);
+                        s_pinInfo[20].gpioGroup = 1;
+                        s_pinInfo[20].gpioPin = 20;
+                        break;
+                    case kFlexspi2_DqsB_GPIO_AON_28:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_AON_28_DUMMY_GPIO1_IO28, 0U);
+                        RGPIO_PinInit(RGPIO1, 28, &do_config);
+                        s_pinInfo[20].gpioGroup = 1;
+                        s_pinInfo[20].gpioPin = 28;
+                        break;
+                    case kFlexspi2_DqsB_GPIO_EMC_B1_21:
+                        IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_21_GPIO2_IO21, 0U);
+                        RGPIO_PinInit(RGPIO2, 21, &do_config);
+                        s_pinInfo[20].gpioGroup = 2;
+                        s_pinInfo[20].gpioPin = 21;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (packet->unittestEn.option.B.rst_b)
+            {
+            }
         }
     }
     else
@@ -427,6 +858,218 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
         }
         else if (packet->memConnection.instance == 2)
         {
+            switch (packet->memConnection.dataLow4bit)
+            {
+                case kFlexspi2_DataA_GPIO_EMC_B1_38_35:
+                    MTU_USE_MEM_DC_MUX1_FSPI2_PORTA
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_38_FLEXSPI2_BUS2BIT_A_DATA03, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_37_FLEXSPI2_BUS2BIT_A_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_36_FLEXSPI2_BUS2BIT_A_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_35_FLEXSPI2_BUS2BIT_A_DATA00, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_38_FLEXSPI2_BUS2BIT_A_DATA03, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_37_FLEXSPI2_BUS2BIT_A_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_36_FLEXSPI2_BUS2BIT_A_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_35_FLEXSPI2_BUS2BIT_A_DATA00, 0x0AU);
+                    break;
+                case kFlexspi2_DataA_GPIO_AON_27_24:
+                    MTU_USE_MEM_DC_MUX2_FSPI2_PORTA
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_27_FLEXSPI2_BUS2BIT_A_DATA03, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_26_FLEXSPI2_BUS2BIT_A_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_25_FLEXSPI2_BUS2BIT_A_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_24_FLEXSPI2_BUS2BIT_A_DATA00, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_27_FLEXSPI2_BUS2BIT_A_DATA03, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_26_FLEXSPI2_BUS2BIT_A_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_25_FLEXSPI2_BUS2BIT_A_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_24_FLEXSPI2_BUS2BIT_A_DATA00, 0x0AU);
+                    break;
+                case kFlexspi2_DataB_GPIO_EMC_B1_33_30:
+                    MTU_USE_MEM_DC_MUX1_FSPI2_PORTA
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_33_FLEXSPI2_BUS2BIT_B_DATA00, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_32_FLEXSPI2_BUS2BIT_B_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_31_FLEXSPI2_BUS2BIT_B_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_30_FLEXSPI2_BUS2BIT_B_DATA03, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_33_FLEXSPI2_BUS2BIT_B_DATA00, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_32_FLEXSPI2_BUS2BIT_B_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_31_FLEXSPI2_BUS2BIT_B_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_30_FLEXSPI2_BUS2BIT_B_DATA03, 0x0AU);
+                    break;
+                case kFlexspi2_DataB_GPIO_AON_18_15:
+                    MTU_USE_MEM_DC_MUX2_FSPI2_PORTA
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_18_FLEXSPI2_BUS2BIT_B_DATA00, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_17_FLEXSPI2_BUS2BIT_B_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_16_FLEXSPI2_BUS2BIT_B_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_15_FLEXSPI2_BUS2BIT_B_DATA03, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_18_FLEXSPI2_BUS2BIT_B_DATA00, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_17_FLEXSPI2_BUS2BIT_B_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_16_FLEXSPI2_BUS2BIT_B_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_15_FLEXSPI2_BUS2BIT_B_DATA03, 0x0AU);
+                    break;
+                case kFlexspi2_DataB_GPIO_EMC_B1_25_22:
+                    MTU_USE_MEM_DC_MUX3_FSPI2_PORTB
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_25_FLEXSPI2_BUS2BIT_B_DATA00, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_24_FLEXSPI2_BUS2BIT_B_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_23_FLEXSPI2_BUS2BIT_B_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_22_FLEXSPI2_BUS2BIT_B_DATA03, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_25_FLEXSPI2_BUS2BIT_B_DATA00, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_24_FLEXSPI2_BUS2BIT_B_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_23_FLEXSPI2_BUS2BIT_B_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_22_FLEXSPI2_BUS2BIT_B_DATA03, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.ss_b)
+            {
+                case kFlexspi2_Ss0A_GPIO_EMC_B1_39:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_39_FLEXSPI2_BUS2BIT_A_SS0_B, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_39_FLEXSPI2_BUS2BIT_A_SS0_B, 0x0AU);
+                    break;
+                case kFlexspi2_Ss0A_GPIO_AON_22:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_22_FLEXSPI2_BUS2BIT_A_SS0_B, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_39_FLEXSPI2_BUS2BIT_A_SS0_B, 0x0AU);
+                    break;
+                case kFlexspi2_Ss1A_GPIO_EMC_B1_26:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_26_FLEXSPI2_BUS2BIT_A_SS1_B, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_26_FLEXSPI2_BUS2BIT_A_SS1_B, 0x0AU);
+                    break;
+                case kFlexspi2_Ss1A_GPIO_AON_20:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_A_SS1_B, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_A_SS1_B, 0x0AU);
+                    break;
+                case kFlexspi2_Ss1A_GPIO_AON_19:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_A_SS1_B, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_A_SS1_B, 0x0AU);
+                    break;
+                case kFlexspi2_Ss0B_GPIO_EMC_B1_28:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_28_FLEXSPI2_BUS2BIT_B_SS0_B, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_28_FLEXSPI2_BUS2BIT_B_SS0_B, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.sclk)
+            {
+                case kFlexspi2_SclkA_GPIO_EMC_B1_41:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_41_FLEXSPI2_BUS2BIT_A_SCLK, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_41_FLEXSPI2_BUS2BIT_A_SCLK, 0x0AU);
+                    break;
+                case kFlexspi2_SclkA_GPIO_AON_23:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_23_FLEXSPI2_BUS2BIT_A_SCLK, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_23_FLEXSPI2_BUS2BIT_A_SCLK, 0x0AU);
+                    break;
+                case kFlexspi2_SclkB_GPIO_EMC_B1_34:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_34_FLEXSPI2_BUS2BIT_B_SCLK, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_34_FLEXSPI2_BUS2BIT_B_SCLK, 0x0AU);
+                    break;
+                case kFlexspi2_SclkB_GPIO_AON_19:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_B_SCLK, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_B_SCLK, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.dqs0)
+            {
+                case kFlexspi2_DqsA_GPIO_EMC_B1_40:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_40_FLEXSPI2_BUS2BIT_A_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_40_FLEXSPI2_BUS2BIT_A_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsA_GPIO_AON_21:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_21_FLEXSPI2_BUS2BIT_A_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_21_FLEXSPI2_BUS2BIT_A_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsA_GPIO_AON_28:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_28_DUMMY_FLEXSPI2_BUS2BIT_A_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_28_DUMMY_FLEXSPI2_BUS2BIT_A_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsB_GPIO_EMC_B1_29:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_29_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_29_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsB_GPIO_AON_20:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsB_GPIO_AON_28:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_28_DUMMY_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_28_DUMMY_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsB_GPIO_EMC_B1_21:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_21_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_21_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.dataHigh4bit)
+            {
+                case kFlexspi2_DataB_GPIO_EMC_B1_33_30:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_33_FLEXSPI2_BUS2BIT_B_DATA00, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_32_FLEXSPI2_BUS2BIT_B_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_31_FLEXSPI2_BUS2BIT_B_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_30_FLEXSPI2_BUS2BIT_B_DATA03, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_33_FLEXSPI2_BUS2BIT_B_DATA00, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_32_FLEXSPI2_BUS2BIT_B_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_31_FLEXSPI2_BUS2BIT_B_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_30_FLEXSPI2_BUS2BIT_B_DATA03, 0x0AU);
+                    break;
+                case kFlexspi2_DataB_GPIO_AON_18_15:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_18_FLEXSPI2_BUS2BIT_B_DATA00, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_17_FLEXSPI2_BUS2BIT_B_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_16_FLEXSPI2_BUS2BIT_B_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_15_FLEXSPI2_BUS2BIT_B_DATA03, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_18_FLEXSPI2_BUS2BIT_B_DATA00, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_17_FLEXSPI2_BUS2BIT_B_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_16_FLEXSPI2_BUS2BIT_B_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_15_FLEXSPI2_BUS2BIT_B_DATA03, 0x0AU);
+                    break;
+                case kFlexspi2_DataB_GPIO_EMC_B1_25_22:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_25_FLEXSPI2_BUS2BIT_B_DATA00, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_24_FLEXSPI2_BUS2BIT_B_DATA01, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_23_FLEXSPI2_BUS2BIT_B_DATA02, 1U);
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_22_FLEXSPI2_BUS2BIT_B_DATA03, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_25_FLEXSPI2_BUS2BIT_B_DATA00, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_24_FLEXSPI2_BUS2BIT_B_DATA01, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_23_FLEXSPI2_BUS2BIT_B_DATA02, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_22_FLEXSPI2_BUS2BIT_B_DATA03, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.sclk_n)
+            {
+                case kFlexspi2_SclkB_GPIO_EMC_B1_34:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_34_FLEXSPI2_BUS2BIT_B_SCLK, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_34_FLEXSPI2_BUS2BIT_B_SCLK, 0x0AU);
+                    break;
+                case kFlexspi2_SclkB_GPIO_AON_19:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_B_SCLK, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_B_SCLK, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
+            switch (packet->memConnection.dqs1)
+            {
+                case kFlexspi2_DqsB_GPIO_EMC_B1_29:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_29_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_29_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsB_GPIO_AON_20:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsB_GPIO_AON_28:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_AON_28_DUMMY_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_28_DUMMY_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                case kFlexspi2_DqsB_GPIO_EMC_B1_21:
+                    IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_21_FLEXSPI2_BUS2BIT_B_DQS, 1U);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_21_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
