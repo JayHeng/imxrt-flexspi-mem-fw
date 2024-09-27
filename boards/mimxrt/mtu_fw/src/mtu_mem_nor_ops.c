@@ -7,13 +7,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "mtu_mem.h"
-#include "fsl_flexspi.h"
-#include "port_flexspi_mem.h"
+#include "mtu_mem_nor_ops.h"
 
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
+
 
 /*******************************************************************************
  * Prototypes
@@ -23,8 +22,7 @@
 /*******************************************************************************
  * Variables
  *****************************************************************************/
-extern flexspi_device_config_t g_deviceconfig;
-extern const uint32_t s_customLUTCommonMode[CUSTOM_LUT_LENGTH];
+
 
 /*******************************************************************************
  * Code
@@ -58,7 +56,7 @@ status_t flexspi_nor_get_vendor_id(FLEXSPI_Type *base, uint8_t *vendorId)
     return status;
 }
 
-void flexspi_nor_flash_init(FLEXSPI_Type *base)
+void flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *lutBase)
 {
     flexspi_config_t config;
 
@@ -76,10 +74,10 @@ void flexspi_nor_flash_init(FLEXSPI_Type *base)
     FLEXSPI_Init(base, &config);
 
     /* Configure flash settings according to serial flash feature. */
-    FLEXSPI_SetFlashConfig(base, &g_deviceconfig, kFLEXSPI_PortA1);
+    FLEXSPI_SetFlashConfig(base, deviceconfig, kFLEXSPI_PortA1);
 
     /* Update LUT table. */
-    FLEXSPI_UpdateLUT(base, 0, s_customLUTCommonMode, CUSTOM_LUT_LENGTH);
+    FLEXSPI_UpdateLUT(base, 0, lutBase, CUSTOM_LUT_LENGTH);
 
     /* Do software reset. */
     FLEXSPI_SoftwareReset(base);

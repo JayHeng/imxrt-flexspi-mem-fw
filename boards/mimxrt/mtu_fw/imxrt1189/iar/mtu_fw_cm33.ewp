@@ -2404,6 +2404,9 @@
             <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.c</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>
         </file>
         <file>

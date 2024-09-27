@@ -8,8 +8,7 @@
  */
 
 #include "mtu_mem.h"
-#include "fsl_flexspi.h"
-#include "port_flexspi_mem.h"
+
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -19,17 +18,11 @@
  * Prototypes
  ******************************************************************************/
 
-extern void flexspi_nor_flash_init(FLEXSPI_Type *base);
-extern status_t flexspi_nor_get_vendor_id(FLEXSPI_Type *base, uint8_t *vendorId);
 
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 
-
-/*******************************************************************************
- * Code
- ******************************************************************************/
 /* Common FlexSPI config */
 flexspi_device_config_t g_deviceconfig = {
     .flexspiRootClk       = 30000000,
@@ -98,12 +91,16 @@ uint32_t s_customLUTCommonMode[CUSTOM_LUT_LENGTH] = {
         FLEXSPI_LUT_SEQ(kFLEXSPI_Command_WRITE_SDR, kFLEXSPI_1PAD, 0x04, kFLEXSPI_Command_STOP,      kFLEXSPI_1PAD, 0x00),
 };
 
+/*******************************************************************************
+ * Code
+ ******************************************************************************/
+
 status_t mtu_init_memory(void)
 {
     status_t status;
     uint8_t vendorID = 0;
 
-    flexspi_nor_flash_init(FLEXSPI1);
+    flexspi_nor_flash_init(FLEXSPI1, &g_deviceconfig, s_customLUTCommonMode);
 
     printf("--FLEXSPI module initialized.\r\n");
 
