@@ -28,21 +28,18 @@
  * Code
  ******************************************************************************/
 
-status_t flexspi_nor_get_vendor_id(FLEXSPI_Type *base, uint8_t *vendorId)
+status_t flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId)
 {
-    uint32_t temp;
     flexspi_transfer_t flashXfer;
     flashXfer.deviceAddress = 0;
     flashXfer.port          = kFLEXSPI_PortA1;
     flashXfer.cmdType       = kFLEXSPI_Read;
     flashXfer.SeqNumber     = 1;
     flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_READID;
-    flashXfer.data          = &temp;
-    flashXfer.dataSize      = 1;
+    flashXfer.data          = vendorId;
+    flashXfer.dataSize      = 4;
 
     status_t status = FLEXSPI_TransferBlocking(base, &flashXfer);
-
-    *vendorId = temp;
 
     /* Do software reset or clear AHB buffer directly. */
 #if defined(FSL_FEATURE_SOC_OTFAD_COUNT) && defined(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK) && \

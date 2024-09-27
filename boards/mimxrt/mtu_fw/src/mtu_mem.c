@@ -98,19 +98,19 @@ uint32_t s_customLUTCommonMode[CUSTOM_LUT_LENGTH] = {
 status_t mtu_init_memory(void)
 {
     status_t status;
-    uint8_t vendorID = 0;
+    uint32_t jedecID = 0;
 
     flexspi_nor_flash_init(FLEXSPI1, &g_deviceconfig, s_customLUTCommonMode);
 
     printf("--FLEXSPI module initialized.\r\n");
 
-    /* Get vendor ID. */
-    status = flexspi_nor_get_vendor_id(FLEXSPI1, &vendorID);
+    /* Get JEDEC ID. */
+    status = flexspi_nor_get_jedec_id(FLEXSPI1, &jedecID);
     if (status != kStatus_Success)
     {
         return status;
     }
-    printf("--Flash Vendor ID: 0x%x\r\n", vendorID);
+    mtu_validate_jedec_id((jedec_id_t *)&jedecID);
     
     return kStatus_Success;
 }

@@ -9,6 +9,7 @@
 #define _MTU_MEM_H_
 
 #include "mtu_mem_nor_ops.h"
+#include "mtu_mem_nor_device.h"
 
 /*******************************************************************************
  * Definitions

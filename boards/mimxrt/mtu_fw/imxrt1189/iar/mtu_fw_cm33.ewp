@@ -2401,6 +2401,12 @@
             <name>$PROJ_DIR$\..\..\src\mtu_mem.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_device.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_device.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.c</name>
         </file>
         <file>
