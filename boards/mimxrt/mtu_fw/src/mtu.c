@@ -13,8 +13,8 @@
 #if MTU_FEATURE_PACKET_CRC
 #include "mtu_crc16.h"
 #endif
-#if MTU_FEATURE_FLASH
-#include "mtu_flexspi_nor_test.h"
+#if MTU_FEATURE_MEMORY
+#include "mtu_mem.h"
 #endif
 /*******************************************************************************
  * Definitions
@@ -308,15 +308,15 @@ static void mtu_execute_command(void)
             break;
 
         case kCommandTag_ConfigSystem:
-#if MTU_FEATURE_FLASH
+#if MTU_FEATURE_MEMORY
             bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
-            mtu_init_flash();
+            mtu_init_memory();
 #endif
             break;
 
         case kCommandTag_RunRwTest:
-#if MTU_FEATURE_FLASH
-            mtu_rw_flash();
+#if MTU_FEATURE_MEMORY
+            mtu_rw_memory();
 #endif
             break;
 

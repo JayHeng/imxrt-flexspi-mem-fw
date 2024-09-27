@@ -25,9 +25,10 @@
 
 static inline void flexspi_clock_init(void)
 {
-    /*Clock setting for flexspi1*/
-    CLOCK_SetRootClockDiv(kCLOCK_Root_Flexspi1, 2);
-    CLOCK_SetRootClockMux(kCLOCK_Root_Flexspi1, 0);
+    clock_root_config_t rootCfg = {0};
+    rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
+    rootCfg.div = 1;
+    CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
 }
 
 #endif /* _PORT_FLEXSPI_MEM_H_ */

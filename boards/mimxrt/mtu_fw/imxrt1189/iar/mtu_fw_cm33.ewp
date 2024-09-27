@@ -2230,6 +2230,9 @@
             <name>$PROJ_DIR$\..\port_cfg_mtu.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\port_flexspi_mem.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\port_flexspi_pin.c</name>
         </file>
     </group>
@@ -2338,6 +2341,12 @@
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1189\drivers\fsl_dcdc.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1189\drivers\fsl_flexspi.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1189\drivers\fsl_flexspi.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1189\drivers\fsl_iomuxc.h</name>
         </file>
         <file>
@@ -2384,6 +2393,15 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_lpuart.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>

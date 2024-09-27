@@ -461,7 +461,7 @@
                 </option>
                 <option>
                     <name>OCProbeConfig</name>
-                    <state>$TOOLKIT_DIR$\config\debugger\NXP\IMXRT1170.ProbeConfig</state>
+                    <state>$TOOLKIT_DIR$/config/debugger/NXP/IMXRT1170.ProbeConfig</state>
                 </option>
                 <option>
                     <name>CMSISDAPProbeConfigRadio</name>
