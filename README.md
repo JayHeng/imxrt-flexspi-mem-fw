@@ -31,7 +31,7 @@
 
 // 命令1之 Pin Unittest 实现
    1. 根据命令包数据配置指定 GPIO，方波翻转测试连通性，可 ADC 采集回来画波形
-   2. 这里涉及到 MCU 端给上位机发送数据模式切换（一般信息打印/ADC 采集值）
+   2. 这里涉及到 MCU 端给上位机发送数据模式切换（一般信息打印/ADC采集值）
 \boards\mimxrt\mtu_fw\src\mtu_pin.h
 \boards\mimxrt\mtu_fw\src\mtu_timer.c/h
 \boards\mimxrt\mtu_fw\xxxDevice\port_adc_conv.c

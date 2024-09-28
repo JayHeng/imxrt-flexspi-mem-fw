@@ -53,11 +53,11 @@ status_t flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId)
     return status;
 }
 
-void flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *lutBase)
+void flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *customLUT)
 {
     flexspi_config_t config;
 
-    flexspi_clock_init();
+    bsp_flexspi_clock_init();
 
     /*Get FLEXSPI default settings and configure the flexspi. */
     FLEXSPI_GetDefaultConfig(&config);
@@ -74,7 +74,7 @@ void flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *devicec
     FLEXSPI_SetFlashConfig(base, deviceconfig, kFLEXSPI_PortA1);
 
     /* Update LUT table. */
-    FLEXSPI_UpdateLUT(base, 0, lutBase, CUSTOM_LUT_LENGTH);
+    FLEXSPI_UpdateLUT(base, 0, customLUT, CUSTOM_LUT_LENGTH);
 
     /* Do software reset. */
     FLEXSPI_SoftwareReset(base);

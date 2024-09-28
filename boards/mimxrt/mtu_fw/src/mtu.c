@@ -7,7 +7,7 @@
 
 #include <ctype.h>
 #include "mtu.h"
-#include "mtu_pin.h"
+#include "mtu_bsp.h"
 #include "mtu_uart.h"
 #include "mtu_timer.h"
 #if MTU_FEATURE_PACKET_CRC

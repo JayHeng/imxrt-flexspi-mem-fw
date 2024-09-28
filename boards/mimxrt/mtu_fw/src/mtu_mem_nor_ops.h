@@ -9,8 +9,8 @@
 #define _MTU_MEM_NOR_OPS_H_
 
 #include "mtu.h"
+#include "mtu_bsp.h"
 #include "fsl_flexspi.h"
-#include "port_flexspi_mem.h"
 
 /*******************************************************************************
  * Definitions

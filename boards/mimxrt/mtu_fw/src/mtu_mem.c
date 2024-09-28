@@ -24,7 +24,7 @@
  ******************************************************************************/
 
 /* Common FlexSPI config */
-flexspi_device_config_t g_deviceconfig = {
+flexspi_device_config_t s_deviceconfig = {
     .flexspiRootClk       = 30000000,
     .flashSize            = 0x4000, /* 128Mb/KByte */
     .CSIntervalUnit       = kFLEXSPI_CsIntervalUnit1SckCycle,
@@ -100,7 +100,7 @@ status_t mtu_init_memory(void)
     status_t status;
     uint32_t jedecID = 0;
 
-    flexspi_nor_flash_init(FLEXSPI1, &g_deviceconfig, s_customLUTCommonMode);
+    flexspi_nor_flash_init(FLEXSPI1, &s_deviceconfig, s_customLUTCommonMode);
 
     printf("--FLEXSPI module initialized.\r\n");
 

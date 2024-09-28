@@ -9,8 +9,9 @@
 #include "fsl_iomuxc.h"
 #include "pin_mux.h"
 #include "fsl_rgpio.h"
+#include "clock_config.h"
 #include "mtu.h"
-#include "mtu_pin.h"
+#include "mtu_bsp.h"
 #include "mtu_uart.h"
 /*******************************************************************************
  * Definitions
@@ -1293,5 +1294,13 @@ void bsp_flexspi_gpios_toggle(void)
             RGPIO_PortToggle(gpioBase[s_pinInfo[i].gpioGroup], 1u << s_pinInfo[i].gpioPin);
         }
     }
+}
+
+void bsp_flexspi_clock_init(void)
+{
+    clock_root_config_t rootCfg = {0};
+    rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
+    rootCfg.div = 1;
+    CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
 }
 

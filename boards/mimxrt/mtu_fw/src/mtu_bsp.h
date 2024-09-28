@@ -5,8 +5,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#ifndef __MTU_PIN__
-#define __MTU_PIN__
+#ifndef __MTU_BSP__
+#define __MTU_BSP__
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -32,6 +32,8 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest);
 
 void bsp_flexspi_gpios_toggle(void);
 
+void bsp_flexspi_clock_init(void);
+
 void bsp_adc_echo_info(void);
 
 void bsp_adc_init(void);
@@ -40,4 +42,4 @@ uint8_t bsp_adc_get_conv_value(void);
 
 void bsp_adc_deinit(void);
 
-#endif /* __MTU_PIN__ */
+#endif /* __MTU_BSP__ */
