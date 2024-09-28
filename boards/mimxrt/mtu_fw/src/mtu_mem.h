@@ -27,6 +27,8 @@
 
 status_t mtu_memory_init(void);
 
+status_t mtu_memory_get_info(void);
+
 status_t mtu_memory_rwtest(void);
 
 #endif /* _MTU_MEM_H_ */

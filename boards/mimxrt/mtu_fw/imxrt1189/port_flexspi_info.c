@@ -180,7 +180,7 @@ pin_info_t s_pinInfo[MTU_MAX_PINS];
  * Code
  ******************************************************************************/
 
-void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
+void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
 {
     CLOCK_EnableClock(kCLOCK_Iomuxc1);
     CLOCK_EnableClock(kCLOCK_Iomuxc2);
@@ -1276,7 +1276,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
     }
 }
 
-void bsp_flexspi_gpios_toggle(void)
+void bsp_mixspi_gpios_toggle(void)
 {
     if (s_pinUnittestPacket.unittestEn.enableAdcSample)
     {
@@ -1294,11 +1294,24 @@ void bsp_flexspi_gpios_toggle(void)
     }
 }
 
-void bsp_flexspi_clock_init(void)
+void bsp_mixspi_clock_init(void)
 {
     clock_root_config_t rootCfg = {0};
     rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
     rootCfg.div = 1;
     CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+}
+
+void bsp_mixspi_sw_delay_us(uint64_t us)
+{
+    uint32_t ticks_per_us = CLOCK_GetFreq(kCLOCK_CpuClk) / 1000000;
+    while (us--)
+    {
+        register uint32_t ticks = 1 + ticks_per_us / 4;
+        while (ticks--)
+        {
+            __NOP();
+        }
+    }
 }
 

@@ -454,7 +454,7 @@ void mtu_flash_validate_jedec_id(jedec_id_t *jedecID)
             break;
 
         default:
-            printf("--Unknown Manufacturer ID\r\n");
+            printf("-- Unknown Manufacturer ID\r\n");
             break;
     }
 }

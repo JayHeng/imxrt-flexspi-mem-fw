@@ -114,6 +114,11 @@ static void mtu_command_get_from_buffer(void)
                             cmdPacket = (uint8_t *)&s_configSystemPacket;
                             break;
 
+                        case kCommandTag_GetMemInfo:
+                            isCmdTagFound = true;
+                            remainingCmdBytes = 0;
+                            break;
+
                         case kCommandTag_RunRwTest:
                             isCmdTagFound = true;
                             remainingCmdBytes = sizeof(rw_test_packet_t);
@@ -247,6 +252,11 @@ static bool mtu_command_is_valid(void)
             }
             break;
 
+        case kCommandTag_GetMemInfo:
+            isCmdValid = true;
+            printf("--Received Mem Info command. \r\n");
+            break;
+
         case kCommandTag_RunRwTest:
 #if MTU_FEATURE_PACKET_CRC
             crcStart = (const uint8_t *)(&s_rwTestPacket);
@@ -291,19 +301,25 @@ static void mtu_command_execute(void)
                 mtu_print_mode_switch(false);
             }
             mtu_deinit_timer();
-            bsp_flexspi_pinmux_config(&s_pinUnittestPacket, true);
+            bsp_mixspi_pinmux_config(&s_pinUnittestPacket, true);
             if (s_pinUnittestPacket.unittestEn.enableAdcSample)
             {
                 bsp_adc_init();
             }
-            mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_flexspi_gpios_toggle);
+            mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_mixspi_gpios_toggle);
 #endif
             break;
 
         case kCommandTag_ConfigSystem:
 #if MTU_FEATURE_MEMORY
-            bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
+            bsp_mixspi_pinmux_config(&s_configSystemPacket, false);
             mtu_memory_init();
+#endif
+            break;
+
+        case kCommandTag_GetMemInfo:
+#if MTU_FEATURE_MEMORY
+            mtu_memory_get_info();
 #endif
             break;
 
