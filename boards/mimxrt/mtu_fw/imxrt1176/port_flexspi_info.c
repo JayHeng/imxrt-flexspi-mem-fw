@@ -5,14 +5,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include "mtu.h"
 #include "fsl_common.h"
 #include "fsl_iomuxc.h"
 #include "pin_mux.h"
 #include "fsl_gpio.h"
 #include "clock_config.h"
-#include "mtu.h"
-#include "mtu_bsp.h"
-#include "mtu_uart.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/

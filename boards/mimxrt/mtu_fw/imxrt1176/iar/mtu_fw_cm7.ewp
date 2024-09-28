@@ -2229,9 +2229,6 @@
             <name>$PROJ_DIR$\..\port_adc_conv.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\port_cfg_mtu.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\..\port_flexspi_info.c</name>
         </file>
     </group>
@@ -2389,6 +2386,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_bsp.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_config.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_crc16.c</name>

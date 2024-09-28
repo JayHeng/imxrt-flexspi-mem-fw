@@ -9,7 +9,6 @@
 #define _MTU_MEM_NOR_OPS_H_
 
 #include "mtu.h"
-#include "mtu_bsp.h"
 #include "fsl_flexspi.h"
 
 /*******************************************************************************
@@ -53,8 +52,8 @@
  * API
  ******************************************************************************/
 
-extern void flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *lutBase);
+void mtu_flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *lutBase);
 
-extern status_t flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId);
+status_t mtu_flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId);
 
 #endif /* _MTU_MEM_NOR_OPS_H_ */

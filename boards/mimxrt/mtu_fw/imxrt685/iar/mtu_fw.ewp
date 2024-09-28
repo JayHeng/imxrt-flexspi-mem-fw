@@ -2215,10 +2215,7 @@
             <name>$PROJ_DIR$\..\port_adc_conv.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\port_cfg_mtu.h</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\..\port_flexspi_pin.c</name>
+            <name>$PROJ_DIR$\..\port_flexspi_info.c</name>
         </file>
     </group>
     <group>
@@ -2386,13 +2383,34 @@
             <name>$PROJ_DIR$\..\..\src\mtu.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_bsp.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_config.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\src\mtu_crc16.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_crc16.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\src\mtu_pin.h</name>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_device.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_device.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_timer.c</name>

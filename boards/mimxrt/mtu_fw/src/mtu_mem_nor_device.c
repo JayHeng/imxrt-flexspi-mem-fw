@@ -18,6 +18,16 @@
  * Prototypes
  ******************************************************************************/
 
+uint32_t mtu_flash_decode_common_capacity_id(uint8_t capacityID);
+uint32_t mtu_flash_decode_adesto_capacity_id(uint8_t capacityID);
+void mtu_flash_show_mem_size(uint8_t capacityID, bool isAdesto);
+void mtu_flash_set_info_for_winbond(jedec_id_t *jedecID);
+void mtu_flash_set_info_for_mxic(jedec_id_t *jedecID);
+void mtu_flash_set_info_for_gigadevice(jedec_id_t *jedecID);
+void mtu_flash_set_info_for_issi(jedec_id_t *jedecID);
+void mtu_flash_set_info_for_micron(jedec_id_t *jedecID);
+void mtu_flash_set_info_for_adesto(jedec_id_t *jedecID);
+void mtu_flash_set_info_for_spansion(jedec_id_t *jedecID);
 
 /*******************************************************************************
  * Variables
@@ -400,7 +410,7 @@ void mtu_flash_set_info_for_spansion(jedec_id_t *jedecID)
     mtu_flash_show_mem_size(jedecID->capacityID, false);
 }
 
-void mtu_validate_jedec_id(jedec_id_t *jedecID)
+void mtu_flash_validate_jedec_id(jedec_id_t *jedecID)
 {
     /* Check Vendor ID. */
     switch (jedecID->manufacturerID)

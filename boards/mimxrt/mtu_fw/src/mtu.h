@@ -15,7 +15,16 @@
 #include "fsl_device_registers.h"
 #include "fsl_common.h"
 #include "fsl_common_arm.h"
-#include "port_cfg_mtu.h"
+#include "mtu_config.h"
+#include "mtu_bsp.h"
+#include "mtu_uart.h"
+#include "mtu_timer.h"
+#if MTU_FEATURE_PACKET_CRC
+#include "mtu_crc16.h"
+#endif
+#if MTU_FEATURE_MEMORY
+#include "mtu_mem.h"
+#endif
 
 /*******************************************************************************
  * Definitions

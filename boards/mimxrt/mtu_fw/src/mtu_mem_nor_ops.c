@@ -28,7 +28,7 @@
  * Code
  ******************************************************************************/
 
-status_t flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId)
+status_t mtu_flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId)
 {
     flexspi_transfer_t flashXfer;
     flashXfer.deviceAddress = 0;
@@ -53,7 +53,7 @@ status_t flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId)
     return status;
 }
 
-void flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *customLUT)
+void mtu_flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *customLUT)
 {
     flexspi_config_t config;
 

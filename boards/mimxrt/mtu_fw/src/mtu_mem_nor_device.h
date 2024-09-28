@@ -38,6 +38,6 @@ typedef struct _jedec_id
  * API
  ******************************************************************************/
 
-void mtu_validate_jedec_id(jedec_id_t *jedecID);
+void mtu_flash_validate_jedec_id(jedec_id_t *jedecID);
 
 #endif /* _MTU_MEM_NOR_DEVICE_H_ */

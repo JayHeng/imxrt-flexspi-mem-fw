@@ -5,13 +5,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include "mtu.h"
 #include "fsl_common.h"
 #include "fsl_iopctl.h"
 #include "pin_mux.h"
 #include "fsl_gpio.h"
-#include "mtu.h"
-#include "mtu_pin.h"
-#include "mtu_uart.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -265,5 +263,10 @@ void bsp_flexspi_gpios_toggle(void)
             GPIO_PortToggle(GPIO, s_pinInfo[i].gpioGroup, 1u << s_pinInfo[i].gpioPin);
         }
     }
+}
+
+void bsp_flexspi_clock_init(void)
+{
+
 }
 
