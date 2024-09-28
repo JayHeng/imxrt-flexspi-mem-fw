@@ -17,6 +17,7 @@
 #include "fsl_common_arm.h"
 #include "mtu_config.h"
 #include "mtu_bsp.h"
+#include "mtu_adapter.h"
 #include "mtu_uart.h"
 #include "mtu_timer.h"
 #if MTU_FEATURE_PACKET_CRC

@@ -17,11 +17,12 @@
  * Prototypes
  ******************************************************************************/
 
-static void mtu_get_command_from_buffer(void);
-static void mtu_switch_print_mode(bool isAsciiMode);
-static bool mtu_is_packet_crc16_valid(const uint8_t *data, uint32_t length, uint16_t expectedCrc);
-static bool mtu_is_command_valid(void);
-static void mtu_execute_command(void);
+static void mtu_print_mode_switch(bool isAsciiMode);
+
+static void mtu_command_get_from_buffer(void);
+static bool mtu_command_is_packet_crc16_valid(const uint8_t *data, uint32_t length, uint16_t expectedCrc);
+static bool mtu_command_is_valid(void);
+static void mtu_command_execute(void);
    
 /*******************************************************************************
  * Variables
@@ -62,7 +63,7 @@ rw_test_packet_t s_rwTestPacket;
  * Code
  ******************************************************************************/
 
-static void mtu_get_command_from_buffer(void)
+static void mtu_command_get_from_buffer(void)
 {
     bool isPacketTagFound = false;
     bool isCmdTagFound = false;
@@ -170,7 +171,7 @@ static void mtu_get_command_from_buffer(void)
     }
 }
 
-static void mtu_switch_print_mode(bool isAsciiMode)
+static void mtu_print_mode_switch(bool isAsciiMode)
 {
     // Host GUI will get data from UART every 1s, let's delay 2.5s+2.5s here to make sure
     //  below magic word are in one transfer
@@ -188,7 +189,7 @@ static void mtu_switch_print_mode(bool isAsciiMode)
 
 //! @brief Calculate crc over command packet.
 #if MTU_FEATURE_PACKET_CRC
-static bool mtu_is_packet_crc16_valid(const uint8_t *data, uint32_t length, uint16_t expectedCrc)
+static bool mtu_command_is_packet_crc16_valid(const uint8_t *data, uint32_t length, uint16_t expectedCrc)
 {
     uint16_t calculatedCrc;
 
@@ -206,7 +207,7 @@ static bool mtu_is_packet_crc16_valid(const uint8_t *data, uint32_t length, uint
 }
 #endif
 
-static bool mtu_is_command_valid(void)
+static bool mtu_command_is_valid(void)
 {
     bool isCmdValid = false;
 #if MTU_FEATURE_PACKET_CRC
@@ -221,7 +222,7 @@ static bool mtu_is_command_valid(void)
             crcStart = (const uint8_t *)(&s_pinUnittestPacket);
             crcLength = (const uint8_t *)(&s_pinUnittestPacket.crcCheckSum) - crcStart;
             expectedCrc = s_pinUnittestPacket.crcCheckSum;
-            isCmdValid = mtu_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+            isCmdValid = mtu_command_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
 #else
             isCmdValid = true;
 #endif
@@ -236,7 +237,7 @@ static bool mtu_is_command_valid(void)
             crcStart = (const uint8_t *)(&s_configSystemPacket);
             crcLength = (const uint8_t *)(&s_configSystemPacket.crcCheckSum) - crcStart;
             expectedCrc = s_configSystemPacket.crcCheckSum;
-            isCmdValid = mtu_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+            isCmdValid = mtu_command_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
 #else
             isCmdValid = true;
 #endif
@@ -251,7 +252,7 @@ static bool mtu_is_command_valid(void)
             crcStart = (const uint8_t *)(&s_rwTestPacket);
             crcLength = (const uint8_t *)(&s_rwTestPacket.crcCheckSum) - crcStart;
             expectedCrc = s_rwTestPacket.crcCheckSum;
-            isCmdValid = mtu_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+            isCmdValid = mtu_command_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
 #else
             isCmdValid = true;
 #endif
@@ -277,7 +278,7 @@ static bool mtu_is_command_valid(void)
     return isCmdValid;
 }
 
-static void mtu_execute_command(void)
+static void mtu_command_execute(void)
 {
     switch (s_currentCmdTag)
     {
@@ -287,7 +288,7 @@ static void mtu_execute_command(void)
             if (s_pinUnittestPacket.unittestEn.enableAdcSample)
             {
                 bsp_adc_echo_info();
-                mtu_switch_print_mode(false);
+                mtu_print_mode_switch(false);
             }
             mtu_deinit_timer();
             bsp_flexspi_pinmux_config(&s_pinUnittestPacket, true);
@@ -302,13 +303,13 @@ static void mtu_execute_command(void)
         case kCommandTag_ConfigSystem:
 #if MTU_FEATURE_MEMORY
             bsp_flexspi_pinmux_config(&s_configSystemPacket, false);
-            mtu_init_memory();
+            mtu_memory_init();
 #endif
             break;
 
         case kCommandTag_RunRwTest:
 #if MTU_FEATURE_MEMORY
-            mtu_rw_memory();
+            mtu_memory_rwtest();
 #endif
             break;
 
@@ -321,7 +322,7 @@ static void mtu_execute_command(void)
                     if (s_pinUnittestPacket.unittestEn.enableAdcSample)
                     {
                         bsp_adc_deinit();
-                        mtu_switch_print_mode(true);
+                        mtu_print_mode_switch(true);
                     }
 #endif
                 }
@@ -344,13 +345,13 @@ void mtu_main(void)
     while(1)
     {
 #if !MTU_SELFTEST
-        mtu_get_command_from_buffer();
-        if (mtu_is_command_valid())
+        mtu_command_get_from_buffer();
+        if (mtu_command_is_valid())
         {
-            mtu_execute_command();
+            mtu_command_execute();
         }
 #else
-        mtu_execute_command();
+        mtu_command_execute();
         while(1);
 #endif
     }

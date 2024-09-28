@@ -25,8 +25,8 @@
  * API
  ******************************************************************************/
 
-status_t mtu_init_memory(void);
+status_t mtu_memory_init(void);
 
-status_t mtu_rw_memory(void);
+status_t mtu_memory_rwtest(void);
 
 #endif /* _MTU_MEM_H_ */

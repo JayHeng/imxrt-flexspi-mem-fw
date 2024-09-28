@@ -28,32 +28,32 @@
  * Code
  ******************************************************************************/
 
-status_t mtu_flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId)
+status_t mtu_mixspi_nor_get_jedec_id(mixspi_user_config_t *userConfig, uint32_t *vendorId)
 {
     flexspi_transfer_t flashXfer;
     flashXfer.deviceAddress = 0;
-    flashXfer.port          = kFLEXSPI_PortA1;
+    flashXfer.port          = userConfig->mixspiPort;
     flashXfer.cmdType       = kFLEXSPI_Read;
     flashXfer.SeqNumber     = 1;
     flashXfer.seqIndex      = NOR_CMD_LUT_SEQ_IDX_READID;
     flashXfer.data          = vendorId;
     flashXfer.dataSize      = 4;
 
-    status_t status = FLEXSPI_TransferBlocking(base, &flashXfer);
+    status_t status = FLEXSPI_TransferBlocking(userConfig->mixspiBase, &flashXfer);
 
     /* Do software reset or clear AHB buffer directly. */
 #if defined(FSL_FEATURE_SOC_OTFAD_COUNT) && defined(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK) && \
     defined(FLEXSPI_AHBCR_CLRAHBTXBUF_MASK)
-    base->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
-    base->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
+    userConfig->mixspiBase->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
+    userConfig->mixspiBase->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
 #else
-    FLEXSPI_SoftwareReset(base);
+    FLEXSPI_SoftwareReset(userConfig->mixspiBase);
 #endif
 
     return status;
 }
 
-void mtu_flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *customLUT)
+void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, flexspi_device_config_t *deviceconfig)
 {
     flexspi_config_t config;
 
@@ -68,14 +68,14 @@ void mtu_flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *dev
     config.ahbConfig.enableReadAddressOpt = true;
     config.ahbConfig.enableAHBCachable    = true;
     config.rxSampleClock                  = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
-    FLEXSPI_Init(base, &config);
+    FLEXSPI_Init(userConfig->mixspiBase, &config);
 
     /* Configure flash settings according to serial flash feature. */
-    FLEXSPI_SetFlashConfig(base, deviceconfig, kFLEXSPI_PortA1);
+    FLEXSPI_SetFlashConfig(userConfig->mixspiBase, deviceconfig, userConfig->mixspiPort);
 
     /* Update LUT table. */
-    FLEXSPI_UpdateLUT(base, 0, customLUT, CUSTOM_LUT_LENGTH);
+    FLEXSPI_UpdateLUT(userConfig->mixspiBase, 0, userConfig->mixspiCustomLUTVendor, CUSTOM_LUT_LENGTH);
 
     /* Do software reset. */
-    FLEXSPI_SoftwareReset(base);
+    FLEXSPI_SoftwareReset(userConfig->mixspiBase);
 }

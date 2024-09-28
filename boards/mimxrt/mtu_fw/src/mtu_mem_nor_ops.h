@@ -9,7 +9,6 @@
 #define _MTU_MEM_NOR_OPS_H_
 
 #include "mtu.h"
-#include "fsl_flexspi.h"
 
 /*******************************************************************************
  * Definitions
@@ -48,12 +47,22 @@
 #define NOR_CMD_LUT_SEQ_IDX_WRITE           9
 #define CUSTOM_LUT_LENGTH                   64
 
+// NOR property info for operation
+typedef struct _mixspi_user_config
+{
+    MIXSPI_Type                *mixspiBase;
+    mixspi_port_t               mixspiPort;
+    mixspi_root_clk_freq_t      mixspiRootClkFreq;
+    mixspi_read_sample_clock_t  mixspiReadSampleClock;
+    const uint32_t             *mixspiCustomLUTVendor;
+} mixspi_user_config_t;
+
 /*******************************************************************************
  * API
  ******************************************************************************/
 
-void mtu_flexspi_nor_flash_init(FLEXSPI_Type *base, flexspi_device_config_t *deviceconfig, uint32_t *lutBase);
+void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, flexspi_device_config_t *deviceconfig);
 
-status_t mtu_flexspi_nor_get_jedec_id(FLEXSPI_Type *base, uint32_t *vendorId);
+status_t mtu_mixspi_nor_get_jedec_id(mixspi_user_config_t *userConfig, uint32_t *vendorId);
 
 #endif /* _MTU_MEM_NOR_OPS_H_ */

@@ -95,17 +95,23 @@ uint32_t s_customLUTCommonMode[CUSTOM_LUT_LENGTH] = {
  * Code
  ******************************************************************************/
 
-status_t mtu_init_memory(void)
+status_t mtu_memory_init(void)
 {
     status_t status;
     uint32_t jedecID = 0;
+    
+    mixspi_user_config_t userConfig;
+    userConfig.mixspiBase = FLEXSPI1;
+    userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
+    userConfig.mixspiPort = kFLEXSPI_PortA1;
+    userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
 
-    mtu_flexspi_nor_flash_init(FLEXSPI1, &s_deviceconfig, s_customLUTCommonMode);
+    mtu_mixspi_nor_flash_init(&userConfig, &s_deviceconfig);
 
     printf("--FLEXSPI module initialized.\r\n");
 
     /* Get JEDEC ID. */
-    status = mtu_flexspi_nor_get_jedec_id(FLEXSPI1, &jedecID);
+    status = mtu_mixspi_nor_get_jedec_id(&userConfig, &jedecID);
     if (status != kStatus_Success)
     {
         return status;
@@ -115,7 +121,7 @@ status_t mtu_init_memory(void)
     return kStatus_Success;
 }
 
-status_t mtu_rw_memory(void)
+status_t mtu_memory_rwtest(void)
 {
     return kStatus_Success;
 }
