@@ -23,6 +23,8 @@
  * Variables
  ******************************************************************************/
 
+mixspi_user_config_t s_userConfig;
+
 /* Common FlexSPI config */
 flexspi_device_config_t s_deviceconfig = {
     .flexspiRootClk       = 30000000,
@@ -108,18 +110,17 @@ status_t mtu_memory_init(void)
     status_t status;
     uint32_t jedecID = 0;
     
-    mixspi_user_config_t userConfig;
-    userConfig.mixspiBase = FLEXSPI1;
-    userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
-    userConfig.mixspiPort = kFLEXSPI_PortA1;
-    userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
+    //s_userConfig.mixspiBase = FLEXSPI1;
+    //s_userConfig.mixspiPort = kFLEXSPI_PortA1;
+    s_userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
+    s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
 
-    mtu_mixspi_nor_flash_init(&userConfig, &s_deviceconfig);
+    mtu_mixspi_nor_flash_init(&s_userConfig, &s_deviceconfig);
 
     printf("--FLEXSPI module initialized.\r\n");
 
     /* Get JEDEC ID. */
-    status = mtu_mixspi_nor_get_jedec_id(&userConfig, &jedecID);
+    status = mtu_mixspi_nor_get_jedec_id(&s_userConfig, &jedecID);
     if (status != kStatus_Success)
     {
         return status;
@@ -131,24 +132,20 @@ status_t mtu_memory_init(void)
 
 status_t mtu_memory_get_info(void)
 {
-    mixspi_user_config_t userConfig;
-    userConfig.mixspiBase = FLEXSPI1;
-    userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
-    userConfig.mixspiPort = kFLEXSPI_PortA1;
-    userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
-    userConfig.flashBusyStatusOffset = 0;
-    userConfig.flashBusyStatusPol = 1;
+    s_userConfig.flashBusyStatusOffset = 0;
+    s_userConfig.flashBusyStatusPol = 1;
+
     flash_reg_access_t regAccess;
     regAccess.regNum = 1;
     regAccess.regAddr = 0x0;
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READSTATUS;
-    mtu_mixspi_nor_read_register(&userConfig, &regAccess);
+    mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
     printf("--Flash Status Register: 0x%x\r\n", regAccess.regValue.B.reg1);
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG;
-    mtu_mixspi_nor_read_register(&userConfig, &regAccess);
+    mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
     printf("--Flash Function Register: 0x%x\r\n", regAccess.regValue.B.reg1);
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG2;
-    mtu_mixspi_nor_read_register(&userConfig, &regAccess);
+    mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
     printf("--Flash Read Parameters: 0x%x\r\n", regAccess.regValue.B.reg1);
     
     return kStatus_Success;

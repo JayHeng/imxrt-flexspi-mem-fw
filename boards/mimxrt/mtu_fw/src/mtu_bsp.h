@@ -50,7 +50,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest);
 
 void bsp_mixspi_gpios_toggle(void);
 
-void bsp_mixspi_clock_init(void);
+void bsp_mixspi_clock_init(void *config);
 
 void bsp_mixspi_sw_delay_us(uint64_t us);
 

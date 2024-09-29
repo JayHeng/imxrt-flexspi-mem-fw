@@ -263,7 +263,7 @@ void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, flexspi_device_
 {
     flexspi_config_t config;
 
-    bsp_mixspi_clock_init();
+    bsp_mixspi_clock_init(userConfig);
 
     /*Get FLEXSPI default settings and configure the flexspi. */
     FLEXSPI_GetDefaultConfig(&config);
@@ -274,6 +274,17 @@ void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, flexspi_device_
     config.ahbConfig.enableReadAddressOpt = true;
     config.ahbConfig.enableAHBCachable    = true;
     config.rxSampleClock                  = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
+#if !(defined(FSL_FEATURE_FLEXSPI_HAS_NO_MCR0_COMBINATIONEN) && FSL_FEATURE_FLEXSPI_HAS_NO_MCR0_COMBINATIONEN)
+    flexspi_port_t port = userConfig->mixspiPort;
+    if ((port == kFLEXSPI_PortA1) || (port == kFLEXSPI_PortA2))
+    {
+        config.enableCombination = true;
+    }
+    else
+    {
+        config.enableCombination = false;
+    }
+#endif
     FLEXSPI_Init(userConfig->mixspiBase, &config);
 
     /* Configure flash settings according to serial flash feature. */

@@ -164,6 +164,47 @@ enum _flexspi2_dqs_sel
 #define MTU_USE_MEM_DC_MUX3_FSPI2_PORTB  {}
 #endif
 
+#define MTU_USE_FSPI1_PORTA1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA1;\
+    }
+#define MTU_USE_FSPI1_PORTA2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA2;\
+    }
+#define MTU_USE_FSPI1_PORTB1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB1;\
+    }
+#define MTU_USE_FSPI1_PORTB2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB2;\
+    }
+#define MTU_USE_FSPI2_PORTA1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA1;\
+    }
+#define MTU_USE_FSPI2_PORTA2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA2;\
+    }
+#define MTU_USE_FSPI2_PORTB1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB1;\
+    }
+#define MTU_USE_FSPI2_PORTB2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB2;\
+    }
+
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -908,46 +949,57 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
             switch (packet->memConnection.ss_b)
             {
                 case kFlexspi1_Ss0A_GPIO_B2_09:
+                    MTU_USE_FSPI1_PORTA1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_B2_09_FLEXSPI1_BUS2BIT_A_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_B2_09_FLEXSPI1_BUS2BIT_A_SS0_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss1A_GPIO_B2_01:
+                    MTU_USE_FSPI1_PORTA2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_B2_01_FLEXSPI1_BUS2BIT_A_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_B2_01_FLEXSPI1_BUS2BIT_A_SS1_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss1A_GPIO_SD_B1_04:
+                    MTU_USE_FSPI1_PORTA2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_04_FLEXSPI1_BUS2BIT_A_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_04_FLEXSPI1_BUS2BIT_A_SS1_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss1A_GPIO_SD_B1_02:
+                    MTU_USE_FSPI1_PORTA2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_02_FLEXSPI1_BUS2BIT_A_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_02_FLEXSPI1_BUS2BIT_A_SS1_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss0B_GPIO_SD_B2_06:
+                    MTU_USE_FSPI1_PORTB1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_06_FLEXSPI1_BUS2BIT_B_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_06_FLEXSPI1_BUS2BIT_B_SS0_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss0B_GPIO_SD_B1_05:
+                    MTU_USE_FSPI1_PORTB1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_05_FLEXSPI1_BUS2BIT_B_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_05_FLEXSPI1_BUS2BIT_B_SS0_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss0B_GPIO_SD_B1_04:
+                    MTU_USE_FSPI1_PORTB1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_04_FLEXSPI1_BUS2BIT_B_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_04_FLEXSPI1_BUS2BIT_B_SS0_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss0B_GPIO_B1_04:
+                    MTU_USE_FSPI1_PORTB1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_B1_04_FLEXSPI1_BUS2BIT_B_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_04_FLEXSPI1_BUS2BIT_B_SS0_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss1B_GPIO_SD_B2_04:
+                    MTU_USE_FSPI1_PORTB2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_04_FLEXSPI1_BUS2BIT_B_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_04_FLEXSPI1_BUS2BIT_B_SS1_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss1B_GPIO_SD_B1_03:
+                    MTU_USE_FSPI1_PORTB2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B1_03_FLEXSPI1_BUS2BIT_B_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B1_03_FLEXSPI1_BUS2BIT_B_SS1_B, 0x0AU);
                     break;
                 case kFlexspi1_Ss1B_GPIO_B1_02:
+                    MTU_USE_FSPI1_PORTB2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_B1_02_FLEXSPI1_BUS2BIT_B_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_02_FLEXSPI1_BUS2BIT_B_SS1_B, 0x0AU);
                     break;
@@ -998,6 +1050,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_B1_03_FLEXSPI1_BUS2BIT_B_DQS, 0x0AU);
                     break;
                 default:
+                    s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackInternally;
                     break;
             }
             switch (packet->memConnection.dataHigh4bit)
@@ -1123,26 +1176,32 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
             switch (packet->memConnection.ss_b)
             {
                 case kFlexspi2_Ss0A_GPIO_EMC_B1_39:
+                    MTU_USE_FSPI2_PORTA1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_39_FLEXSPI2_BUS2BIT_A_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_39_FLEXSPI2_BUS2BIT_A_SS0_B, 0x0AU);
                     break;
                 case kFlexspi2_Ss0A_GPIO_AON_22:
+                    MTU_USE_FSPI2_PORTA1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_AON_22_FLEXSPI2_BUS2BIT_A_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_39_FLEXSPI2_BUS2BIT_A_SS0_B, 0x0AU);
                     break;
                 case kFlexspi2_Ss1A_GPIO_EMC_B1_26:
+                    MTU_USE_FSPI2_PORTA2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_26_FLEXSPI2_BUS2BIT_A_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_26_FLEXSPI2_BUS2BIT_A_SS1_B, 0x0AU);
                     break;
                 case kFlexspi2_Ss1A_GPIO_AON_20:
+                    MTU_USE_FSPI2_PORTA2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_A_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_20_FLEXSPI2_BUS2BIT_A_SS1_B, 0x0AU);
                     break;
                 case kFlexspi2_Ss1A_GPIO_AON_19:
+                    MTU_USE_FSPI2_PORTA2
                     IOMUXC_SetPinMux(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_A_SS1_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_AON_19_FLEXSPI2_BUS2BIT_A_SS1_B, 0x0AU);
                     break;
                 case kFlexspi2_Ss0B_GPIO_EMC_B1_28:
+                    MTU_USE_FSPI2_PORTB1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_EMC_B1_28_FLEXSPI2_BUS2BIT_B_SS0_B, 1U);
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_28_FLEXSPI2_BUS2BIT_B_SS0_B, 0x0AU);
                     break;
@@ -1201,6 +1260,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                     IOMUXC_SetPinConfig(IOMUXC_GPIO_EMC_B1_21_FLEXSPI2_BUS2BIT_B_DQS, 0x0AU);
                     break;
                 default:
+                    s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackInternally;
                     break;
             }
             switch (packet->memConnection.dataHigh4bit)
@@ -1294,12 +1354,22 @@ void bsp_mixspi_gpios_toggle(void)
     }
 }
 
-void bsp_mixspi_clock_init(void)
+void bsp_mixspi_clock_init(void *config)
 {
     clock_root_config_t rootCfg = {0};
-    rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
-    rootCfg.div = 1;
-    CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
+        rootCfg.div = 1;
+        CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc24M;
+        rootCfg.div = 1;
+        CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+    }
 }
 
 void bsp_mixspi_sw_delay_us(uint64_t us)
