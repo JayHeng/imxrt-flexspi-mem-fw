@@ -45,7 +45,6 @@
 #define NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_OPI 15
 
 #define NOR_CMD_LUT_SEQ_IDX_WRITE           9
-#define CUSTOM_LUT_LENGTH                   64
 
 // Supported Flash inst mode
 typedef enum _flash_inst_mode

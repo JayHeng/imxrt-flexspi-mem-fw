@@ -113,6 +113,8 @@ typedef struct _memory_property
     uint8_t dummyCycles;
 } memory_property_t;
 
+#define CUSTOM_LUT_LENGTH  64
+
 typedef struct _config_system_packet
 {
     uint16_t cpuSpeedMHz;
@@ -122,6 +124,7 @@ typedef struct _config_system_packet
     uint8_t reserved0[2];
     flexspi_connection_t memConnection;
     memory_property_t memProperty;
+    uint32_t memLut[CUSTOM_LUT_LENGTH];
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
 } config_system_packet_t;
