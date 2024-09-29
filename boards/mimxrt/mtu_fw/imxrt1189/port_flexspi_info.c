@@ -248,7 +248,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
         memset(s_pinInfo, 0xFF, sizeof(s_pinInfo));
         if (packet->memConnection.instance == 1)
         {
-            if (packet->unittestEn.option.B.dataLow4bit)
+            if (packet->pintestEn.option.B.dataLow4bit)
             {
                 switch (packet->memConnection.dataLow4bit)
                 {
@@ -313,7 +313,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.ss_b)
+            if (packet->pintestEn.option.B.ss_b)
             {
                 switch (packet->memConnection.ss_b)
                 {
@@ -387,7 +387,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.sclk)
+            if (packet->pintestEn.option.B.sclk)
             {
                 switch (packet->memConnection.sclk)
                 {
@@ -419,7 +419,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs0)
+            if (packet->pintestEn.option.B.dqs0)
             {
                 switch (packet->memConnection.dqs0)
                 {
@@ -452,7 +452,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dataHigh4bit)
+            if (packet->pintestEn.option.B.dataHigh4bit)
             {
                 switch (packet->memConnection.dataHigh4bit)
                 {
@@ -514,10 +514,10 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dataTop8bit)
+            if (packet->pintestEn.option.B.dataTop8bit)
             {
             }
-            if (packet->unittestEn.option.B.sclk_n)
+            if (packet->pintestEn.option.B.sclk_n)
             {
                 switch (packet->memConnection.sclk_n)
                 {
@@ -531,7 +531,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs1)
+            if (packet->pintestEn.option.B.dqs1)
             {
                 switch (packet->memConnection.dqs1)
                 {
@@ -546,13 +546,13 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.rst_b)
+            if (packet->pintestEn.option.B.rst_b)
             {
             }
         }
         else if (packet->memConnection.instance == 2)
         {
-            if (packet->unittestEn.option.B.dataLow4bit)
+            if (packet->pintestEn.option.B.dataLow4bit)
             {
                 switch (packet->memConnection.dataLow4bit)
                 {
@@ -655,7 +655,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.ss_b)
+            if (packet->pintestEn.option.B.ss_b)
             {
                 switch (packet->memConnection.ss_b)
                 {
@@ -699,7 +699,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.sclk)
+            if (packet->pintestEn.option.B.sclk)
             {
                 switch (packet->memConnection.sclk)
                 {
@@ -731,7 +731,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs0)
+            if (packet->pintestEn.option.B.dqs0)
             {
                 switch (packet->memConnection.dqs0)
                 {
@@ -781,7 +781,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dataHigh4bit)
+            if (packet->pintestEn.option.B.dataHigh4bit)
             {
                 switch (packet->memConnection.dataHigh4bit)
                 {
@@ -843,10 +843,10 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dataTop8bit)
+            if (packet->pintestEn.option.B.dataTop8bit)
             {
             }
-            if (packet->unittestEn.option.B.sclk_n)
+            if (packet->pintestEn.option.B.sclk_n)
             {
                 switch (packet->memConnection.sclk_n)
                 {
@@ -866,7 +866,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs1)
+            if (packet->pintestEn.option.B.dqs1)
             {
                 switch (packet->memConnection.dqs1)
                 {
@@ -898,7 +898,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.rst_b)
+            if (packet->pintestEn.option.B.rst_b)
             {
             }
         }
@@ -1338,7 +1338,7 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
 
 void bsp_mixspi_gpios_toggle(void)
 {
-    if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+    if (s_pinUnittestPacket.pintestEn.enableAdcSample)
     {
         uint8_t convValue = bsp_adc_get_conv_value();
         mtu_uart_sendhex(&convValue, sizeof(convValue));
@@ -1360,12 +1360,14 @@ void bsp_mixspi_clock_init(void *config)
     mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
     if (userConfig->mixspiBase == FLEXSPI1)
     {
+        userConfig->instance = 1;
         rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
         rootCfg.div = 1;
         CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
     }
     else if (userConfig->mixspiBase == FLEXSPI2)
     {
+        userConfig->instance = 2;
         rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc24M;
         rootCfg.div = 1;
         CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);

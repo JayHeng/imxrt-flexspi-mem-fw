@@ -62,6 +62,7 @@ typedef enum _flash_inst_mode
 // NOR property info for operation
 typedef struct _mixspi_user_config
 {
+    uint32_t                   instance;
     MIXSPI_Type                *mixspiBase;
     mixspi_port_t               mixspiPort;
     mixspi_root_clk_freq_t      mixspiRootClkFreq;

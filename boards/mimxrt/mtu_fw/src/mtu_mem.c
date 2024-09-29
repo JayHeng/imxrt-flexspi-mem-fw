@@ -117,7 +117,7 @@ status_t mtu_memory_init(void)
 
     mtu_mixspi_nor_flash_init(&s_userConfig, &s_deviceconfig);
 
-    printf("--FLEXSPI module initialized.\r\n");
+    printf("--FLEXSPI%d module initialized.\r\n", s_userConfig.instance);
 
     /* Get JEDEC ID. */
     status = mtu_mixspi_nor_get_jedec_id(&s_userConfig, &jedecID);

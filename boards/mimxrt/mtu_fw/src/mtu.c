@@ -45,7 +45,7 @@ pin_unittest_packet_t s_pinUnittestPacket =
                     .sclk_n = 0xFF,
                     .rst_b = 0x00,
                     },
-  .unittestEn = {.pulseInMs = 10,
+  .pintestEn = {.pulseInMs = 10,
                  .option.U = 0x7F
                  },
 };
@@ -100,7 +100,7 @@ static void mtu_command_get_from_buffer(void)
                     uint8_t currentCmdTag = g_demoRingBuffer[g_txIndex];
                     switch (currentCmdTag)
                     {
-                        case kCommandTag_PinUnittest:
+                        case kCommandTag_PinTest:
                             isCmdTagFound = true;
                             remainingCmdBytes = sizeof(pin_unittest_packet_t);
                             memset(&s_pinUnittestPacket, 0x0, sizeof(s_pinUnittestPacket));
@@ -222,7 +222,7 @@ static bool mtu_command_is_valid(void)
 #endif
     switch (s_currentCmdTag)
     {
-        case kCommandTag_PinUnittest:
+        case kCommandTag_PinTest:
 #if MTU_FEATURE_PACKET_CRC
             crcStart = (const uint8_t *)(&s_pinUnittestPacket);
             crcLength = (const uint8_t *)(&s_pinUnittestPacket.crcCheckSum) - crcStart;
@@ -292,21 +292,21 @@ static void mtu_command_execute(void)
 {
     switch (s_currentCmdTag)
     {
-        case kCommandTag_PinUnittest:
+        case kCommandTag_PinTest:
 #if MTU_FEATURE_PINTEST
             printf("--You can check wave on enabled pins now. \r\n");
-            if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+            if (s_pinUnittestPacket.pintestEn.enableAdcSample)
             {
                 bsp_adc_echo_info();
                 mtu_print_mode_switch(false);
             }
             mtu_deinit_timer();
             bsp_mixspi_pinmux_config(&s_pinUnittestPacket, true);
-            if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+            if (s_pinUnittestPacket.pintestEn.enableAdcSample)
             {
                 bsp_adc_init();
             }
-            mtu_init_timer(s_pinUnittestPacket.unittestEn.pulseInMs, (void *)bsp_mixspi_gpios_toggle);
+            mtu_init_timer(s_pinUnittestPacket.pintestEn.pulseInMs, (void *)bsp_mixspi_gpios_toggle);
 #endif
             break;
 
@@ -331,11 +331,11 @@ static void mtu_command_execute(void)
 
         case kCommandTag_TestStop:
             {
-                if (s_lastCmdTag == kCommandTag_PinUnittest)
+                if (s_lastCmdTag == kCommandTag_PinTest)
                 {
 #if MTU_FEATURE_PINTEST
                     mtu_deinit_timer();
-                    if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+                    if (s_pinUnittestPacket.pintestEn.enableAdcSample)
                     {
                         bsp_adc_deinit();
                         mtu_print_mode_switch(true);

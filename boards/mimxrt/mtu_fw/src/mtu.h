@@ -38,7 +38,7 @@
 //! @brief Commands codes.
 enum _command_tags
 {
-    kCommandTag_PinUnittest     = 0x01,
+    kCommandTag_PinTest         = 0x01,
     kCommandTag_ConfigSystem    = 0x02,
     kCommandTag_GetMemInfo      = 0x03,
     kCommandTag_RunRwTest       = 0x04,
@@ -90,12 +90,12 @@ typedef struct _flexspi_unittest_en
         } B;
         uint32_t U;
     } option;
-} flexspi_unittest_en_t;
+} flexspi_pintest_en_t;
 
 typedef struct _pin_unittest_packet
 {
     flexspi_connection_t memConnection;
-    flexspi_unittest_en_t unittestEn;
+    flexspi_pintest_en_t pintestEn;
     uint16_t crcCheckSum;
     uint8_t reserved0[2];
 } pin_unittest_packet_t;
