@@ -25,7 +25,7 @@
 #define NOR_CMD_LUT_SEQ_IDX_SETDRIVE        6
 #define NOR_CMD_LUT_SEQ_IDX_UNIQUECFG       6
 #define NOR_CMD_LUT_SEQ_IDX_WRITEENABLE     7
-#define NOR_CMD_LUT_SEQ_IDX_READREG         8
+#define NOR_CMD_LUT_SEQ_IDX_READREG1        8
 #define NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM     10
 #define NOR_CMD_LUT_SEQ_IDX_READREG2        11
 // FlexSPI LUT seq defn (1bit spi)

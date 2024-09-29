@@ -113,7 +113,8 @@ typedef struct _memory_property
     uint8_t dummyCycles;
 } memory_property_t;
 
-#define CUSTOM_LUT_LENGTH  64
+#define CUSTOM_LUT_LENGTH    64
+#define LUT_SEQUENCE_LENGTH  (4*4)
 
 typedef struct _config_system_packet
 {

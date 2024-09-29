@@ -93,7 +93,7 @@ uint32_t s_customLUTCommonMode[CUSTOM_LUT_LENGTH] = {
         FLEXSPI_LUT_SEQ(kFLEXSPI_Command_WRITE_SDR, kFLEXSPI_1PAD, 0x04, kFLEXSPI_Command_STOP,      kFLEXSPI_1PAD, 0x00),
 
     /* Read function register */
-    [4 * NOR_CMD_LUT_SEQ_IDX_READREG] =
+    [4 * NOR_CMD_LUT_SEQ_IDX_READREG1] =
         FLEXSPI_LUT_SEQ(kFLEXSPI_Command_SDR,       kFLEXSPI_1PAD, 0x48, kFLEXSPI_Command_READ_SDR,  kFLEXSPI_1PAD, 0x01),
 
     /* Read read parameters */
@@ -112,6 +112,8 @@ status_t mtu_memory_init(void)
     
     //s_userConfig.mixspiBase = FLEXSPI1;
     //s_userConfig.mixspiPort = kFLEXSPI_PortA1;
+    memcpy(&s_customLUTCommonMode[4*NOR_CMD_LUT_SEQ_IDX_READREG1], &s_configSystemPacket.memLut[4*NOR_CMD_LUT_SEQ_IDX_READREG1], LUT_SEQUENCE_LENGTH);
+    memcpy(&s_customLUTCommonMode[4*NOR_CMD_LUT_SEQ_IDX_READREG2], &s_configSystemPacket.memLut[4*NOR_CMD_LUT_SEQ_IDX_READREG2], LUT_SEQUENCE_LENGTH);
     s_userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
     s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
 
@@ -141,12 +143,12 @@ status_t mtu_memory_get_info(void)
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READSTATUS;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
     printf("--Flash Status Register: 0x%x\r\n", regAccess.regValue.B.reg1);
-    regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG;
+    regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG1;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("--Flash Function Register: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("--Flash Custom Register1: 0x%x\r\n", regAccess.regValue.B.reg1);
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG2;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("--Flash Read Parameters: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("--Flash Custom Register2: 0x%x\r\n", regAccess.regValue.B.reg1);
     
     return kStatus_Success;
 }
