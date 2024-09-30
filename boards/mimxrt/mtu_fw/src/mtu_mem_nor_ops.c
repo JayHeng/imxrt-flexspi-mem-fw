@@ -273,6 +273,7 @@ void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, flexspi_device_
     flexspi_config_t config;
 
     bsp_mixspi_clock_init(userConfig);
+    bsp_mixspi_clock_source(userConfig);
 
     /*Get FLEXSPI default settings and configure the flexspi. */
     FLEXSPI_GetDefaultConfig(&config);

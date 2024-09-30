@@ -40,4 +40,6 @@ typedef struct _jedec_id
 
 void mtu_flash_validate_jedec_id(jedec_id_t *jedecID);
 
+mixspi_root_clk_freq_t mtu_flash_convert_root_clk(uint32_t clkInMHz);
+
 #endif /* _MTU_MEM_NOR_DEVICE_H_ */

@@ -110,6 +110,8 @@ status_t mtu_memory_init(void)
     status_t status;
     uint32_t jedecID = 0;
     
+    s_userConfig.mixspiRootClkFreq = mtu_flash_convert_root_clk(s_configSystemPacket.memProperty.speedMHz);
+    
     //s_userConfig.mixspiBase = FLEXSPI1;
     //s_userConfig.mixspiPort = kFLEXSPI_PortA1;
     memcpy(s_customLUTCommonMode, s_configSystemPacket.memProperty.memLut, CUSTOM_LUT_LENGTH * 4);

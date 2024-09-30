@@ -1358,20 +1358,298 @@ void bsp_mixspi_clock_init(void *config)
 {
     clock_root_config_t rootCfg = {0};
     mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    mixspi_root_clk_freq_t clkFreq = userConfig->mixspiRootClkFreq;
     if (userConfig->mixspiBase == FLEXSPI1)
     {
         userConfig->instance = 1;
-        rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
-        rootCfg.div = 1;
-        CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        ///////////////////////////////////////////////////////////////////
+        // default settings in clock_config.c
+
+        /* Init System Pll2 pfd0. */
+        // 528*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+        //CLOCK_InitPfd(kCLOCK_PllSys2, kCLOCK_Pfd0, 29);  -- 327MHz
+
+        /* Init System Pll3 pfd0. */
+        // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+        //CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 22);  -- 392MHz
+        ///////////////////////////////////////////////////////////////////
+
+        // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 12-35.
+        if (clkFreq == kMixspiRootClkFreq_30MHz)
+        {
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_50MHz)
+        {
+            // System Pll3 pfd0 (392MHz) / 8
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 8;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_60MHz)
+        {
+            // System Pll3 pfd0 (392MHz) / 7
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 7;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_80MHz)
+        {
+            // System Pll3 pfd0 (392MHz) / 5
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 5;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_100MHz)
+        {
+            // System Pll3 pfd0 (392MHz) / 4
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 4;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_120MHz)
+        {
+            // System Pll2 pfd0 (327MHz) / 3
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd0;
+            rootCfg.div = 3;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_133MHz)
+        {
+            // System Pll3 pfd0 (392MHz) / 3
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 3;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_166MHz)
+        {
+            // System Pll2 pfd0 (327MHz) / 2
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd0;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_200MHz)
+        {
+            // System Pll3 pfd0 (392MHz) / 2
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_332MHz)
+        {
+            // System Pll2 pfd0 (327MHz) / 1
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd0;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_400MHz)
+        {
+            // System Pll3 pfd0 (392MHz) / 1
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else
+        {
+            printf("--FLEXSPI1 clock freq is not set.\r\n");
+        }
+        uint32_t flexspiClk = CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi1);
+        if (flexspiClk > 166000000U)
+        {
+            __NOP();
+        }
     }
     else if (userConfig->mixspiBase == FLEXSPI2)
     {
         userConfig->instance = 2;
-        rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc24M;
-        rootCfg.div = 1;
-        CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        ///////////////////////////////////////////////////////////////////
+        // default settings in clock_config.c
+
+        /* Init System Pll2 pfd1. */
+        // 528*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+        //CLOCK_InitPfd(kCLOCK_PllSys2, kCLOCK_Pfd1, 29);  -- 327MHz
+
+        /* Init System Pll3 pfd2. */
+        // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+        //CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd2, 22);  -- 392MHz
+        ///////////////////////////////////////////////////////////////////
+
+        // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 12-35.
+        if (clkFreq == kMixspiRootClkFreq_30MHz)
+        {
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc24M;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_50MHz)
+        {
+            // System Pll3 pfd2 (392MHz) / 8
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2;
+            rootCfg.div = 8;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_60MHz)
+        {
+            // System Pll3 pfd2 (392MHz) / 7
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2;
+            rootCfg.div = 7;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_80MHz)
+        {
+            // System Pll3 pfd2 (392MHz) / 5
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2;
+            rootCfg.div = 5;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_100MHz)
+        {
+            // System Pll3 pfd2 (392MHz) / 4
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2;
+            rootCfg.div = 4;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_120MHz)
+        {
+            // System Pll2 pfd1 (327MHz) / 3
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll2Pfd1;
+            rootCfg.div = 3;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_133MHz)
+        {
+            // System Pll3 pfd2 (392MHz) / 3
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2;
+            rootCfg.div = 3;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_166MHz)
+        {
+            // System Pll2 pfd1 (327MHz) / 2
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll2Pfd1;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_200MHz)
+        {
+            // System Pll3 pfd2 (392MHz) / 2
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_332MHz)
+        {
+            // System Pll2 pfd1 (327MHz) / 1
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll2Pfd1;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_400MHz)
+        {
+            // System Pll3 pfd2 (392MHz) / 1
+            rootCfg.mux = kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi2, &rootCfg);
+        }
+        else
+        {
+            printf("--FlexSPI2 clock freq is not set.\r\n");
+        }
+        uint32_t flexspiClk = CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi2);
+        if (flexspiClk > 166000000U)
+        {
+            __NOP();
+        }
     }
+    else
+    {
+    }
+}
+
+static uint32_t bsp_mixspi_get_clock(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        return CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi1);
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        return CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi2);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void bsp_mixspi_clock_source(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    uint32_t index = 0;
+    clock_root_t root;
+    uint32_t clkSel;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        root = kCLOCK_Root_Flexspi1;
+        clkSel = CLOCK_GetRootClockMux(root);
+        switch (clkSel)
+        {
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M:
+                printf("--FLEXSPI1 Clk Source from 2'b00 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24M));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc400M:
+                printf("--FLEXSPI1 Clk Source from 2'b01 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0:
+                printf("--FLEXSPI1 Clk Source from 2'b10 - Sys PLL3 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd0));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd0:
+                printf("--FLEXSPI1 Clk Source from 2'b11 - Sys PLL2 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd0));
+                break;
+
+            default:
+                break;
+        }
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        root = kCLOCK_Root_Flexspi2;
+        clkSel = CLOCK_GetRootClockMux(root);
+        switch (clkSel)
+        {
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc24M:
+                printf("--FLEXSPI2 Clk Source from 2'b00 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24M));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc400M:
+                printf("--FLEXSPI2 Clk Source from 2'b01 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2:
+                printf("--FLEXSPI2 Clk Source from 2'b10 - Sys PLL3 PFD2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd2));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll2Pfd1:
+                printf("--FLEXSPI2 Clk Source from 2'b11 - Sys PLL2 PFD1 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd1));
+                break;
+
+            default:
+                break;
+        }
+    }
+    else
+    {
+    }
+    index = (root - kCLOCK_Root_Flexspi1) + 1;
+    uint32_t clkDiv = CLOCK_GetRootClockDiv(root);
+    printf("--FLEXSPI%d Clk Source Divider: %d.\r\n", index, clkDiv);
+    printf("--FLEXSPI%d Clk Frequency: %dHz.\r\n", index, bsp_mixspi_get_clock(userConfig));
 }
 
 void bsp_mixspi_sw_delay_us(uint64_t us)

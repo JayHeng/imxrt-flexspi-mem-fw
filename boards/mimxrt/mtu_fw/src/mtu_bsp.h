@@ -46,20 +46,22 @@ typedef struct PinInfo
  * API
  ******************************************************************************/
 
-void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest);
+void     bsp_mixspi_pinmux_config(void *configPacket, bool isPintest);
 
-void bsp_mixspi_gpios_toggle(void);
+void     bsp_mixspi_gpios_toggle(void);
 
-void bsp_mixspi_clock_init(void *config);
+void     bsp_mixspi_clock_init(void *config);
 
-void bsp_mixspi_sw_delay_us(uint64_t us);
+void     bsp_mixspi_clock_source(void *config);
 
-void    bsp_adc_echo_info(void);
+void     bsp_mixspi_sw_delay_us(uint64_t us);
 
-void    bsp_adc_init(void);
+void     bsp_adc_echo_info(void);
 
-uint8_t bsp_adc_get_conv_value(void);
+void     bsp_adc_init(void);
 
-void    bsp_adc_deinit(void);
+uint8_t  bsp_adc_get_conv_value(void);
+
+void     bsp_adc_deinit(void);
 
 #endif /* __MTU_BSP__ */

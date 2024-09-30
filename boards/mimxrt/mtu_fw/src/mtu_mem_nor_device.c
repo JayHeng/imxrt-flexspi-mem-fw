@@ -33,10 +33,31 @@ void mtu_flash_set_info_for_spansion(jedec_id_t *jedecID);
  * Variables
  *****************************************************************************/
 
+const uint32_t g_mixspiRootClkFreqInMHz[] = {0, 30, 50, 60, 80, 100, 120, 133, 166, 200, 240, 266, 332, 400};
 
 /*******************************************************************************
  * Code
  ******************************************************************************/
+
+mixspi_root_clk_freq_t mtu_flash_convert_root_clk(uint32_t clkInMHz)
+{
+    uint32_t idx = 1;
+    for (; idx < sizeof(g_mixspiRootClkFreqInMHz)/sizeof(uint32_t) - 1; idx++)
+    {
+        if (clkInMHz < g_mixspiRootClkFreqInMHz[idx + 1])
+        {
+            uint32_t delta1 = (g_mixspiRootClkFreqInMHz[idx] >= clkInMHz)?(g_mixspiRootClkFreqInMHz[idx] - clkInMHz):(clkInMHz - g_mixspiRootClkFreqInMHz[idx]);
+            uint32_t delta2 = g_mixspiRootClkFreqInMHz[idx + 1] - clkInMHz;
+            if (delta1 > delta2)
+            {
+                idx++;
+            }
+            break;
+        }
+    }
+    
+    return (mixspi_root_clk_freq_t)idx;
+}
 
 uint32_t mtu_flash_decode_common_capacity_id(uint8_t capacityID)
 {
