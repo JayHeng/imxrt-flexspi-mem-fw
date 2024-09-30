@@ -100,6 +100,8 @@ typedef struct _pin_unittest_packet
     uint8_t reserved0[2];
 } pin_unittest_packet_t;
 
+#define CUSTOM_LUT_LENGTH    64
+
 //! @brief Flexspi memory property option.
 typedef struct _memory_property
 {
@@ -111,10 +113,11 @@ typedef struct _memory_property
     uint8_t interfaceMode;
     uint8_t dataRateMode;
     uint8_t dummyCycles;
+    uint16_t flashQuadEnableCfg;
+    uint8_t  flashQuadEnableBytes;
+    uint8_t  reserved0;
+    uint32_t memLut[CUSTOM_LUT_LENGTH];
 } memory_property_t;
-
-#define CUSTOM_LUT_LENGTH    64
-#define LUT_SEQUENCE_LENGTH  (4*4)
 
 typedef struct _config_system_packet
 {
@@ -125,7 +128,6 @@ typedef struct _config_system_packet
     uint8_t reserved0[2];
     flexspi_connection_t memConnection;
     memory_property_t memProperty;
-    uint32_t memLut[CUSTOM_LUT_LENGTH];
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
 } config_system_packet_t;

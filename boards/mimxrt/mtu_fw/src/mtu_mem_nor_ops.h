@@ -112,4 +112,6 @@ status_t mtu_mixspi_nor_write_register(mixspi_user_config_t *userConfig, flash_r
 
 status_t mtu_mixspi_nor_read_register(mixspi_user_config_t *userConfig, flash_reg_access_t *regAccess);
 
+status_t mtu_mixspi_nor_enable_quad_mode(mixspi_user_config_t *userConfig);
+
 #endif /* _MTU_MEM_NOR_OPS_H_ */

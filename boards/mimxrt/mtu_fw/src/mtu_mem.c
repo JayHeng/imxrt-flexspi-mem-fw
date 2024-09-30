@@ -112,8 +112,7 @@ status_t mtu_memory_init(void)
     
     //s_userConfig.mixspiBase = FLEXSPI1;
     //s_userConfig.mixspiPort = kFLEXSPI_PortA1;
-    memcpy(&s_customLUTCommonMode[4*NOR_CMD_LUT_SEQ_IDX_READREG1], &s_configSystemPacket.memLut[4*NOR_CMD_LUT_SEQ_IDX_READREG1], LUT_SEQUENCE_LENGTH);
-    memcpy(&s_customLUTCommonMode[4*NOR_CMD_LUT_SEQ_IDX_READREG2], &s_configSystemPacket.memLut[4*NOR_CMD_LUT_SEQ_IDX_READREG2], LUT_SEQUENCE_LENGTH);
+    memcpy(s_customLUTCommonMode, s_configSystemPacket.memProperty.memLut, CUSTOM_LUT_LENGTH * 4);
     s_userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
     s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
 
@@ -128,6 +127,14 @@ status_t mtu_memory_init(void)
         return status;
     }
     mtu_flash_validate_jedec_id((jedec_id_t *)&jedecID);
+
+    status = mtu_mixspi_nor_enable_quad_mode(&s_userConfig);
+    if (status != kStatus_Success)
+    {
+        printf("--Flash failed to enter Quad I/O SDR mode.\r\n");
+        return status;
+    }
+    printf("--Flash entered Quad I/O SDR mode.\r\n");
     
     return kStatus_Success;
 }
