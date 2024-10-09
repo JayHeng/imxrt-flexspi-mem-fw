@@ -41,17 +41,17 @@
 //! @brief Commands codes.
 enum _command_tags
 {
-    kCommandTag_PinTest         = 0x01,
-    kCommandTag_ConfigSystem    = 0x02,
-    kCommandTag_GetMemInfo      = 0x03,
-    kCommandTag_RunRwTest       = 0x04,
-    kCommandTag_RunPerfTest     = 0x05,
-    kCommandTag_RunStressTest   = 0x06,
+    kCommandTag_PinTest         = 0xF1,
+    kCommandTag_ConfigSystem    = 0xF2,
+    kCommandTag_GetMemInfo      = 0xF3,
+    kCommandTag_RunRwTest       = 0xF4,
+    kCommandTag_RunPerfTest     = 0xF5,
+    kCommandTag_RunStressTest   = 0xF6,
 
     kCommandTag_TestStop        = 0xF0,
 
     //! Maximum linearly incrementing command tag value.
-    kInvalidCommandTag,
+    kInvalidCommandTag          = 0xFF,
 };
 
 //! @brief Flexspi pin connection sel code.
@@ -143,6 +143,36 @@ typedef struct _rw_test_packet
     uint8_t reserved1[2];
 } rw_test_packet_t;
 
+//! @brief Perf-Test codes.
+enum _perf_test_sets
+{
+    kPerfTestSet_Coremark        = 0xA0,
+    kPerfTestSet_Dhrystone       = 0xB0,
+    kPerfTestSet_Mbw             = 0xC0,
+    kPerfTestSet_Sysbench        = 0xD0,
+
+    kPerfTestSubSet_Memcpy       = 0xC1,
+    kPerfTestSubSet_Dumb         = 0xC2,
+    kPerfTestSubSet_MemcpyFixBlk = 0xC3,
+
+    //! Maximum linearly incrementing Perf-Test code value.
+    kInvalidPerfTestSet          = 0xFF,
+};
+
+typedef struct _perf_test_packet
+{
+    uint8_t testSet;
+    uint8_t subTestSet;
+    uint8_t enableAverageShow;
+    uint8_t reserved0;
+    uint32_t iterations;
+    uint32_t testRamStart;
+    uint32_t testRamSize;
+    uint32_t testBlockSize;
+    uint16_t crcCheckSum;
+    uint8_t reserved1[2];
+} perf_test_packet_t;
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -150,6 +180,7 @@ typedef struct _rw_test_packet
 extern pin_unittest_packet_t s_pinUnittestPacket;
 extern config_system_packet_t s_configSystemPacket;
 extern rw_test_packet_t s_rwTestPacket;
+extern perf_test_packet_t s_perfTestPacket;
 
 /*******************************************************************************
  * API

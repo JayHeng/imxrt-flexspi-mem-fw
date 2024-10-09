@@ -59,6 +59,9 @@ config_system_packet_t s_configSystemPacket;
 /*! @brief R/W Test packet. */
 rw_test_packet_t s_rwTestPacket;
 
+/*! @brief Performance Test packet. */
+perf_test_packet_t s_perfTestPacket;
+
 /*******************************************************************************
  * Code
  ******************************************************************************/
@@ -124,6 +127,13 @@ static void mtu_command_get_from_buffer(void)
                             remainingCmdBytes = sizeof(rw_test_packet_t);
                             memset(&s_rwTestPacket, 0x0, sizeof(s_rwTestPacket));
                             cmdPacket = (uint8_t *)&s_rwTestPacket;
+                            break;
+
+                        case kCommandTag_RunPerfTest:
+                            isCmdTagFound = true;
+                            remainingCmdBytes = sizeof(perf_test_packet_t);
+                            memset(&s_perfTestPacket, 0x0, sizeof(s_perfTestPacket));
+                            cmdPacket = (uint8_t *)&s_perfTestPacket;
                             break;
 
                         case kCommandTag_TestStop:
@@ -233,7 +243,7 @@ static bool mtu_command_is_valid(void)
 #endif
             if (isCmdValid)
             {
-                printf("--Received Pin Unittest command. \r\n");
+                printf("--Received Pin Test command. \r\n");
             }
             break;
 
@@ -268,7 +278,22 @@ static bool mtu_command_is_valid(void)
 #endif
             if (isCmdValid)
             {
-                printf("--Received R/W test command. \r\n");
+                printf("--Received R/W Test command. \r\n");
+            }
+            break;
+
+        case kCommandTag_RunPerfTest:
+#if MTU_FEATURE_PACKET_CRC
+            crcStart = (const uint8_t *)(&s_perfTestPacket);
+            crcLength = (const uint8_t *)(&s_perfTestPacket.crcCheckSum) - crcStart;
+            expectedCrc = s_perfTestPacket.crcCheckSum;
+            isCmdValid = mtu_command_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+#else
+            isCmdValid = true;
+#endif
+            if (isCmdValid)
+            {
+                printf("--Received Perf Test command. \r\n");
             }
             break;
 
@@ -294,7 +319,7 @@ static void mtu_command_execute(void)
     {
         case kCommandTag_PinTest:
 #if MTU_FEATURE_PINTEST
-            printf("--You can check wave on enabled pins now. \r\n");
+            printf("Can check wave on enabled pins now. \r\n");
             if (s_pinUnittestPacket.pintestEn.enableAdcSample)
             {
                 bsp_adc_echo_info();
@@ -311,6 +336,7 @@ static void mtu_command_execute(void)
             break;
 
         case kCommandTag_ConfigSystem:
+            bsp_rt_system_clocks_print();
 #if MTU_FEATURE_MEMORY
             bsp_mixspi_pinmux_config(&s_configSystemPacket, false);
             mtu_memory_init();
@@ -327,6 +353,34 @@ static void mtu_command_execute(void)
 #if MTU_FEATURE_MEMORY
             mtu_memory_rwtest();
 #endif
+            break;
+
+        case kCommandTag_RunPerfTest:
+#if MTU_FEATURE_PERFTEST
+            {
+                switch (s_perfTestPacket.testSet)
+                {
+                    case kPerfTestSet_Coremark:
+                        break;
+                    case kPerfTestSet_Dhrystone:
+                        break;
+#if MTU_FEATURE_PERFTEST_MBW
+                    case kPerfTestSet_Mbw:
+                        mbw_main(s_perfTestPacket.subTestSet - s_perfTestPacket.testSet, 
+                                 s_perfTestPacket.enableAverageShow,
+                                 s_perfTestPacket.iterations,
+                                 s_perfTestPacket.testBlockSize,
+                                 s_perfTestPacket.testRamStart,
+                                 s_perfTestPacket.testRamSize);
+                        break;
+#endif
+                    case kPerfTestSet_Sysbench:
+                        break;
+                    default:
+                        break;
+                }
+#endif
+            }
             break;
 
         case kCommandTag_TestStop:
@@ -358,10 +412,6 @@ void mtu_main(void)
 {
     mtu_init_uart();
     mtu_life_timer_init();
-#if MTU_FEATURE_PERFTEST_MBW
-    bsp_rt_system_clocks_print();
-    mbw_main(0, 1, 0, 0x400, 0x20500000, 0x20000);
-#endif
 
     while(1)
     {

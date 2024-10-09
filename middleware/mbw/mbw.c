@@ -15,9 +15,9 @@
 #define DEFAULT_BLOCK_SIZE 262144
 
 /* test types */
-#define TEST_MEMCPY 0
-#define TEST_DUMB 1
-#define TEST_MCBLOCK 2
+#define TEST_MEMCPY  1
+#define TEST_DUMB    2
+#define TEST_MCBLOCK 3
 
 /* version number */
 #define VERSION "1.4"
@@ -197,6 +197,9 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
     kt = mem_size / 1024.0;
     int quiet=0; /* suppress extra messages */
 
+    printf("Running mbw v%s.\n", VERSION);
+    printf("Arg List: testno=%d, showavg=%d, nr_loops=%d, block_size=0x%x, mem_start=0x%x, mem_size=0x%x.\n", testno, showavg, nr_loops, (uint32_t)block_size, mem_start, mem_size);
+
     tests[0]=0;
     tests[1]=0;
     tests[2]=0;
@@ -310,9 +313,10 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
     }
 
     /* run all tests requested, the proper number of times */
-    for(testno=0; testno<MAX_TESTS; testno++) {
+    //for(testno=1; testno<=MAX_TESTS; testno++) 
+    {
         te_sum=0;
-        if(tests[testno]) {
+        if(tests[testno-1]) {
             for (i=0; i<nr_loops; i++) {
                 te=worker(asize, a, b, testno, block_size);
                 te_sum+=te;
