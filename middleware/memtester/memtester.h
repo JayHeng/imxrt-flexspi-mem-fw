@@ -18,6 +18,7 @@
 #include "types.h"
 #include "sizes.h"
 #include "fsl_debug_console.h"
+#include "mtu.h"
 
 /* extern declarations. */
 

@@ -43,7 +43,7 @@
  * watch out for swap usage (or turn off swap)
  */
 
-void usage()
+void mbw_usage()
 {
     printf("mbw memory benchmark v%s, https://github.com/raas/mbw\n", VERSION);
     printf("Usage: mbw [options] array_size_in_MiB\n");
@@ -197,8 +197,8 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
     kt = mem_size / 1024.0;
     int quiet=0; /* suppress extra messages */
 
-    printf("Running mbw v%s.\n", VERSION);
     printf("Arg List: testno=%d, showavg=%d, nr_loops=%d, block_size=0x%x, mem_start=0x%x, mem_size=0x%x.\n", testno, showavg, nr_loops, (uint32_t)block_size, mem_start, mem_size);
+    printf("mbw memory benchmark v%s, https://github.com/raas/mbw\n", VERSION);
 
     tests[0]=0;
     tests[1]=0;
@@ -216,7 +216,7 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
     while((o=getopt(argc, argv, "haqn:t:b:")) != EOF) {
         switch(o) {
             case 'h':
-                usage();
+                mbw_usage();
                 exit(1);
                 break;
             case 'a': /* suppress printing average */

@@ -29,6 +29,9 @@
 #if MTU_FEATURE_PERFTEST
 #include "mbw.h"
 #endif
+#if MTU_FEATURE_STRESSTEST
+#include "memtester.h"
+#endif
 
 /*******************************************************************************
  * Definitions
@@ -173,6 +176,28 @@ typedef struct _perf_test_packet
     uint8_t reserved1[2];
 } perf_test_packet_t;
 
+//! @brief Stress-Test codes.
+enum _stress_test_sets
+{
+    kStressTestSet_Memtester     = 0xE0,
+
+    //! Maximum linearly incrementing Stress-Test code value.
+    kInvalidStressTestSet        = 0xFF,
+};
+
+typedef struct _stress_test_packet
+{
+    uint8_t testSet;
+    uint8_t enableStopWhenFail;
+    uint8_t reserved0[2];
+    uint32_t iterations;
+    uint32_t testRamStart;
+    uint32_t testRamSize;
+    uint32_t testPageSize;
+    uint16_t crcCheckSum;
+    uint8_t reserved1[2];
+} stress_test_packet_t;
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -181,6 +206,7 @@ extern pin_unittest_packet_t s_pinUnittestPacket;
 extern config_system_packet_t s_configSystemPacket;
 extern rw_test_packet_t s_rwTestPacket;
 extern perf_test_packet_t s_perfTestPacket;
+extern stress_test_packet_t s_stressTestPacket;
 
 /*******************************************************************************
  * API

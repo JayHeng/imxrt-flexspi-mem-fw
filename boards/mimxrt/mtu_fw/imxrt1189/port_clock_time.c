@@ -30,7 +30,7 @@
 
 void bsp_rt_system_clocks_print(void)
 {
-    printf("Clock roots frequency (MHz):\n");
+    printf("Platform clock roots frequency (MHz):\n");
     for(uint32_t i=0; i<4; i++)
     {
         uint32_t freq = CLOCK_GetRootClockFreq((clock_root_t)i);

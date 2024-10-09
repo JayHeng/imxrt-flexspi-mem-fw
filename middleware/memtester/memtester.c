@@ -48,9 +48,9 @@ struct test tests[] = {
 #ifdef _SC_VERSION
 void check_posix_system(void) {
     if (sysconf(_SC_VERSION) < 198808L) {
-        PRINTF("A POSIX system is required.  Don't be surprised if "
+        printf("A POSIX system is required.  Don't be surprised if "
             "this craps out.\n");
-        PRINTF("_SC_VERSION is %u\n", sysconf(_SC_VERSION));
+        printf("_SC_VERSION is %u\n", sysconf(_SC_VERSION));
     }
 }
 #else
@@ -64,12 +64,12 @@ int memtester_pagesize(void) {
         perror("get page size failed");
         exit(EXIT_FAIL_NONSTARTER);
     }
-    PRINTF("pagesize is %d\n", pagesize);
+    printf("pagesize is %d\n", pagesize);
     return pagesize;
 }
 #else
 int memtester_pagesize(void) {
-    PRINTF("sysconf(_SC_PAGE_SIZE) not supported; using pagesize of 8192\n");
+    printf("sysconf(_SC_PAGE_SIZE) not supported; using pagesize of 8192\n");
     return 8192;
 }
 #endif
@@ -81,16 +81,16 @@ int memtester_pagesize(void) {
 #endif
 
 /* Function declarations */
-void usage(char *me);
+void memtester_usage(char *me);
 
 /* Global vars - so tests have access to this information */
 int use_phys = 0;
 off_t physaddrbase = 0;
-extern int fail_stop;
+extern int s_memtester_fail_stop;
 
 /* Function definitions */
-void usage(char *me) {
-    PRINTF("\n"
+void memtester_usage(char *me) {
+    printf("\n"
             "Usage: %s [-p physaddrbase [-d device]] <mem>[B|K|M|G] [loops]\n",
             me);
     exit(EXIT_FAIL_NONSTARTER);
@@ -128,16 +128,17 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
     ul testmask = 0;
 
     physaddrbase = phystestbase;
-    PRINTF("memtester version " __version__ " (%d-bit)\n", UL_LEN);
-    PRINTF("Copyright (C) 2001-2020 Charles Cazabon.\n");
-    PRINTF("Licensed under the GNU General Public License version 2 (only).\n");
-    PRINTF("\n");
+    printf("Arg List: phystestbase=0x%x, wantraw=0x%x, pagesize=0x%x, loops=%d, fail_stop=%d.\n", (uint32_t)phystestbase, (uint32_t)wantraw, loops, pagesize, s_memtester_fail_stop);
+    printf("memtester version " __version__ " (%d-bit)\n", UL_LEN);
+    printf("Copyright (C) 2001-2020 Charles Cazabon.\n");
+    printf("Licensed under the GNU General Public License version 2 (only).\n");
+    printf("\n");
 
 #if 0
     check_posix_system();
     pagesize = memtester_pagesize();
     pagesizemask = (ptrdiff_t) ~(pagesize - 1);
-    PRINTF("pagesizemask is 0x%tx\n", pagesizemask);
+    printf("pagesizemask is 0x%tx\n", pagesizemask);
     
     /* If MEMTESTER_TEST_MASK is set, we use its value as a mask of which
        tests we run.
@@ -146,11 +147,11 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
         errno = 0;
         testmask = strtoul(env_testmask, 0, 0);
         if (errno) {
-            PRINTF("error parsing MEMTESTER_TEST_MASK %s: %s\n", 
+            printf("error parsing MEMTESTER_TEST_MASK %s: %s\n", 
                     env_testmask, strerror(errno));
-            usage(argv[0]); /* doesn't return */
+            memtester_usage(argv[0]); /* doesn't return */
         }
-        PRINTF("using testmask 0x%x\n", testmask);
+        printf("using testmask 0x%x\n", testmask);
     }
 
     while ((opt = getopt(argc, argv, "p:d:")) != -1) {
@@ -159,34 +160,34 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
                 errno = 0;
                 physaddrbase = (off_t) strtoull(optarg, &addrsuffix, 16);
                 if (errno != 0) {
-                    PRINTF("failed to parse physaddrbase arg; should be hex "
+                    printf("failed to parse physaddrbase arg; should be hex "
                             "address (0x123...)\n");
-                    usage(argv[0]); /* doesn't return */
+                    memtester_usage(argv[0]); /* doesn't return */
                 }
                 if (*addrsuffix != '\0') {
                     /* got an invalid character in the address */
-                    PRINTF("failed to parse physaddrbase arg; should be hex "
+                    printf("failed to parse physaddrbase arg; should be hex "
                             "address (0x123...)\n");
-                    usage(argv[0]); /* doesn't return */
+                    memtester_usage(argv[0]); /* doesn't return */
                 }
                 if (physaddrbase & (pagesize - 1)) {
-                    PRINTF("bad physaddrbase arg; does not start on page "
+                    printf("bad physaddrbase arg; does not start on page "
                             "boundary\n");
-                    usage(argv[0]); /* doesn't return */
+                    memtester_usage(argv[0]); /* doesn't return */
                 }
                 /* okay, got address */
                 use_phys = 1;
                 break;
             case 'd':
                 if (stat(optarg,&statbuf)) {
-                    PRINTF("can not use %s as device: %s\n", optarg, 
+                    printf("can not use %s as device: %s\n", optarg, 
                             strerror(errno));
-                    usage(argv[0]); /* doesn't return */
+                    memtester_usage(argv[0]); /* doesn't return */
                 } else {
                     if (!S_ISCHR(statbuf.st_mode)) {
-                        PRINTF("can not mmap non-char device %s\n", 
+                        printf("can not mmap non-char device %s\n", 
                                 optarg);
-                        usage(argv[0]); /* doesn't return */
+                        memtester_usage(argv[0]); /* doesn't return */
                     } else {
                         device_name = optarg;
                         device_specified = 1;
@@ -194,25 +195,25 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
                 }
                 break;              
             default: /* '?' */
-                usage(argv[0]); /* doesn't return */
+                memtester_usage(argv[0]); /* doesn't return */
         }
     }
 
     if (device_specified && !use_phys) {
-        PRINTF("for mem device, physaddrbase (-p) must be specified\n");
-        usage(argv[0]); /* doesn't return */
+        printf("for mem device, physaddrbase (-p) must be specified\n");
+        memtester_usage(argv[0]); /* doesn't return */
     }
     
     if (optind >= argc) {
-        PRINTF("need memory argument, in MB\n");
-        usage(argv[0]); /* doesn't return */
+        printf("need memory argument, in MB\n");
+        memtester_usage(argv[0]); /* doesn't return */
     }
 
     errno = 0;
     wantraw = (size_t) strtoul(argv[optind], &memsuffix, 0);
     if (errno != 0) {
-        PRINTF("failed to parse memory argument");
-        usage(argv[0]); /* doesn't return */
+        printf("failed to parse memory argument");
+        memtester_usage(argv[0]); /* doesn't return */
     }
 #endif
 
@@ -237,7 +238,7 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
             memshift = 20; /* megabytes */
             break;
         default:
-            PRINTF("ERR!!! memsuffix input not B|K|M|G  \r\n");
+            printf("ERR!!! memsuffix input not B|K|M|G  \r\n");
             goto __MMETESTER_EXIT__;
     }
     /*set use_phys*/
@@ -247,13 +248,13 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
     wantmb = (wantbytes_orig >> 20);
     //optind++;
     if (wantmb > maxmb) {
-        PRINTF("This system can only address %u MB.\n", maxmb);
+        printf("This system can only address %u MB.\n", maxmb);
         goto __MMETESTER_EXIT__;
     }
 
 #if 0
     if (wantbytes < pagesize) {
-        PRINTF("bytes %d < pagesize %d -- memory argument too large?\n",
+        printf("bytes %d < pagesize %d -- memory argument too large?\n",
                 wantbytes, pagesize);
         exit(EXIT_FAIL_NONSTARTER);
     }
@@ -264,17 +265,17 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
         errno = 0;
         loops = strtoul(argv[optind], &loopsuffix, 0);
         if (errno != 0) {
-            PRINTF("failed to parse number of loops");
-            usage(argv[0]); /* doesn't return */
+            printf("failed to parse number of loops");
+            memtester_usage(argv[0]); /* doesn't return */
         }
         if (*loopsuffix != '\0') {
-            PRINTF("loop suffix %c\n", *loopsuffix);
-            usage(argv[0]); /* doesn't return */
+            printf("loop suffix %c\n", *loopsuffix);
+            memtester_usage(argv[0]); /* doesn't return */
         }
     }
 #endif
 
-    PRINTF("want %dMB (%d bytes)\n", wantmb, wantbytes);
+    printf("want %dMB (%d bytes)\n", wantmb, wantbytes);
     buf = NULL;
 #if 1
     bufsize = wantbytes; /* accept no less */
@@ -284,7 +285,7 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
     if (use_phys) {
         memfd = open(device_name, O_RDWR | O_SYNC);
         if (memfd == -1) {
-            PRINTF("failed to open %s for physical memory: %s\n",
+            printf("failed to open %s for physical memory: %s\n",
                     device_name, strerror(errno));
             exit(EXIT_FAIL_NONSTARTER);
         }
@@ -292,13 +293,13 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
                                      MAP_SHARED | MAP_LOCKED, memfd,
                                      physaddrbase);
         if (buf == MAP_FAILED) {
-            PRINTF("failed to mmap %s for physical memory: %s\n",
+            printf("failed to mmap %s for physical memory: %s\n",
                     device_name, strerror(errno));
             exit(EXIT_FAIL_NONSTARTER);
         }
 
         if (mlock((void *) buf, wantbytes) < 0) {
-            PRINTF("failed to mlock mmap'ed space\n");
+            printf("failed to mlock mmap'ed space\n");
             do_mlock = 0;
         }
 
@@ -313,14 +314,14 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
             if (!buf) wantbytes -= pagesize;
         }
         bufsize = wantbytes;
-        PRINTF("got  %uMB (%u bytes)", wantbytes >> 20,
+        printf("got  %uMB (%u bytes)", wantbytes >> 20,
             wantbytes);
         if (do_mlock) {
-            PRINTF(", trying mlock ...");
+            printf(", trying mlock ...");
             if ((size_t) buf % pagesize) {
-                /* PRINTF("aligning to page -- was 0x%tx\n", buf); */
+                /* printf("aligning to page -- was 0x%tx\n", buf); */
                 aligned = (void volatile *) ((size_t) buf & pagesizemask) + pagesize;
-                /* PRINTF("  now 0x%tx -- lost %d bytes\n", aligned,
+                /* printf("  now 0x%tx -- lost %d bytes\n", aligned,
                  *      (size_t) aligned - (size_t) buf);
                  */
                 bufsize -= ((size_t) aligned - (size_t) buf);
@@ -331,49 +332,49 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
             if (mlock((void *) aligned, bufsize) < 0) {
                 switch(errno) {
                     case EAGAIN: /* BSDs */
-                        PRINTF("over system/pre-process limit, reducing...\n");
+                        printf("over system/pre-process limit, reducing...\n");
                         free((void *) buf);
                         buf = NULL;
                         wantbytes -= pagesize;
                         break;
                     case ENOMEM:
-                        PRINTF("too many pages, reducing...\n");
+                        printf("too many pages, reducing...\n");
                         free((void *) buf);
                         buf = NULL;
                         wantbytes -= pagesize;
                         break;
                     case EPERM:
-                        PRINTF("insufficient permission.\n");
-                        PRINTF("Trying again, unlocked:\n");
+                        printf("insufficient permission.\n");
+                        printf("Trying again, unlocked:\n");
                         do_mlock = 0;
                         free((void *) buf);
                         buf = NULL;
                         wantbytes = wantbytes_orig;
                         break;
                     default:
-                        PRINTF("failed for unknown reason.\n");
+                        printf("failed for unknown reason.\n");
                         do_mlock = 0;
                         done_mem = 1;
                 }
             } else {
-                PRINTF("locked.\n");
+                printf("locked.\n");
                 done_mem = 1;
             }
         } else {
             done_mem = 1;
-            PRINTF("\n");
+            printf("\n");
         }
     }
 
-    if (!do_mlock) PRINTF("Continuing with unlocked memory; testing "
+    if (!do_mlock) printf("Continuing with unlocked memory; testing "
                            "will be slower and less reliable.\n");
 
     /* Do alighnment here as well, as some cases won't trigger above if you
        define out the use of mlock() (cough HP/UX 10 cough). */
     if ((size_t) buf % pagesize) {
-        /* PRINTF("aligning to page -- was 0x%tx\n", buf); */
+        /* printf("aligning to page -- was 0x%tx\n", buf); */
         aligned = (void volatile *) ((size_t) buf & pagesizemask) + pagesize;
-        /* PRINTF("  now 0x%tx -- lost %d bytes\n", aligned,
+        /* printf("  now 0x%tx -- lost %d bytes\n", aligned,
          *      (size_t) aligned - (size_t) buf);
          */
         bufsize -= ((size_t) aligned - (size_t) buf);
@@ -388,17 +389,17 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
     bufb = (ulv *) ((size_t) aligned + halflen);
 
     for(loop=1; ((!loops) || loop <= loops); loop++) {
-        PRINTF("Loop %d", loop);
+        printf("Loop %d", loop);
         if (loops) {
-            PRINTF("/%d", loops);
+            printf("/%d", loops);
         }
-        PRINTF(":\n");
-        PRINTF("  %s: ", "Stuck Address");
+        printf(":\n");
+        printf("  %s: ", "Stuck Address");
         if (!test_stuck_address(aligned, bufsize / sizeof(ul))) {
-             PRINTF("ok\n");
+             printf("ok\n");
         } else {
             exit_code |= EXIT_FAIL_ADDRESSLINES;
-            if (fail_stop)
+            if (s_memtester_fail_stop)
               break;
         }
         for (i=0;;i++) {
@@ -409,33 +410,33 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
             if (testmask && (!((1 << i) & testmask))) {
                 continue;
             }
-            PRINTF("  %s: ", tests[i].name);
+            printf("  %s: ", tests[i].name);
             if (!tests[i].fp(bufa, bufb, count)) {
-                PRINTF("ok\n");
+                printf("ok\n");
             } else {
                 exit_code |= EXIT_FAIL_OTHERTEST;
-                if (fail_stop)
+                if (s_memtester_fail_stop)
                   break;
             }
             /* clear buffer */
             memset((void *) buf, 255, wantbytes);
         }
-        PRINTF("\n");
+        printf("\n");
     }
 
 #if 1
     if (exit_code)
-      PRINTF("Done and Failed!\r\n");
+      printf("Done and Failed!\r\n");
     else
-      PRINTF("Done and Passed!\r\n");
-    PRINTF("exit_code 0x%x \r\n", exit_code);
+      printf("Done and Passed!\r\n");
+    printf("exit_code 0x%x \r\n", exit_code);
 #else
     if (do_mlock) munlock((void *) aligned, bufsize);
-    PRINTF("Done.\n");
+    printf("Done.\n");
     exit(exit_code);
 #endif
 
 __MMETESTER_EXIT__:
-    PRINTF("\a");
+    printf("\a");
     return 0;
 }

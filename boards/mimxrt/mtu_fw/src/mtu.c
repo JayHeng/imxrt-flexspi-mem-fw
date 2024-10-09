@@ -62,6 +62,10 @@ rw_test_packet_t s_rwTestPacket;
 /*! @brief Performance Test packet. */
 perf_test_packet_t s_perfTestPacket;
 
+/*! @brief Stress Test packet. */
+stress_test_packet_t s_stressTestPacket;
+int s_memtester_fail_stop;
+
 /*******************************************************************************
  * Code
  ******************************************************************************/
@@ -134,6 +138,13 @@ static void mtu_command_get_from_buffer(void)
                             remainingCmdBytes = sizeof(perf_test_packet_t);
                             memset(&s_perfTestPacket, 0x0, sizeof(s_perfTestPacket));
                             cmdPacket = (uint8_t *)&s_perfTestPacket;
+                            break;
+
+                        case kCommandTag_RunStressTest:
+                            isCmdTagFound = true;
+                            remainingCmdBytes = sizeof(stress_test_packet_t);
+                            memset(&s_stressTestPacket, 0x0, sizeof(s_stressTestPacket));
+                            cmdPacket = (uint8_t *)&s_stressTestPacket;
                             break;
 
                         case kCommandTag_TestStop:
@@ -297,6 +308,21 @@ static bool mtu_command_is_valid(void)
             }
             break;
 
+        case kCommandTag_RunStressTest:
+#if MTU_FEATURE_PACKET_CRC
+            crcStart = (const uint8_t *)(&s_stressTestPacket);
+            crcLength = (const uint8_t *)(&s_stressTestPacket.crcCheckSum) - crcStart;
+            expectedCrc = s_stressTestPacket.crcCheckSum;
+            isCmdValid = mtu_command_is_packet_crc16_valid(crcStart, crcLength, expectedCrc);
+#else
+            isCmdValid = true;
+#endif
+            if (isCmdValid)
+            {
+                printf("--Received Stress Test command. \r\n");
+            }
+            break;
+
         case kCommandTag_TestStop:
             isCmdValid = true;
             break;
@@ -375,6 +401,29 @@ static void mtu_command_execute(void)
                         break;
 #endif
                     case kPerfTestSet_Sysbench:
+                        break;
+                    default:
+                        break;
+                }
+#endif
+            }
+            break;
+
+        case kCommandTag_RunStressTest:
+#if MTU_FEATURE_STRESSTEST
+            {
+                switch (s_stressTestPacket.testSet)
+                {
+                    case kStressTestSet_Memtester:
+                        {
+                            char memsuffix = 'B';
+                            s_memtester_fail_stop = s_stressTestPacket.enableStopWhenFail;
+                            memtester_main(s_stressTestPacket.testRamStart,
+                                           s_stressTestPacket.testRamSize,
+                                           &memsuffix,
+                                           s_stressTestPacket.iterations,
+                                           s_stressTestPacket.testPageSize);
+                        }
                         break;
                     default:
                         break;

@@ -22,5 +22,6 @@
 #define MTU_FEATURE_MEMORY          (1)
 #define MTU_FEATURE_PERFTEST        (1)
 #define MTU_FEATURE_PERFTEST_MBW    (1)
+#define MTU_FEATURE_STRESSTEST      (1)
 
 #endif /* _MTU_CONFIG_H_ */

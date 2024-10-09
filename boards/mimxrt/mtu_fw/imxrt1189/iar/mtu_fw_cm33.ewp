@@ -366,6 +366,7 @@
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT1189/drivers/cm33</state>
                     <state>$PROJ_DIR$/../../../../../CMSIS/Core/Include</state>
                     <state>$PROJ_DIR$/../../../../../middleware/mbw</state>
+                    <state>$PROJ_DIR$/../../../../../middleware/memtester</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1468,6 +1469,7 @@
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT1189/drivers/cm33</state>
                     <state>$PROJ_DIR$/../../../../../CMSIS/Core/Include</state>
                     <state>$PROJ_DIR$/../../../../../middleware/mbw</state>
+                    <state>$PROJ_DIR$/../../../../../middleware/memtester</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2391,6 +2393,27 @@
             </file>
             <file>
                 <name>$PROJ_DIR$\..\..\..\..\..\middleware\mbw\mbw_utils.c</name>
+            </file>
+        </group>
+        <group>
+            <name>memtester</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\memtester.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\memtester.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\sizes.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\tests.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\tests.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\types.h</name>
             </file>
         </group>
     </group>
