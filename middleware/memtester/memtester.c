@@ -128,7 +128,7 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
     ul testmask = 0;
 
     physaddrbase = phystestbase;
-    printf("Arg List: phystestbase=0x%x, wantraw=0x%x, pagesize=0x%x, loops=%d, fail_stop=%d.\n", (uint32_t)phystestbase, (uint32_t)wantraw, loops, pagesize, s_memtester_fail_stop);
+    printf("Arg List: phystestbase=0x%x, wantraw=0x%x, pagesize=0x%x, loops=%d, fail_stop=%d.\n", (uint32_t)phystestbase, (uint32_t)wantraw, pagesize, loops, s_memtester_fail_stop);
     printf("memtester version " __version__ " (%d-bit)\n", UL_LEN);
     printf("Copyright (C) 2001-2020 Charles Cazabon.\n");
     printf("Licensed under the GNU General Public License version 2 (only).\n");
@@ -437,6 +437,6 @@ int memtester_main(ul phystestbase, ul wantraw, char *memsuffix, ul loops, ul pa
 #endif
 
 __MMETESTER_EXIT__:
-    printf("\a");
+    //printf("\a");
     return 0;
 }
