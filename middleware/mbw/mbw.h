@@ -4,6 +4,7 @@
 
 #include "fsl_common.h"
 #include "fsl_debug_console.h"
+#include "mtu.h"
 
 typedef struct _timeval
 {
@@ -33,9 +34,6 @@ extern my_mem_t g_myMem;
 void *my_calloc(size_t nitems, size_t size);
 void my_free(void *ptr);
 
-void timer_init(void);
-void timer_deinit(void);
-uint64_t timer_clock(void);
-uint32_t timer_clocks_per_sec(void);
+int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t block_size, uint32_t mem_start, uint32_t mem_size) ;
 
 #endif // __MBW_H__

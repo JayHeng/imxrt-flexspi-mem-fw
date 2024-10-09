@@ -23,8 +23,8 @@
  * Variables
  ******************************************************************************/
 
-volatile uint32_t s_currentCounter;
-uint32_t s_maxCounter;
+volatile uint32_t s_taskCurCounter;
+uint32_t s_taskMaxCounter;
 
 void (*timer_task)(void);
 
@@ -34,10 +34,10 @@ void (*timer_task)(void);
 
 void SysTick_Handler(void)
 {
-    s_currentCounter--;
-    if (!s_currentCounter)
+    s_taskCurCounter--;
+    if (!s_taskCurCounter)
     {
-        s_currentCounter = s_maxCounter;
+        s_taskCurCounter = s_taskMaxCounter;
         if (timer_task)
         {
             timer_task();
@@ -45,10 +45,10 @@ void SysTick_Handler(void)
     }
 }
 
-void mtu_init_timer(uint32_t taskCycleInMs, void *callback)
+void mtu_task_timer_init(uint32_t taskCycleInMs, void *callback)
 {
-    s_maxCounter = taskCycleInMs;
-    s_currentCounter = taskCycleInMs;
+    s_taskMaxCounter = taskCycleInMs;
+    s_taskCurCounter = taskCycleInMs;
     timer_task = (void (*)(void))callback;
     /* Set systick reload value to generate 1ms interrupt */
     if (SysTick_Config(SystemCoreClock / 1000U))
@@ -59,9 +59,9 @@ void mtu_init_timer(uint32_t taskCycleInMs, void *callback)
     }
 }
 
-void mtu_deinit_timer(void)
+void mtu_task_timer_deinit(void)
 {
     SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
-    s_maxCounter = 0;
+    s_taskMaxCounter = 0;
     timer_task = NULL;
 }

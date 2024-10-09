@@ -20,8 +20,14 @@
  * API
  ******************************************************************************/
 
-void mtu_init_timer(uint32_t taskCycleInMs, void *callback);
+void     mtu_task_timer_init(uint32_t taskCycleInMs, void *callback);
 
-void mtu_deinit_timer(void);
+void     mtu_task_timer_deinit(void);
+
+void     mtu_life_timer_init(void);
+
+void     mtu_life_timer_deinit(void);
+
+uint64_t mtu_life_timer_clock(void);
 
 #endif /* __MTU_TIMER__ */

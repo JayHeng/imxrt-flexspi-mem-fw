@@ -26,6 +26,9 @@
 #if MTU_FEATURE_MEMORY
 #include "mtu_mem.h"
 #endif
+#if MTU_FEATURE_PERFTEST
+#include "mbw.h"
+#endif
 
 /*******************************************************************************
  * Definitions

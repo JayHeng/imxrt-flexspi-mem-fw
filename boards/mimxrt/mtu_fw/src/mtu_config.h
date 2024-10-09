@@ -18,7 +18,9 @@
 
 #define MTU_FEATURE_PACKET_CRC   (1)
 
-#define MTU_FEATURE_PINTEST      (1)
-#define MTU_FEATURE_MEMORY       (1)
+#define MTU_FEATURE_PINTEST         (1)
+#define MTU_FEATURE_MEMORY          (1)
+#define MTU_FEATURE_PERFTEST        (1)
+#define MTU_FEATURE_PERFTEST_MBW    (1)
 
 #endif /* _MTU_CONFIG_H_ */

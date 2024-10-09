@@ -64,4 +64,8 @@ uint8_t  bsp_adc_get_conv_value(void);
 
 void     bsp_adc_deinit(void);
 
+uint32_t bsp_life_timer_clocks_per_sec(void);
+
+void     bsp_rt_system_clocks_print(void);
+
 #endif /* __MTU_BSP__ */

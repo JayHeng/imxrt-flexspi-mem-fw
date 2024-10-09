@@ -300,13 +300,13 @@ static void mtu_command_execute(void)
                 bsp_adc_echo_info();
                 mtu_print_mode_switch(false);
             }
-            mtu_deinit_timer();
+            mtu_task_timer_deinit();
             bsp_mixspi_pinmux_config(&s_pinUnittestPacket, true);
             if (s_pinUnittestPacket.pintestEn.enableAdcSample)
             {
                 bsp_adc_init();
             }
-            mtu_init_timer(s_pinUnittestPacket.pintestEn.pulseInMs, (void *)bsp_mixspi_gpios_toggle);
+            mtu_task_timer_init(s_pinUnittestPacket.pintestEn.pulseInMs, (void *)bsp_mixspi_gpios_toggle);
 #endif
             break;
 
@@ -334,7 +334,7 @@ static void mtu_command_execute(void)
                 if (s_lastCmdTag == kCommandTag_PinTest)
                 {
 #if MTU_FEATURE_PINTEST
-                    mtu_deinit_timer();
+                    mtu_task_timer_deinit();
                     if (s_pinUnittestPacket.pintestEn.enableAdcSample)
                     {
                         bsp_adc_deinit();
@@ -357,6 +357,11 @@ static void mtu_command_execute(void)
 void mtu_main(void)
 {
     mtu_init_uart();
+    mtu_life_timer_init();
+#if MTU_FEATURE_PERFTEST_MBW
+    bsp_rt_system_clocks_print();
+    mbw_main(0, 1, 0, 0x400, 0x20500000, 0x20000);
+#endif
 
     while(1)
     {

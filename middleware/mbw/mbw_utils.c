@@ -17,8 +17,8 @@ my_mem_t g_myMem;
 
 int gettimeofday(timeval_t *tv, timezone_t *tz)
 {
-    uint64_t ticks = timer_clock();
-    uint32_t clocksPerSec = timer_clocks_per_sec();
+    uint64_t ticks = mtu_life_timer_clock();
+    uint32_t clocksPerSec = bsp_life_timer_clocks_per_sec();
     tv->tv_sec = ticks / clocksPerSec;
     tv->tv_usec = (ticks % clocksPerSec) / (clocksPerSec / 1000000);
     

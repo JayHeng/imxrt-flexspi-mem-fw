@@ -45,19 +45,19 @@
 
 void usage()
 {
-    PRINTF("mbw memory benchmark v%s, https://github.com/raas/mbw\n", VERSION);
-    PRINTF("Usage: mbw [options] array_size_in_MiB\n");
-    PRINTF("Options:\n");
-    PRINTF("	-n: number of runs per test\n");
-    PRINTF("	-a: Don't display average\n");
-    PRINTF("	-t%d: memcpy test\n", TEST_MEMCPY);
-    PRINTF("	-t%d: dumb (b[i]=a[i] style) test\n", TEST_DUMB);
-    PRINTF("	-t%d: memcpy test with fixed block size\n", TEST_MCBLOCK);
-    PRINTF("	-b <size>: block size in bytes for -t2 (default: %d)\n", DEFAULT_BLOCK_SIZE);
-    PRINTF("	-q: quiet (print statistics only)\n");
-    PRINTF("(will then use two arrays, watch out for swapping)\n");
-    PRINTF("'Bandwidth' is amount of data copied over the time this operation took.\n");
-    PRINTF("\nThe default is to run all tests available.\n");
+    printf("mbw memory benchmark v%s, https://github.com/raas/mbw\n", VERSION);
+    printf("Usage: mbw [options] array_size_in_MiB\n");
+    printf("Options:\n");
+    printf("	-n: number of runs per test\n");
+    printf("	-a: Don't display average\n");
+    printf("	-t%d: memcpy test\n", TEST_MEMCPY);
+    printf("	-t%d: dumb (b[i]=a[i] style) test\n", TEST_DUMB);
+    printf("	-t%d: memcpy test with fixed block size\n", TEST_MCBLOCK);
+    printf("	-b <size>: block size in bytes for -t2 (default: %d)\n", DEFAULT_BLOCK_SIZE);
+    printf("	-q: quiet (print statistics only)\n");
+    printf("(will then use two arrays, watch out for swapping)\n");
+    printf("'Bandwidth' is amount of data copied over the time this operation took.\n");
+    printf("\nThe default is to run all tests available.\n");
 }
 
 /* ------------------------------------------------------ */
@@ -73,7 +73,7 @@ long *make_array(unsigned long long asize)
     a=my_calloc(asize, long_size);
 
     if(NULL==a) {
-        PRINTF("Error allocating memory");
+        printf("Error allocating memory");
         exit(1);
     }
 
@@ -143,18 +143,18 @@ void printout(double te, double kt, int type)
 {
     switch(type) {
         case TEST_MEMCPY:
-            PRINTF("Method: MEMCPY\t");
+            printf("Method: MEMCPY\t");
             break;
         case TEST_DUMB:
-            PRINTF("Method: DUMB\t");
+            printf("Method: DUMB\t");
             break;
         case TEST_MCBLOCK:
-            PRINTF("Method: MCBLOCK\t");
+            printf("Method: MCBLOCK\t");
             break;
     }
-    PRINTF("Elapsed: %.5f\t", te);
-    PRINTF("MiB: %.5f\t", kt/1024);
-    PRINTF("Copy: %.3f MiB/s\n", kt/1024/te);
+    printf("Elapsed: %.5f\t", te);
+    printf("MiB: %.5f\t", kt/1024);
+    printf("Copy: %.3f MiB/s\n", kt/1024/te);
     return;
 }
 
@@ -225,7 +225,7 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
             case 't': /* test to run */
                 testno=strtoul(optarg, (char **)NULL, 10);
                 if(0>testno) {
-                    PRINTF("Error: test number must be between 0 and %d\n", MAX_TESTS);
+                    printf("Error: test number must be between 0 and %d\n", MAX_TESTS);
                     exit(1);
                 }
                 tests[testno]=1;
@@ -233,7 +233,7 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
             case 'b': /* block size in bytes*/
                 block_size=strtoull(optarg, (char **)NULL, 10);
                 if(0>=block_size) {
-                    PRINTF("Error: what block size do you mean?\n");
+                    printf("Error: what block size do you mean?\n");
                     exit(1);
                 }
                 break;
@@ -272,13 +272,13 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
     if(optind<argc) {
         kt=strtoul(argv[optind++], (char **)NULL, 10);
     } else {
-        PRINTF("Error: no array size given!\n");
+        printf("Error: no array size given!\n");
         exit(1);
     }
 #endif
 
     if(0>=kt) {
-        PRINTF("Error: array size wrong!\n");
+        printf("Error: array size wrong!\n");
         exit(1);
     }
 
@@ -289,15 +289,15 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
     asize=(unsigned long long)(1024/long_size*kt); /* how many longs then in one array? */
 
     if(asize*long_size < block_size) {
-        PRINTF("Error: array size larger than block size (%llu bytes)!\n", block_size);
+        printf("Error: array size larger than block size (%llu bytes)!\n", block_size);
         exit(1);
     }
 
     if(!quiet) {
-        PRINTF("Long uses %d bytes. ", long_size);
-        PRINTF("Allocating 2*%lld elements = %lld bytes of memory.\n", asize, 2*asize*long_size);
+        printf("Long uses %d bytes. ", long_size);
+        printf("Allocating 2*%lld elements = %lld bytes of memory.\n", asize, 2*asize*long_size);
         if(tests[2]) {
-            PRINTF("Using %lld bytes as blocks for memcpy block copy test.\n", block_size);
+            printf("Using %lld bytes as blocks for memcpy block copy test.\n", block_size);
         }
     }
 
@@ -306,7 +306,7 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
 
     /* ------------------------------------------------------ */
     if(!quiet) {
-        PRINTF("Getting down to business... Doing %d runs per test.\n", nr_loops);
+        printf("Getting down to business... Doing %d runs per test.\n", nr_loops);
     }
 
     /* run all tests requested, the proper number of times */
@@ -316,11 +316,11 @@ int mbw_main(uint32_t testno, uint32_t showavg, uint32_t nr_loops, uint64_t bloc
             for (i=0; i<nr_loops; i++) {
                 te=worker(asize, a, b, testno, block_size);
                 te_sum+=te;
-                PRINTF("%d\t", i);
+                printf("%d\t", i);
                 printout(te, kt, testno);
             }
             if(showavg) {
-                PRINTF("AVG\t");
+                printf("AVG\t");
                 printout(te_sum/nr_loops, kt, testno);
             }
         }
