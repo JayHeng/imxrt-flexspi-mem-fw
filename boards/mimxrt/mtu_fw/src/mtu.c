@@ -121,7 +121,7 @@ static void mtu_command_get_from_buffer(void)
                             cmdPacket = (uint8_t *)&s_configSystemPacket;
                             break;
 
-                        case kCommandTag_GetMemInfo:
+                        case kCommandTag_AccessMemRegs:
                             isCmdTagFound = true;
                             remainingCmdBytes = 0;
                             break;
@@ -273,9 +273,9 @@ static bool mtu_command_is_valid(void)
             }
             break;
 
-        case kCommandTag_GetMemInfo:
+        case kCommandTag_AccessMemRegs:
             isCmdValid = true;
-            printf("--Received Mem Info command. \r\n");
+            printf("--Received Mem REGs command. \r\n");
             break;
 
         case kCommandTag_RunRwTest:
@@ -369,7 +369,7 @@ static void mtu_command_execute(void)
 #endif
             break;
 
-        case kCommandTag_GetMemInfo:
+        case kCommandTag_AccessMemRegs:
 #if MTU_FEATURE_MEMORY
             mtu_memory_get_info();
 #endif
