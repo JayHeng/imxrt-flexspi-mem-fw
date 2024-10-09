@@ -120,7 +120,7 @@ status_t mtu_memory_init(void)
 
     mtu_mixspi_nor_flash_init(&s_userConfig, &s_deviceconfig);
 
-    printf("--FLEXSPI%d module initialized.\r\n", s_userConfig.instance);
+    printf("FLEXSPI%d module initialized.\r\n", s_userConfig.instance);
 
     /* Get JEDEC ID. */
     status = mtu_mixspi_nor_get_jedec_id(&s_userConfig, &jedecID);
@@ -133,10 +133,10 @@ status_t mtu_memory_init(void)
     status = mtu_mixspi_nor_enable_quad_mode(&s_userConfig);
     if (status != kStatus_Success)
     {
-        printf("--Flash failed to enter Quad I/O SDR mode.\r\n");
+        printf("Flash failed to enter Quad I/O SDR mode.\r\n");
         return status;
     }
-    printf("--Flash entered Quad I/O SDR mode.\r\n");
+    printf("Flash entered Quad I/O SDR mode.\r\n");
     
     return kStatus_Success;
 }
@@ -151,13 +151,13 @@ status_t mtu_memory_get_info(void)
     regAccess.regAddr = 0x0;
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READSTATUS;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("--Flash Status Register: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("Flash Status Register: 0x%x\r\n", regAccess.regValue.B.reg1);
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG1;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("--Flash Custom Register1: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("Flash Custom Register1: 0x%x\r\n", regAccess.regValue.B.reg1);
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG2;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("--Flash Custom Register2: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("Flash Custom Register2: 0x%x\r\n", regAccess.regValue.B.reg1);
     
     return kStatus_Success;
 }

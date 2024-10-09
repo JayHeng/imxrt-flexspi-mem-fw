@@ -1453,7 +1453,7 @@ void bsp_mixspi_clock_init(void *config)
         }
         else
         {
-            printf("--FLEXSPI1 clock freq is not set.\r\n");
+            printf("FLEXSPI1 clock freq is not set.\r\n");
         }
         uint32_t flexspiClk = CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi1);
         if (flexspiClk > 166000000U)
@@ -1555,7 +1555,7 @@ void bsp_mixspi_clock_init(void *config)
         }
         else
         {
-            printf("--FlexSPI2 clock freq is not set.\r\n");
+            printf("FlexSPI2 clock freq is not set.\r\n");
         }
         uint32_t flexspiClk = CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi2);
         if (flexspiClk > 166000000U)
@@ -1598,19 +1598,19 @@ void bsp_mixspi_clock_source(void *config)
         switch (clkSel)
         {
             case kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc24M:
-                printf("--FLEXSPI1 Clk Source from 2'b00 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24M));
+                printf("FLEXSPI1 Clk Source from 2'b00 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24M));
                 break;
 
             case kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc400M:
-                printf("--FLEXSPI1 Clk Source from 2'b01 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
+                printf("FLEXSPI1 Clk Source from 2'b01 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
                 break;
 
             case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0:
-                printf("--FLEXSPI1 Clk Source from 2'b10 - Sys PLL3 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd0));
+                printf("FLEXSPI1 Clk Source from 2'b10 - Sys PLL3 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd0));
                 break;
 
             case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd0:
-                printf("--FLEXSPI1 Clk Source from 2'b11 - Sys PLL2 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd0));
+                printf("FLEXSPI1 Clk Source from 2'b11 - Sys PLL2 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd0));
                 break;
 
             default:
@@ -1624,19 +1624,19 @@ void bsp_mixspi_clock_source(void *config)
         switch (clkSel)
         {
             case kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc24M:
-                printf("--FLEXSPI2 Clk Source from 2'b00 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24M));
+                printf("FLEXSPI2 Clk Source from 2'b00 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24M));
                 break;
 
             case kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc400M:
-                printf("--FLEXSPI2 Clk Source from 2'b01 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
+                printf("FLEXSPI2 Clk Source from 2'b01 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
                 break;
 
             case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd2:
-                printf("--FLEXSPI2 Clk Source from 2'b10 - Sys PLL3 PFD2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd2));
+                printf("FLEXSPI2 Clk Source from 2'b10 - Sys PLL3 PFD2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd2));
                 break;
 
             case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll2Pfd1:
-                printf("--FLEXSPI2 Clk Source from 2'b11 - Sys PLL2 PFD1 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd1));
+                printf("FLEXSPI2 Clk Source from 2'b11 - Sys PLL2 PFD1 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd1));
                 break;
 
             default:
@@ -1648,8 +1648,8 @@ void bsp_mixspi_clock_source(void *config)
     }
     index = (root - kCLOCK_Root_Flexspi1) + 1;
     uint32_t clkDiv = CLOCK_GetRootClockDiv(root);
-    printf("--FLEXSPI%d Clk Source Divider: %d.\r\n", index, clkDiv);
-    printf("--FLEXSPI%d Clk Frequency: %dHz.\r\n", index, bsp_mixspi_get_clock(userConfig));
+    printf("FLEXSPI%d Clk Source Divider: %d.\r\n", index, clkDiv);
+    printf("FLEXSPI%d Clk Frequency: %dHz.\r\n", index, bsp_mixspi_get_clock(userConfig));
 }
 
 void bsp_mixspi_sw_delay_us(uint64_t us)

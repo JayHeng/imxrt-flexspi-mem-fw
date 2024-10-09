@@ -56,7 +56,7 @@ void BOARD_InitADCClock(void)
 
 void bsp_adc_echo_info(void)
 {
-    printf("--adc2_in6(GPIO_AD_30) can be used to sample pin wave. \r\n");
+    printf("adc2_in6(GPIO_AD_30) can be used to sample pin wave. \r\n");
 }
 
 /*!

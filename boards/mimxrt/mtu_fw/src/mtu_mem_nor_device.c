@@ -144,12 +144,12 @@ void mtu_flash_show_mem_size(uint8_t capacityID, bool isAdesto)
     uint32_t flashMemSizeInKB;
     if (isAdesto)
     {
-        printf("--Flash Density Code: 0x%x", capacityID);
+        printf("Flash Density Code: 0x%x", capacityID);
         flashMemSizeInKB = mtu_flash_decode_adesto_capacity_id(capacityID)/ 0x400;
     }
     else
     {
-        printf("--Flash Capacity ID: 0x%x", capacityID);
+        printf("Flash Capacity ID: 0x%x", capacityID);
         flashMemSizeInKB = mtu_flash_decode_common_capacity_id(capacityID)/ 0x400;
     }
     if (flashMemSizeInKB <= 0x400)
@@ -164,8 +164,8 @@ void mtu_flash_show_mem_size(uint8_t capacityID, bool isAdesto)
 
 void mtu_flash_set_info_for_winbond(jedec_id_t *jedecID)
 {
-    printf("--Flash Manufacturer ID: 0x%x -- Winbond Serial Flash.\r\n", jedecID->manufacturerID);
-    printf("--Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
+    printf("Flash Manufacturer ID: 0x%x -- Winbond Serial Flash.\r\n", jedecID->manufacturerID);
+    printf("Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
     switch (jedecID->memoryTypeID)
     {
         /////////////////////////QuadSPI////////////////////////
@@ -205,8 +205,8 @@ void mtu_flash_set_info_for_winbond(jedec_id_t *jedecID)
 
 void mtu_flash_set_info_for_mxic(jedec_id_t *jedecID)
 {
-    printf("--Flash Manufacturer ID: 0x%x -- MXIC Serial Flash.\r\n", jedecID->manufacturerID);
-    printf("--Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
+    printf("Flash Manufacturer ID: 0x%x -- MXIC Serial Flash.\r\n", jedecID->manufacturerID);
+    printf("Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
     switch (jedecID->memoryTypeID)
     {
         /////////////////////////QuadSPI////////////////////////
@@ -253,8 +253,8 @@ void mtu_flash_set_info_for_mxic(jedec_id_t *jedecID)
 
 void mtu_flash_set_info_for_gigadevice(jedec_id_t *jedecID)
 {
-    printf("--Flash Manufacturer ID: 0x%x -- GigaDevice Serial Flash.\r\n", jedecID->manufacturerID);
-    printf("--Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
+    printf("Flash Manufacturer ID: 0x%x -- GigaDevice Serial Flash.\r\n", jedecID->manufacturerID);
+    printf("Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
     switch (jedecID->memoryTypeID)
     {
         /////////////////////////QuadSPI////////////////////////
@@ -302,8 +302,8 @@ void mtu_flash_set_info_for_gigadevice(jedec_id_t *jedecID)
 
 void mtu_flash_set_info_for_issi(jedec_id_t *jedecID)
 {
-    printf("--Flash Manufacturer ID: 0x%x -- ISSI Serial Flash.\r\n", jedecID->manufacturerID);
-    printf("--Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
+    printf("Flash Manufacturer ID: 0x%x -- ISSI Serial Flash.\r\n", jedecID->manufacturerID);
+    printf("Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
     switch (jedecID->memoryTypeID)
     {
         /////////////////////////QuadSPI////////////////////////
@@ -332,8 +332,8 @@ void mtu_flash_set_info_for_issi(jedec_id_t *jedecID)
 
 void mtu_flash_set_info_for_micron(jedec_id_t *jedecID)
 {
-    printf("--Flash Manufacturer ID: 0x%x -- Micron Serial Flash.\r\n", jedecID->manufacturerID);
-    printf("--Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
+    printf("Flash Manufacturer ID: 0x%x -- Micron Serial Flash.\r\n", jedecID->manufacturerID);
+    printf("Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
     switch (jedecID->memoryTypeID)
     {
         /////////////////////////QuadSPI////////////////////////
@@ -359,16 +359,16 @@ void mtu_flash_set_info_for_micron(jedec_id_t *jedecID)
 
 void mtu_flash_set_info_for_adesto(jedec_id_t *jedecID)
 {
-    printf("--Flash Manufacturer ID: 0x%x -- Adesto Serial Flash.\r\n", jedecID->manufacturerID);
+    printf("Flash Manufacturer ID: 0x%x -- Adesto Serial Flash.\r\n", jedecID->manufacturerID);
     if (jedecID->memoryTypeID != 0x42)
     {
         jedecID->capacityID = jedecID->memoryTypeID & 0x1F;
         jedecID->memoryTypeID = (jedecID->memoryTypeID & 0xE0) >> 5;
-        printf("--Flash Family Code: 0x%x", jedecID->memoryTypeID);
+        printf("Flash Family Code: 0x%x", jedecID->memoryTypeID);
     }
     else
     {
-        printf("--Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
+        printf("Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
     }
     switch (jedecID->memoryTypeID)
     {
@@ -402,8 +402,8 @@ void mtu_flash_set_info_for_adesto(jedec_id_t *jedecID)
 
 void mtu_flash_set_info_for_spansion(jedec_id_t *jedecID)
 {
-    printf("--Flash Manufacturer ID: 0x%x -- Spansion Serial Flash.\r\n", jedecID->manufacturerID);
-    printf("--Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
+    printf("Flash Manufacturer ID: 0x%x -- Spansion Serial Flash.\r\n", jedecID->manufacturerID);
+    printf("Flash Memory Type ID: 0x%x", jedecID->memoryTypeID);
     switch (jedecID->memoryTypeID)
     {
         /////////////////////////QuadSPI////////////////////////
@@ -475,7 +475,7 @@ void mtu_flash_validate_jedec_id(jedec_id_t *jedecID)
             break;
 
         default:
-            printf("--Unknown Manufacturer ID\r\n");
+            printf("Unknown Manufacturer ID\r\n");
             break;
     }
 }
