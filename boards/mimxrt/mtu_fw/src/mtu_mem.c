@@ -25,6 +25,8 @@
 
 mixspi_user_config_t s_userConfig;
 
+uint32_t s_memRwBuffer[0x200/4];
+
 /* Common FlexSPI config */
 flexspi_device_config_t s_deviceconfig = {
     .flexspiRootClk       = 30000000,
@@ -162,32 +164,65 @@ status_t mtu_memory_get_info(void)
     return kStatus_Success;
 }
 
+static void mtu_memory_preset_rw_buffer(uint32_t patternWord)
+{
+    for (uint32_t i = 0; i < sizeof(s_memRwBuffer) / sizeof(uint32_t); i++)
+    {
+        s_memRwBuffer[i] = patternWord;
+    }
+}
+
 status_t mtu_memory_rwtest(uint8_t memType, uint32_t memStart, uint32_t memSize, uint32_t memPattern)
 {
     printf("Arg List: memStart=0x%x, memSize=0x%x, memPattern=0x%x.\n", memStart, memSize, memPattern);
+    uint32_t memEnd = memStart + memSize;
     if (memType > kMemType_FlashMaxIdx)
     {
-        uint32_t memEnd = memStart + memSize;
         for (uint32_t addr = memStart; addr < memEnd;)
         {
             *(uint32_t *)addr = memPattern;
             addr += 4;
         }
-        printf("Pattern 0x%x has been filled into RAM region [0x%x - 0x%x)\n", memPattern, memStart, memStart + memSize);
-        for (uint32_t addr = memStart; addr < memEnd;)
-        {
-            if (*(uint32_t *)addr != memPattern)
-            {
-                printf("Pattern 0x%x verification is failed at address 0x%x.\n", memPattern, addr);
-                return kStatus_Fail;
-            }
-            addr += 4;
-        }
     }
     else
     {
-        return kStatus_Fail;
+        uint32_t sectorMax = memSize / 0x1000;
+        uint32_t pagesPerSector = 0x1000 / 0x100;
+        for (uint32_t sectorId = 0; sectorId < sectorMax; sectorId++)
+        {
+            uint32_t sectorAddr = memStart + sectorId * 0x1000;
+            status_t status = mtu_mixspi_nor_erase_sector(&s_userConfig, sectorAddr, kFlashInstMode_SPI);
+            if (status != kStatus_Success)
+            {
+                printf("Erase flash sector failure at address 0x%x!\r\n", sectorAddr);
+                return kStatus_Fail;
+            }
+            mtu_memory_preset_rw_buffer(memPattern);
+            for (uint32_t pageId = 0; pageId < pagesPerSector; pageId++)
+            {
+                uint32_t pageAddr = sectorAddr + pageId * 0x100;
+                status = mtu_mixspi_nor_page_program(&s_userConfig, &s_deviceconfig, pageAddr, (const uint32_t *)s_memRwBuffer, 0x100, kFlashInstMode_SPI);
+                if (status != kStatus_Success)
+                {
+                    printf("Program flash page failure at address 0x%x!\r\n", pageAddr);
+                    return kStatus_Fail;
+                }
+            }
+        }
+        memStart += bsp_mixspi_get_amba_base(&s_userConfig);
+        memEnd += bsp_mixspi_get_amba_base(&s_userConfig);
     }
+    printf("Pattern 0x%x has been filled into MEM region [0x%x - 0x%x)\n", memPattern, memStart, memStart + memSize);
+    for (uint32_t addr = memStart; addr < memEnd;)
+    {
+        if (*(uint32_t *)addr != memPattern)
+        {
+            printf("Pattern 0x%x verification is failed at address 0x%x.\n", memPattern, addr);
+            return kStatus_Fail;
+        }
+        addr += 4;
+    }
+
     printf("Pattern 0x%x readback verification is passed.\n", memPattern);
     return kStatus_Success;
 }

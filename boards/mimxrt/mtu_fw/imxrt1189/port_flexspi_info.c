@@ -1568,7 +1568,7 @@ void bsp_mixspi_clock_init(void *config)
     }
 }
 
-static uint32_t bsp_mixspi_get_clock(void *config)
+uint32_t bsp_mixspi_get_clock(void *config)
 {
     mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
     if (userConfig->mixspiBase == FLEXSPI1)
@@ -1662,6 +1662,23 @@ void bsp_mixspi_sw_delay_us(uint64_t us)
         {
             __NOP();
         }
+    }
+}
+
+uint32_t bsp_mixspi_get_amba_base(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        return FlexSPI1_AMBA_BASE;
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        return FlexSPI2_AMBA_BASE;
+    }
+    else
+    {
+        return 0;
     }
 }
 

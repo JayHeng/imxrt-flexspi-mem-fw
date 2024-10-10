@@ -17,6 +17,11 @@
 #define MTU_SELFTEST             (0)
 #define MTU_USE_EVK_SOCKET       (0)
 #define MTU_USE_MEM_DC_MUX       (1)
+/*
+ * If cache is enabled, this example should maintain the cache to make sure
+ * CPU core accesses the memory, not cache only.
+ */
+#define MTU_CACHE_MAINTAIN       (1)
 
 #define MTU_FEATURE_PACKET_CRC   (1)
 

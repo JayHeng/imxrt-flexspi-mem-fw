@@ -52,9 +52,13 @@ void     bsp_mixspi_gpios_toggle(void);
 
 void     bsp_mixspi_clock_init(void *config);
 
+uint32_t bsp_mixspi_get_clock(void *config);
+
 void     bsp_mixspi_clock_source(void *config);
 
 void     bsp_mixspi_sw_delay_us(uint64_t us);
+
+uint32_t bsp_mixspi_get_amba_base(void *config);
 
 void     bsp_adc_echo_info(void);
 

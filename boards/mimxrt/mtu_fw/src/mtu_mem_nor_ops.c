@@ -28,6 +28,87 @@
  * Code
  ******************************************************************************/
 
+void mtu_mixspi_nor_disable_cache(mixspi_cache_status_t *cacheStatus)
+{
+#if (defined __CORTEX_M) && (__CORTEX_M == 7U)
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    /* Disable D cache. */
+    if (SCB_CCR_DC_Msk == (SCB_CCR_DC_Msk & SCB->CCR))
+    {
+        SCB_DisableDCache();
+        cacheStatus->DCacheEnableFlag = true;
+    }
+#endif /* __DCACHE_PRESENT */
+
+#if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
+    /* Disable I cache. */
+    if (SCB_CCR_IC_Msk == (SCB_CCR_IC_Msk & SCB->CCR))
+    {
+        SCB_DisableICache();
+        cacheStatus->ICacheEnableFlag = true;
+    }
+#endif /* __ICACHE_PRESENT */
+
+#elif (defined FSL_FEATURE_SOC_LMEM_COUNT) && (FSL_FEATURE_SOC_LMEM_COUNT != 0U)
+    /* Disable code bus cache and system bus cache */
+    if (LMEM_PCCCR_ENCACHE_MASK == (LMEM_PCCCR_ENCACHE_MASK & LMEM->PCCCR))
+    {
+        L1CACHE_DisableCodeCache();
+        cacheStatus->codeCacheEnableFlag = true;
+    }
+    if (LMEM_PSCCR_ENCACHE_MASK == (LMEM_PSCCR_ENCACHE_MASK & LMEM->PSCCR))
+    {
+        L1CACHE_DisableSystemCache();
+        cacheStatus->systemCacheEnableFlag = true;
+    }
+
+#elif (defined FSL_FEATURE_SOC_CACHE64_CTRL_COUNT) && (FSL_FEATURE_SOC_CACHE64_CTRL_COUNT != 0U)
+    /* Disable cache */
+    CACHE64_DisableCache(EXAMPLE_CACHE);
+    cacheStatus->CacheEnableFlag = true;
+#endif
+}
+
+void mtu_mixspi_nor_enable_cache(mixspi_cache_status_t cacheStatus)
+{
+#if (defined __CORTEX_M) && (__CORTEX_M == 7U)
+#if defined(__DCACHE_PRESENT) && (__DCACHE_PRESENT == 1U)
+    if (cacheStatus.DCacheEnableFlag)
+    {
+        /* Enable D cache. */
+        SCB_EnableDCache();
+    }
+#endif /* __DCACHE_PRESENT */
+
+#if defined(__ICACHE_PRESENT) && (__ICACHE_PRESENT == 1U)
+    if (cacheStatus.ICacheEnableFlag)
+    {
+        /* Enable I cache. */
+        SCB_EnableICache();
+    }
+#endif /* __ICACHE_PRESENT */
+
+#elif (defined FSL_FEATURE_SOC_LMEM_COUNT) && (FSL_FEATURE_SOC_LMEM_COUNT != 0U)
+    if (cacheStatus.codeCacheEnableFlag)
+    {
+        /* Enable code cache. */
+        L1CACHE_EnableCodeCache();
+    }
+
+    if (cacheStatus.systemCacheEnableFlag)
+    {
+        /* Enable system cache. */
+        L1CACHE_EnableSystemCache();
+    }
+#elif (defined FSL_FEATURE_SOC_CACHE64_CTRL_COUNT) && (FSL_FEATURE_SOC_CACHE64_CTRL_COUNT != 0U)
+    if (cacheStatus.CacheEnableFlag)
+    {
+        /* Enable cache. */
+        CACHE64_EnableCache(EXAMPLE_CACHE);
+    }
+#endif
+}
+
 static status_t mtu_mixspi_nor_write_enable(mixspi_user_config_t *userConfig, uint32_t baseAddr, flash_inst_mode_t flashInstMode)
 {
     flexspi_transfer_t flashXfer;
@@ -173,6 +254,11 @@ status_t mtu_mixspi_nor_write_register(mixspi_user_config_t *userConfig, flash_r
         return kStatus_Success;
     }
 
+#if defined(MTU_CACHE_MAINTAIN) && MTU_CACHE_MAINTAIN
+    mixspi_cache_status_t cacheStatus;
+    mtu_mixspi_nor_disable_cache(&cacheStatus);
+#endif
+
     uint32_t writeValue = regAccess->regValue.U;
 
     /* Write enable */
@@ -202,6 +288,10 @@ status_t mtu_mixspi_nor_write_register(mixspi_user_config_t *userConfig, flash_r
 
     /* Do software reset. */
     FLEXSPI_SoftwareReset(userConfig->mixspiBase);
+
+#if defined(MTU_CACHE_MAINTAIN) && MTU_CACHE_MAINTAIN
+    mtu_mixspi_nor_enable_cache(cacheStatus);
+#endif
 
     return status;
 }
@@ -268,7 +358,184 @@ status_t mtu_mixspi_nor_get_jedec_id(mixspi_user_config_t *userConfig, uint32_t 
     return status;
 }
 
-void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, flexspi_device_config_t *deviceconfig)
+status_t mtu_mixspi_nor_erase_sector(mixspi_user_config_t *userConfig, uint32_t address, flash_inst_mode_t flashInstMode)
+{
+    status_t status;
+    flexspi_transfer_t flashXfer;
+
+#if defined(MTU_CACHE_MAINTAIN) && MTU_CACHE_MAINTAIN
+    mixspi_cache_status_t cacheStatus;
+    mtu_mixspi_nor_disable_cache(&cacheStatus);
+#endif
+
+    /* Write enable */
+    status = mtu_mixspi_nor_write_enable(userConfig, address, kFlashInstMode_SPI);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    flashXfer.deviceAddress = address;
+    flashXfer.port          = userConfig->mixspiPort;
+    flashXfer.cmdType       = kFLEXSPI_Command;
+    if (flashInstMode == kFlashInstMode_Hyper)
+    {
+        flashXfer.SeqNumber = 4;
+    }
+    else
+    {
+        flashXfer.SeqNumber = 1;
+    }
+    switch (flashInstMode)
+    {
+        case kFlashInstMode_QPI_1:
+        case kFlashInstMode_QPI_2:
+            flashXfer.seqIndex  = NOR_CMD_LUT_SEQ_IDX_ERASESECTOR_QPI;
+            break;
+
+        case kFlashInstMode_OPI:
+            flashXfer.seqIndex  = NOR_CMD_LUT_SEQ_IDX_ERASESECTOR_OPI;
+            break;
+
+        case kFlashInstMode_SPI:
+        case kFlashInstMode_Hyper:
+        default:
+            flashXfer.seqIndex  = NOR_CMD_LUT_SEQ_IDX_ERASESECTOR;
+            break;
+    }
+
+    status = FLEXSPI_TransferBlocking(userConfig->mixspiBase, &flashXfer);
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    status = mtu_mixspi_nor_wait_bus_busy(userConfig, flashInstMode);
+
+    /* Do software reset. */
+    FLEXSPI_SoftwareReset(userConfig->mixspiBase);
+
+#if defined(MTU_CACHE_MAINTAIN) && MTU_CACHE_MAINTAIN
+    mtu_mixspi_nor_enable_cache(cacheStatus);
+#endif
+
+    return status;
+}
+
+status_t mtu_mixspi_nor_page_program(mixspi_user_config_t *userConfig,
+                                     flexspi_device_config_t *deviceconfig,
+                                     uint32_t address,
+                                     const uint32_t *src,
+                                     uint32_t length,
+                                     flash_inst_mode_t flashInstMode)
+{
+    status_t status;
+    flexspi_transfer_t flashXfer;
+
+#if defined(MTU_CACHE_MAINTAIN) && MTU_CACHE_MAINTAIN
+    mixspi_cache_status_t cacheStatus;
+    mtu_mixspi_nor_disable_cache(&cacheStatus);
+#endif
+
+    mixspi_root_clk_freq_t lastRootClkFreq;
+    if (flashInstMode == kFlashInstMode_Hyper)
+    {
+        /* Speed down flexspi clock, beacuse 50 MHz timings are only relevant when a burst write is used to load data during
+         * a HyperFlash Word Program command. */
+        lastRootClkFreq = userConfig->mixspiRootClkFreq;
+        userConfig->mixspiRootClkFreq = kMixspiRootClkFreq_50MHz;
+        bsp_mixspi_clock_init(userConfig);
+
+        /* Get current flexspi root clock. */
+        deviceconfig->flexspiRootClk = bsp_mixspi_get_clock(userConfig);
+
+        /* Update DLL value depending on flexspi root clock. */
+        FLEXSPI_UpdateDllValue(userConfig->mixspiBase, deviceconfig, userConfig->mixspiPort);
+
+        /* Do software reset. */
+        FLEXSPI_SoftwareReset(userConfig->mixspiBase);
+    }
+
+    /* Write enable */
+    status = mtu_mixspi_nor_write_enable(userConfig, address, flashInstMode);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    /* Prepare page program command */
+    flashXfer.deviceAddress = address;
+    flashXfer.port          = userConfig->mixspiPort;
+    flashXfer.cmdType       = kFLEXSPI_Write;
+    if (flashInstMode == kFlashInstMode_Hyper)
+    {
+        flashXfer.SeqNumber = 2;
+    }
+    else
+    {
+        flashXfer.SeqNumber = 1;
+    }
+    switch (flashInstMode)
+    {
+        case kFlashInstMode_QPI_1:
+        case kFlashInstMode_QPI_2:
+            flashXfer.seqIndex  = NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_QPI;
+            break;
+
+        case kFlashInstMode_OPI:
+            flashXfer.seqIndex  = NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM_OPI;
+            break;
+
+        case kFlashInstMode_SPI:
+        case kFlashInstMode_Hyper:
+        default:
+            flashXfer.seqIndex  = NOR_CMD_LUT_SEQ_IDX_PAGEPROGRAM;
+            break;
+    }
+    flashXfer.data          = (uint32_t *)src;
+    flashXfer.dataSize      = length;
+    status                  = FLEXSPI_TransferBlocking(userConfig->mixspiBase, &flashXfer);
+
+    if (status != kStatus_Success)
+    {
+        return status;
+    }
+
+    status = mtu_mixspi_nor_wait_bus_busy(userConfig, flashInstMode);
+
+    if (flashInstMode == kFlashInstMode_Hyper)
+    {
+        /* Speed up flexspi clock for a high read performance. */
+        userConfig->mixspiRootClkFreq = lastRootClkFreq;
+        bsp_mixspi_clock_init(userConfig);
+
+        /* Get current flexspi root clock. */
+        deviceconfig->flexspiRootClk = bsp_mixspi_get_clock(userConfig);
+
+        /* Update DLL value depending on flexspi root clock. */
+        FLEXSPI_UpdateDllValue(userConfig->mixspiBase, deviceconfig, userConfig->mixspiPort);
+    }
+
+    /* Do software reset or clear AHB buffer directly. */
+#if defined(FSL_FEATURE_SOC_OTFAD_COUNT) && defined(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK) && \
+    defined(FLEXSPI_AHBCR_CLRAHBTXBUF_MASK)
+    userConfig->mixspiBase->AHBCR |= FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK;
+    userConfig->mixspiBase->AHBCR &= ~(FLEXSPI_AHBCR_CLRAHBRXBUF_MASK | FLEXSPI_AHBCR_CLRAHBTXBUF_MASK);
+#else
+    FLEXSPI_SoftwareReset(userConfig->mixspiBase);
+#endif
+
+#if defined(MTU_CACHE_MAINTAIN) && MTU_CACHE_MAINTAIN
+    mtu_mixspi_nor_enable_cache(cacheStatus);
+#endif
+
+    return status;
+}
+
+void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, 
+                               flexspi_device_config_t *deviceconfig)
 {
     flexspi_config_t config;
 

@@ -94,6 +94,12 @@ typedef struct _flash_reg_access
     } regValue;
 } flash_reg_access_t;
 
+typedef struct _mixspi_cache_status
+{
+    volatile bool codeCacheEnableFlag;
+    volatile bool systemCacheEnableFlag;
+} mixspi_cache_status_t;
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
@@ -113,5 +119,14 @@ status_t mtu_mixspi_nor_write_register(mixspi_user_config_t *userConfig, flash_r
 status_t mtu_mixspi_nor_read_register(mixspi_user_config_t *userConfig, flash_reg_access_t *regAccess);
 
 status_t mtu_mixspi_nor_enable_quad_mode(mixspi_user_config_t *userConfig);
+
+status_t mtu_mixspi_nor_erase_sector(mixspi_user_config_t *userConfig, uint32_t address, flash_inst_mode_t flashInstMode);
+
+status_t mtu_mixspi_nor_page_program(mixspi_user_config_t *userConfig,
+                                     flexspi_device_config_t *deviceconfig,
+                                     uint32_t address,
+                                     const uint32_t *src,
+                                     uint32_t length,
+                                     flash_inst_mode_t flashInstMode);
 
 #endif /* _MTU_MEM_NOR_OPS_H_ */
