@@ -2468,6 +2468,18 @@
             <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_device.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_device.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_ops.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_ops.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\src\mtu_systick.c</name>
         </file>
         <file>

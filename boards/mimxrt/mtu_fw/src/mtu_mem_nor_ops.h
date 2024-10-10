@@ -58,22 +58,6 @@ typedef enum _flash_inst_mode
     kFlashInstMode_MAX    = 5,
 } flash_inst_mode_t;
 
-// NOR property info for operation
-typedef struct _mixspi_user_config
-{
-    uint32_t                   instance;
-    MIXSPI_Type                *mixspiBase;
-    mixspi_port_t               mixspiPort;
-    mixspi_root_clk_freq_t      mixspiRootClkFreq;
-    mixspi_read_sample_clock_t  mixspiReadSampleClock;
-    const uint32_t             *mixspiCustomLUTVendor;
-
-    uint8_t  flashBusyStatusPol;
-    uint8_t  flashBusyStatusOffset;
-    uint8_t  flashMixStatusMask;
-    uint8_t  reserved;
-} mixspi_user_config_t;
-
 // Flash status/cfg register r/w access helper
 typedef struct _flash_reg_access
 {
@@ -110,7 +94,7 @@ extern mixspi_user_config_t s_userConfig;
  * API
  ******************************************************************************/
 
-void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, flexspi_device_config_t *deviceconfig);
+void mtu_mixspi_mem_init(mixspi_user_config_t *userConfig, flexspi_device_config_t *deviceconfig);
 
 status_t mtu_mixspi_nor_get_jedec_id(mixspi_user_config_t *userConfig, uint32_t *vendorId);
 

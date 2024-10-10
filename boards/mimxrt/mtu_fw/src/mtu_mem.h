@@ -10,6 +10,8 @@
 
 #include "mtu_mem_nor_ops.h"
 #include "mtu_mem_nor_device.h"
+#include "mtu_mem_ram_ops.h"
+#include "mtu_mem_ram_device.h"
 
 /*******************************************************************************
  * Definitions

@@ -28,7 +28,7 @@ mixspi_user_config_t s_userConfig;
 uint32_t s_memRwBuffer[0x200/4];
 
 /* Common FlexSPI config */
-flexspi_device_config_t s_deviceconfig = {
+flexspi_device_config_t s_nordeviceconfig = {
     .flexspiRootClk       = 30000000,
     .flashSize            = 0x4000, /* 128Mb/KByte */
     .CSIntervalUnit       = kFLEXSPI_CsIntervalUnit1SckCycle,
@@ -103,6 +103,26 @@ uint32_t s_customLUTCommonMode[CUSTOM_LUT_LENGTH] = {
         FLEXSPI_LUT_SEQ(kFLEXSPI_Command_SDR,       kFLEXSPI_1PAD, 0x61, kFLEXSPI_Command_READ_SDR,  kFLEXSPI_1PAD, 0x01),
 };
 
+flexspi_device_config_t s_ramdeviceconfig = {
+    .flexspiRootClk       = 396000000, /* 396MHZ SPI serial clock, DDR serial clock 198M */
+    .isSck2Enabled        = false,
+    .flashSize            = 0x2000, /* 64Mb/KByte */
+    .CSIntervalUnit       = kFLEXSPI_CsIntervalUnit1SckCycle,
+    .CSInterval           = 5,
+    .CSHoldTime           = 3,
+    .CSSetupTime          = 3,
+    .dataValidTime        = 1,
+    .columnspace          = 0,
+    .enableWordAddress    = false,
+    .AWRSeqIndex          = PSRAM_CMD_LUT_SEQ_IDX_WRITEDATA,
+    .AWRSeqNumber         = 1,
+    .ARDSeqIndex          = PSRAM_CMD_LUT_SEQ_IDX_READDATA,
+    .ARDSeqNumber         = 1,
+    .AHBWriteWaitUnit     = kFLEXSPI_AhbWriteWaitUnit2AhbCycle,
+    .AHBWriteWaitInterval = 0,
+    .enableWriteMask      = true,
+};
+
 /*******************************************************************************
  * Code
  ******************************************************************************/
@@ -118,27 +138,47 @@ status_t mtu_memory_init(void)
     //s_userConfig.mixspiPort = kFLEXSPI_PortA1;
     memcpy(s_customLUTCommonMode, s_configSystemPacket.memProperty.memLut, CUSTOM_LUT_LENGTH * 4);
     s_userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
-    s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
-
-    mtu_mixspi_nor_flash_init(&s_userConfig, &s_deviceconfig);
+    if (s_configSystemPacket.memProperty.type <= kMemType_FlashMaxIdx)
+    {
+        s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
+        mtu_mixspi_mem_init(&s_userConfig, &s_nordeviceconfig);
+    }
+    else
+    {
+        s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkExternalInputFromDqsPad;
+        mtu_mixspi_mem_init(&s_userConfig, &s_ramdeviceconfig);
+    }
 
     printf("FLEXSPI%d module initialized.\r\n", s_userConfig.instance);
 
-    /* Get JEDEC ID. */
-    status = mtu_mixspi_nor_get_jedec_id(&s_userConfig, &jedecID);
-    if (status != kStatus_Success)
+    if (s_configSystemPacket.memProperty.type == kMemType_QuadSPI)
     {
-        return status;
-    }
-    mtu_flash_validate_jedec_id((jedec_id_t *)&jedecID);
+        /* Get JEDEC ID. */
+        status = mtu_mixspi_nor_get_jedec_id(&s_userConfig, &jedecID);
+        if (status != kStatus_Success)
+        {
+            return status;
+        }
+        mtu_flash_validate_jedec_id((jedec_id_t *)&jedecID);
 
-    status = mtu_mixspi_nor_enable_quad_mode(&s_userConfig);
-    if (status != kStatus_Success)
-    {
-        printf("Flash failed to enter Quad I/O SDR mode.\r\n");
-        return status;
+        status = mtu_mixspi_nor_enable_quad_mode(&s_userConfig);
+        if (status != kStatus_Success)
+        {
+            printf("Flash failed to enter Quad I/O SDR mode.\r\n");
+            return status;
+        }
+        printf("Flash entered Quad I/O SDR mode.\r\n");
     }
-    printf("Flash entered Quad I/O SDR mode.\r\n");
+    else if (s_configSystemPacket.memProperty.type > kMemType_FlashMaxIdx)
+    {
+        status = mtu_psram_set_registers_for_apmemory(&s_userConfig);
+        if (status != kStatus_Success)
+        {
+            printf("Ram failed to be configured.\r\n");
+            return status;
+        }
+        printf("Ram is configured properly.\r\n");
+    }
     
     return kStatus_Success;
 }
@@ -201,7 +241,7 @@ status_t mtu_memory_rwtest(uint8_t memType, uint32_t memStart, uint32_t memSize,
             for (uint32_t pageId = 0; pageId < pagesPerSector; pageId++)
             {
                 uint32_t pageAddr = sectorAddr + pageId * 0x100;
-                status = mtu_mixspi_nor_page_program(&s_userConfig, &s_deviceconfig, pageAddr, (const uint32_t *)s_memRwBuffer, 0x100, kFlashInstMode_SPI);
+                status = mtu_mixspi_nor_page_program(&s_userConfig, &s_nordeviceconfig, pageAddr, (const uint32_t *)s_memRwBuffer, 0x100, kFlashInstMode_SPI);
                 if (status != kStatus_Success)
                 {
                     printf("Program flash page failure at address 0x%x!\r\n", pageAddr);

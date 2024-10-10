@@ -534,7 +534,7 @@ status_t mtu_mixspi_nor_page_program(mixspi_user_config_t *userConfig,
     return status;
 }
 
-void mtu_mixspi_nor_flash_init(mixspi_user_config_t *userConfig, 
+void mtu_mixspi_mem_init(mixspi_user_config_t *userConfig, 
                                flexspi_device_config_t *deviceconfig)
 {
     flexspi_config_t config;

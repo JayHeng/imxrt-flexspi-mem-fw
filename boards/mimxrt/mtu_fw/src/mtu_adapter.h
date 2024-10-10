@@ -34,6 +34,22 @@
 #define MIXSPI_Type                  XSPI_Type
 #endif
 
+// mem property info for operation
+typedef struct _mixspi_user_config
+{
+    uint32_t                   instance;
+    MIXSPI_Type                *mixspiBase;
+    mixspi_port_t               mixspiPort;
+    mixspi_root_clk_freq_t      mixspiRootClkFreq;
+    mixspi_read_sample_clock_t  mixspiReadSampleClock;
+    const uint32_t             *mixspiCustomLUTVendor;
+
+    uint8_t  flashBusyStatusPol;
+    uint8_t  flashBusyStatusOffset;
+    uint8_t  flashMixStatusMask;
+    uint8_t  reserved;
+} mixspi_user_config_t;
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
