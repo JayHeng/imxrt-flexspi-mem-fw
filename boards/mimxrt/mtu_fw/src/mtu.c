@@ -396,8 +396,8 @@ static void mtu_command_execute(void)
                                  s_perfTestPacket.enableAverageShow,
                                  s_perfTestPacket.iterations,
                                  s_perfTestPacket.testBlockSize,
-                                 s_perfTestPacket.testRamStart,
-                                 s_perfTestPacket.testRamSize);
+                                 s_perfTestPacket.testMemStart,
+                                 s_perfTestPacket.testMemSize);
                         break;
 #endif
                     case kPerfTestSet_Sysbench:
@@ -418,8 +418,8 @@ static void mtu_command_execute(void)
                         {
                             char memsuffix = 'B';
                             s_memtester_fail_stop = s_stressTestPacket.enableStopWhenFail;
-                            memtester_main(s_stressTestPacket.testRamStart,
-                                           s_stressTestPacket.testRamSize,
+                            memtester_main(s_stressTestPacket.testMemStart,
+                                           s_stressTestPacket.testMemSize,
                                            &memsuffix,
                                            s_stressTestPacket.iterations,
                                            s_stressTestPacket.testPageSize);

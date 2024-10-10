@@ -169,8 +169,8 @@ typedef struct _perf_test_packet
     uint8_t enableAverageShow;
     uint8_t reserved0;
     uint32_t iterations;
-    uint32_t testRamStart;
-    uint32_t testRamSize;
+    uint32_t testMemStart;
+    uint32_t testMemSize;
     uint32_t testBlockSize;
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
@@ -191,8 +191,8 @@ typedef struct _stress_test_packet
     uint8_t enableStopWhenFail;
     uint8_t reserved0[2];
     uint32_t iterations;
-    uint32_t testRamStart;
-    uint32_t testRamSize;
+    uint32_t testMemStart;
+    uint32_t testMemSize;
     uint32_t testPageSize;
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
