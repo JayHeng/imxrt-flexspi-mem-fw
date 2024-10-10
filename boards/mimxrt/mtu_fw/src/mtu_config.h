@@ -12,6 +12,8 @@
  * Definitions
  ******************************************************************************/
 
+#define __MTU_FW_VERSION__       "1.0"
+
 #define MTU_SELFTEST             (0)
 #define MTU_USE_EVK_SOCKET       (0)
 #define MTU_USE_MEM_DC_MUX       (1)

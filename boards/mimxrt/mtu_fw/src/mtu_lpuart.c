@@ -19,14 +19,14 @@
  * Prototypes
  ******************************************************************************/
 
-   
+
 /*******************************************************************************
  * Variables
  ******************************************************************************/
 
 /*! @brief Welcome string. */
 uint8_t s_tipString[] =
-"i.MXRT mixspi memory test set FW v0.1\r\n\
+"i.MXRT mixspi memory test set FW v" __MTU_FW_VERSION__ "\r\n\
 Board receives command from UART1 then executes command.";
 
 /*
