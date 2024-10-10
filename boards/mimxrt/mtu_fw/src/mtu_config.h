@@ -20,10 +20,10 @@
 
 #define MTU_FEATURE_PACKET_CRC   (1)
 
-#define MTU_FEATURE_PINTEST         (1)
-#define MTU_FEATURE_MEMORY          (1)
-#define MTU_FEATURE_PERFTEST        (1)
-#define MTU_FEATURE_PERFTEST_MBW    (1)
-#define MTU_FEATURE_STRESSTEST      (1)
+#define MTU_FEATURE_PIN_TEST        (1)
+#define MTU_FEATURE_EXT_MEMORY      (1)
+#define MTU_FEATURE_PERF_TEST       (1)
+#define MTU_FEATURE_PERF_TEST_MBW   (1)
+#define MTU_FEATURE_STRESS_TEST     (1)
 
 #endif /* _MTU_CONFIG_H_ */

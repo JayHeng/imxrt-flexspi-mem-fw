@@ -344,7 +344,7 @@ static void mtu_command_execute(void)
     switch (s_currentCmdTag)
     {
         case kCommandTag_PinTest:
-#if MTU_FEATURE_PINTEST
+#if MTU_FEATURE_PIN_TEST
             printf("Can check wave on enabled pins now. \r\n");
             if (s_pinUnittestPacket.pintestEn.enableAdcSample)
             {
@@ -363,26 +363,37 @@ static void mtu_command_execute(void)
 
         case kCommandTag_ConfigSystem:
             bsp_rt_system_clocks_print();
-#if MTU_FEATURE_MEMORY
+#if MTU_FEATURE_EXT_MEMORY
             bsp_mixspi_pinmux_config(&s_configSystemPacket, false);
             mtu_memory_init();
 #endif
             break;
 
         case kCommandTag_AccessMemRegs:
-#if MTU_FEATURE_MEMORY
+#if MTU_FEATURE_EXT_MEMORY
             mtu_memory_get_info();
 #endif
             break;
 
         case kCommandTag_RunRwTest:
-#if MTU_FEATURE_MEMORY
-            mtu_memory_rwtest();
+#if MTU_FEATURE_EXT_MEMORY
+            {
+                switch (s_rwTestPacket.testSet)
+                {
+                    case kRwTestSet_WriteReadVerify:
+                        mtu_memory_rwtest(s_rwTestPacket.testMemStart,
+                                          s_rwTestPacket.testMemSize,
+                                          s_rwTestPacket.fillPatternWord);
+                        break;
+                    default:
+                        break;
+                }
+            }
 #endif
             break;
 
         case kCommandTag_RunPerfTest:
-#if MTU_FEATURE_PERFTEST
+#if MTU_FEATURE_PERF_TEST
             {
                 switch (s_perfTestPacket.testSet)
                 {
@@ -390,7 +401,7 @@ static void mtu_command_execute(void)
                         break;
                     case kPerfTestSet_Dhrystone:
                         break;
-#if MTU_FEATURE_PERFTEST_MBW
+#if MTU_FEATURE_PERF_TEST_MBW
                     case kPerfTestSet_Mbw:
                         mbw_main(s_perfTestPacket.subTestSet - s_perfTestPacket.testSet, 
                                  s_perfTestPacket.enableAverageShow,
@@ -405,12 +416,12 @@ static void mtu_command_execute(void)
                     default:
                         break;
                 }
-#endif
             }
+#endif
             break;
 
         case kCommandTag_RunStressTest:
-#if MTU_FEATURE_STRESSTEST
+#if MTU_FEATURE_STRESS_TEST
             {
                 switch (s_stressTestPacket.testSet)
                 {
@@ -428,15 +439,15 @@ static void mtu_command_execute(void)
                     default:
                         break;
                 }
-#endif
             }
+#endif
             break;
 
         case kCommandTag_TestStop:
             {
                 if (s_lastCmdTag == kCommandTag_PinTest)
                 {
-#if MTU_FEATURE_PINTEST
+#if MTU_FEATURE_PIN_TEST
                     mtu_task_timer_deinit();
                     if (s_pinUnittestPacket.pintestEn.enableAdcSample)
                     {

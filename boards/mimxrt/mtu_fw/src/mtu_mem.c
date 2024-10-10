@@ -162,8 +162,9 @@ status_t mtu_memory_get_info(void)
     return kStatus_Success;
 }
 
-status_t mtu_memory_rwtest(void)
+status_t mtu_memory_rwtest(uint32_t memStart, uint32_t memSize, uint32_t memPattern)
 {
+    printf("Arg List: memStart=0x%x, memSize=0x%x, memPattern=0x%x.\n", memStart, memSize, memPattern);
     return kStatus_Success;
 }
 

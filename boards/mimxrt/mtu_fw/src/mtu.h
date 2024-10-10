@@ -23,13 +23,13 @@
 #if MTU_FEATURE_PACKET_CRC
 #include "mtu_crc16.h"
 #endif
-#if MTU_FEATURE_MEMORY
+#if MTU_FEATURE_EXT_MEMORY
 #include "mtu_mem.h"
 #endif
-#if MTU_FEATURE_PERFTEST
+#if MTU_FEATURE_PERF_TEST
 #include "mbw.h"
 #endif
-#if MTU_FEATURE_STRESSTEST
+#if MTU_FEATURE_STRESS_TEST
 #include "memtester.h"
 #endif
 
@@ -138,10 +138,22 @@ typedef struct _config_system_packet
     uint8_t reserved1[2];
 } config_system_packet_t;
 
+//! @brief Rw-Test codes.
+enum _rw_test_sets
+{
+    kRwTestSet_WriteReadVerify = 0x90,
+
+    //! Maximum linearly incrementing Rw-Test code value.
+    kInvalidRwTestSet          = 0xFF,
+};
+
 typedef struct _rw_test_packet
 {
-    uint32_t memStart;
-    uint32_t memLen;
+    uint8_t testSet;
+    uint8_t reserved0[3];
+    uint32_t testMemStart;
+    uint32_t testMemSize;
+    uint32_t fillPatternWord;
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
 } rw_test_packet_t;
