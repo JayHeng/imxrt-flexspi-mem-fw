@@ -162,9 +162,33 @@ status_t mtu_memory_get_info(void)
     return kStatus_Success;
 }
 
-status_t mtu_memory_rwtest(uint32_t memStart, uint32_t memSize, uint32_t memPattern)
+status_t mtu_memory_rwtest(uint8_t memType, uint32_t memStart, uint32_t memSize, uint32_t memPattern)
 {
     printf("Arg List: memStart=0x%x, memSize=0x%x, memPattern=0x%x.\n", memStart, memSize, memPattern);
+    if (memType > kMemType_FlashMaxIdx)
+    {
+        uint32_t memEnd = memStart + memSize;
+        for (uint32_t addr = memStart; addr < memEnd;)
+        {
+            *(uint32_t *)addr = memPattern;
+            addr += 4;
+        }
+        printf("Pattern 0x%x has been filled into RAM region [0x%x - 0x%x)\n", memPattern, memStart, memStart + memSize);
+        for (uint32_t addr = memStart; addr < memEnd;)
+        {
+            if (*(uint32_t *)addr != memPattern)
+            {
+                printf("Pattern 0x%x verification is failed at address 0x%x.\n", memPattern, addr);
+                return kStatus_Fail;
+            }
+            addr += 4;
+        }
+    }
+    else
+    {
+        return kStatus_Fail;
+    }
+    printf("Pattern 0x%x readback verification is passed.\n", memPattern);
     return kStatus_Success;
 }
 

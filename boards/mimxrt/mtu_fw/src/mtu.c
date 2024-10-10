@@ -381,7 +381,8 @@ static void mtu_command_execute(void)
                 switch (s_rwTestPacket.testSet)
                 {
                     case kRwTestSet_WriteReadVerify:
-                        mtu_memory_rwtest(s_rwTestPacket.testMemStart,
+                        mtu_memory_rwtest(s_configSystemPacket.memProperty.type,
+                                          s_rwTestPacket.testMemStart,
                                           s_rwTestPacket.testMemSize,
                                           s_rwTestPacket.fillPatternWord);
                         break;

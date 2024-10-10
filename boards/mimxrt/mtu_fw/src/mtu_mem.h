@@ -29,6 +29,6 @@ status_t mtu_memory_init(void);
 
 status_t mtu_memory_get_info(void);
 
-status_t mtu_memory_rwtest(uint32_t memStart, uint32_t memSize, uint32_t memPattern);
+status_t mtu_memory_rwtest(uint8_t memType, uint32_t memStart, uint32_t memSize, uint32_t memPattern);
 
 #endif /* _MTU_MEM_H_ */

@@ -108,20 +108,34 @@ typedef struct _pin_unittest_packet
 
 #define CUSTOM_LUT_LENGTH    64
 
+//! @brief mem type codes.
+enum _mem_types
+{
+    kMemType_QuadSPI         = 0x00,
+    kMemType_OctalSPI        = 0x01,
+    kMemType_HyperFlash      = 0x02,
+    kMemType_FlashMaxIdx     = kMemType_HyperFlash,
+    kMemType_PSRAM           = 0x03,
+    kMemType_HyperRAM        = 0x04,
+    kMemType_RamMaxIdx       = kMemType_HyperRAM,
+
+    //! Maximum linearly incrementing Rw-Test code value.
+    kInvalidMemType          = 0xFF,
+};
+
 //! @brief Flexspi memory property option.
 typedef struct _memory_property
 {
     uint8_t type;
     uint8_t chip;
     uint16_t speedMHz;
-    uint32_t sizeInByte;
-    uint8_t ioMode;
+    uint8_t ioPadsMode;
     uint8_t interfaceMode;
-    uint8_t dataRateMode;
-    uint8_t dummyCycles;
+    uint8_t sampleRateMode;
+    uint8_t reserved0;
     uint16_t flashQuadEnableCfg;
     uint8_t  flashQuadEnableBytes;
-    uint8_t  reserved0;
+    uint8_t  reserved1;
     uint32_t memLut[CUSTOM_LUT_LENGTH];
 } memory_property_t;
 
