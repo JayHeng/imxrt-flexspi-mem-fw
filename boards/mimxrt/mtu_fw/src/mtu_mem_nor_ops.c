@@ -550,7 +550,7 @@ void mtu_mixspi_mem_init(mixspi_user_config_t *userConfig,
     config.ahbConfig.enableAHBBufferable  = true;
     config.ahbConfig.enableReadAddressOpt = true;
     config.ahbConfig.enableAHBCachable    = true;
-    config.rxSampleClock                  = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
+    config.rxSampleClock                  = userConfig->mixspiReadSampleClock;
 #if !(defined(FSL_FEATURE_FLEXSPI_HAS_NO_MCR0_COMBINATIONEN) && FSL_FEATURE_FLEXSPI_HAS_NO_MCR0_COMBINATIONEN)
     flexspi_port_t port = userConfig->mixspiPort;
     if ((port == kFLEXSPI_PortA1) || (port == kFLEXSPI_PortA2))
@@ -563,6 +563,10 @@ void mtu_mixspi_mem_init(mixspi_user_config_t *userConfig,
     }
 #endif
     FLEXSPI_Init(userConfig->mixspiBase, &config);
+
+    /* Set alignment, otherwise the prefetch burst may cross die boundary. */
+    userConfig->mixspiBase->AHBCR &= ~FLEXSPI_AHBCR_ALIGNMENT_MASK;
+    userConfig->mixspiBase->AHBCR |= FLEXSPI_AHBCR_ALIGNMENT(1);/* 1KB */
 
     /* Configure flash settings according to serial flash feature. */
     FLEXSPI_SetFlashConfig(userConfig->mixspiBase, deviceconfig, userConfig->mixspiPort);

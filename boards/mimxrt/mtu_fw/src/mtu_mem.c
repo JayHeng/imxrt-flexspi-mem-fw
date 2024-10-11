@@ -108,7 +108,7 @@ flexspi_device_config_t s_ramdeviceconfig = {
     .isSck2Enabled        = false,
     .flashSize            = 0x2000, /* 64Mb/KByte */
     .CSIntervalUnit       = kFLEXSPI_CsIntervalUnit1SckCycle,
-    .CSInterval           = 5,
+    .CSInterval           = 2,
     .CSHoldTime           = 3,
     .CSSetupTime          = 3,
     .dataValidTime        = 1,
@@ -172,6 +172,7 @@ status_t mtu_memory_init(void)
     else if (s_configSystemPacket.memProperty.type > kMemType_FlashMaxIdx)
     {
         status = mtu_psram_set_registers_for_apmemory(&s_userConfig);
+        //status = mtu_psram_set_registers_for_issi(&s_userConfig);
         if (status != kStatus_Success)
         {
             printf("Ram failed to be configured.\r\n");
