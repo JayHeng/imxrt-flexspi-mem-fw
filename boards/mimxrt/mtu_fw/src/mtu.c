@@ -352,7 +352,7 @@ static void mtu_command_execute(void)
                 mtu_print_mode_switch(false);
             }
             mtu_task_timer_deinit();
-            bsp_mixspi_pinmux_config(&s_pinUnittestPacket, true);
+            bsp_mixspi_pinmux_config(&s_pinUnittestPacket, true, 0);
             if (s_pinUnittestPacket.pintestEn.enableAdcSample)
             {
                 bsp_adc_init();
@@ -364,7 +364,7 @@ static void mtu_command_execute(void)
         case kCommandTag_ConfigSystem:
             bsp_rt_system_clocks_print();
 #if MTU_FEATURE_EXT_MEMORY
-            bsp_mixspi_pinmux_config(&s_configSystemPacket, false);
+            bsp_mixspi_pinmux_config(&s_configSystemPacket, false, 0);
             mtu_memory_init();
 #endif
             break;

@@ -46,7 +46,7 @@ typedef struct PinInfo
  * API
  ******************************************************************************/
 
-void     bsp_mixspi_pinmux_config(void *configPacket, bool isPintest);
+void     bsp_mixspi_pinmux_config(void *configPacket, bool isPintest, uint32_t pad_config);
 
 void     bsp_mixspi_gpios_toggle(void);
 
