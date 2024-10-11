@@ -103,3 +103,66 @@ status_t mtu_psram_set_registers_for_apmemory(mixspi_user_config_t *userConfig)
 
     return status;
 }
+
+status_t mtu_psram_set_registers_for_issi(mixspi_user_config_t *userConfig)
+{
+    uint16_t identification = 0x00U;
+    uint16_t registerVal    = 0x00U;
+    psram_reg_access_t regAccess;
+    status_t status = kStatus_Success;
+
+    /* Read identification: the Manufacturer ID of ISSI's PSRAM(IS66/67WVQ8M4DALL) is 0x03U  */
+    do
+    {
+        status = mtu_mixspi_psram_read_id(userConfig, &identification);
+        if ((status != kStatus_Success) || (identification & 0x03U) != 0x03U)
+        {
+            status = kStatus_Fail;
+            break;
+        }
+
+        /* Read configuration register: the default setting is 0xF052(see table 6.1 Configuration Register in
+           PSRAM's(IS66/67WVQ8M4DALL) datasheet), which Latency code(CR[7:4]) is 0101b, which supported max frequency
+           is 200MHz.*/
+        regAccess.regNum = 2;
+        regAccess.regAddr = 0x04UL << 9;
+        status = mtu_mixspi_psram_read_register(userConfig, &regAccess);
+        registerVal = regAccess.regValue.U & 0xFFFF;
+        if ((status != kStatus_Success) || registerVal != 0xF052U)
+        {
+            status = kStatus_Fail;
+            break;
+        }
+
+        /* Initial access latency configuration, which is located in bit3 of CR. */
+        registerVal |= (uint16_t)(0x01UL << 3);
+
+        /* Write configuration register: */
+        regAccess.regNum = 2;
+        regAccess.regAddr = 0x04UL << 9;
+        regAccess.regValue.U = registerVal & 0xFFFF;
+        status = mtu_mixspi_psram_write_register(userConfig, &regAccess);
+        if ((status != kStatus_Success) || registerVal != 0xF05AU)
+        {
+            status = kStatus_Fail;
+            break;
+        }
+
+        /* Reset */
+        registerVal = 0x00U;
+
+        /* Read configuration register: changes default Variable Latency into Fixed Latency: 0xF05A.
+           Note: FlexSPI only supports fixed latency mode for ISSI's psram. */
+        regAccess.regNum = 2;
+        regAccess.regAddr = 0x04UL << 9;
+        status = mtu_mixspi_psram_read_register(userConfig, &regAccess);
+        registerVal = regAccess.regValue.U & 0xFFFF;
+        if ((status != kStatus_Success) || registerVal != 0xF05AU)
+        {
+            status = kStatus_Fail;
+            break;
+        }
+    } while (false);
+
+    return status;
+}

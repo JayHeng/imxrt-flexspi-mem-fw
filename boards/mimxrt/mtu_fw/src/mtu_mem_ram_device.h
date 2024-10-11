@@ -21,4 +21,6 @@
 
 status_t mtu_psram_set_registers_for_apmemory(mixspi_user_config_t *userConfig);
 
+status_t mtu_psram_set_registers_for_issi(mixspi_user_config_t *userConfig);
+
 #endif /* _MTU_MEM_RAM_DEVICE_H_ */
