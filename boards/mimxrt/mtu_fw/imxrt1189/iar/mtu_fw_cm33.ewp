@@ -2231,10 +2231,10 @@
             <name>$PROJ_DIR$\..\port_adc_conv.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\port_clock_time.c</name>
+            <name>$PROJ_DIR$\..\port_flexspi_info.c</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\port_flexspi_info.c</name>
+            <name>$PROJ_DIR$\..\port_platform_info.c</name>
         </file>
     </group>
     <group>

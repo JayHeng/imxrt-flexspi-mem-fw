@@ -114,10 +114,12 @@ enum _mem_types
     kMemType_QuadSPI         = 0x00,
     kMemType_OctalSPI        = 0x01,
     kMemType_HyperFlash      = 0x02,
-    kMemType_FlashMaxIdx     = kMemType_HyperFlash,
-    kMemType_PSRAM           = 0x03,
-    kMemType_HyperRAM        = 0x04,
-    kMemType_RamMaxIdx       = kMemType_HyperRAM,
+    kMemType_FlashMaxIdx,
+
+    kMemType_PSRAM           = 0x04,
+    kMemType_HyperRAM        = 0x05,
+    kMemType_InternalSRAM    = 0x06,
+    kMemType_RamMaxIdx,
 
     //! Maximum linearly incrementing Rw-Test code value.
     kInvalidMemType          = 0xFF,

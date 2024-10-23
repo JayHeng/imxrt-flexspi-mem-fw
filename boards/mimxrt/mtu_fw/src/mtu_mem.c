@@ -131,6 +131,11 @@ status_t mtu_memory_init(void)
 {
     status_t status;
     uint32_t jedecID = 0;
+    if (s_configSystemPacket.memProperty.type == kMemType_InternalSRAM)
+    {
+        printf("Internal SRAM does not need to be configured.\r\n");
+        return kStatus_Success;
+    }
     
     s_userConfig.mixspiRootClkFreq = mtu_flash_convert_root_clk(s_configSystemPacket.memProperty.speedMHz);
     
@@ -186,6 +191,12 @@ status_t mtu_memory_init(void)
 
 status_t mtu_memory_get_info(void)
 {
+    if (s_configSystemPacket.memProperty.type == kMemType_InternalSRAM)
+    {
+        bsp_rt_system_srams_print();
+        return kStatus_Success;
+    }
+
     s_userConfig.flashBusyStatusOffset = 0;
     s_userConfig.flashBusyStatusPol = 1;
 
@@ -213,6 +224,17 @@ static void mtu_memory_preset_rw_buffer(uint32_t patternWord)
     }
 }
 
+static uint32_t mtu_memory_convert_to_offset_addr(uint32_t memStart)
+{
+    uint32_t offsetAddr = memStart;
+    uint32_t ambaBase = bsp_mixspi_get_amba_base(&s_userConfig);
+    if ((memStart >= ambaBase) && (memStart < ambaBase + MTU_MEM_MAX_MAP_SIZE))
+    {
+        offsetAddr -= ambaBase;
+    }
+    return offsetAddr;
+}
+
 status_t mtu_memory_rwtest(uint8_t memType, uint32_t memStart, uint32_t memSize, uint32_t memPattern)
 {
     printf("Arg List: memStart=0x%x, memSize=0x%x, memPattern=0x%x.\n", memStart, memSize, memPattern);
@@ -229,9 +251,10 @@ status_t mtu_memory_rwtest(uint8_t memType, uint32_t memStart, uint32_t memSize,
     {
         uint32_t sectorMax = memSize / 0x1000;
         uint32_t pagesPerSector = 0x1000 / 0x100;
+        uint32_t offsetAddr = mtu_memory_convert_to_offset_addr(memStart);
         for (uint32_t sectorId = 0; sectorId < sectorMax; sectorId++)
         {
-            uint32_t sectorAddr = memStart + sectorId * 0x1000;
+            uint32_t sectorAddr = offsetAddr + sectorId * 0x1000;
             status_t status = mtu_mixspi_nor_erase_sector(&s_userConfig, sectorAddr, kFlashInstMode_SPI);
             if (status != kStatus_Success)
             {
@@ -250,8 +273,11 @@ status_t mtu_memory_rwtest(uint8_t memType, uint32_t memStart, uint32_t memSize,
                 }
             }
         }
-        memStart += bsp_mixspi_get_amba_base(&s_userConfig);
-        memEnd += bsp_mixspi_get_amba_base(&s_userConfig);
+        if (offsetAddr == memStart)
+        {
+            memStart += bsp_mixspi_get_amba_base(&s_userConfig);
+            memEnd += bsp_mixspi_get_amba_base(&s_userConfig);
+        }
     }
     printf("Pattern 0x%x has been filled into MEM region [0x%x - 0x%x)\n", memPattern, memStart, memStart + memSize);
     for (uint32_t addr = memStart; addr < memEnd;)

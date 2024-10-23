@@ -72,4 +72,6 @@ uint32_t bsp_life_timer_clocks_per_sec(void);
 
 void     bsp_rt_system_clocks_print(void);
 
+void     bsp_rt_system_srams_print(void);
+
 #endif /* __MTU_BSP__ */
