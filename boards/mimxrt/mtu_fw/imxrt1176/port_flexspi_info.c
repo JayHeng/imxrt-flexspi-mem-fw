@@ -96,6 +96,49 @@ enum _flexspi2_dqs_sel
     kFlexspi2_DqsB_GPIO_EMC_B2_07   = 0x10,
 };
 
+#define MTU_USE_FSPI1_PORTA1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA1;\
+    }
+#define MTU_USE_FSPI1_PORTA2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA2;\
+    }
+#define MTU_USE_FSPI1_PORTB1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB1;\
+    }
+#define MTU_USE_FSPI1_PORTB2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI1;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB2;\
+    }
+#define MTU_USE_FSPI2_PORTA1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA1;\
+    }
+#define MTU_USE_FSPI2_PORTA2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortA2;\
+    }
+#define MTU_USE_FSPI2_PORTB1                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB1;\
+    }
+#define MTU_USE_FSPI2_PORTB2                      \
+    {                                             \
+        s_userConfig.mixspiBase = FLEXSPI2;       \
+        s_userConfig.mixspiPort = kFLEXSPI_PortB2;\
+    }
+
+#define PAD_CONFIG                     (0x0A)
+
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
@@ -105,16 +148,26 @@ enum _flexspi2_dqs_sel
  * Variables
  ******************************************************************************/
 
-pin_info_t s_pinInfo[13];
+pin_info_t s_pinInfo[MTU_MAX_PINS];
 
 
 /*******************************************************************************
  * Code
  ******************************************************************************/
 
-void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
+void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest, uint32_t pad_config)
 {
     CLOCK_EnableClock(kCLOCK_Iomuxc);
+
+    if (pad_config == 0)
+    {
+        pad_config = PAD_CONFIG;
+    }
+    else
+    {
+        pad_config = 0x0AU;
+    }
+
     if (isPintest)
     {
         pin_unittest_packet_t *packet = (pin_unittest_packet_t *)configPacket;
@@ -122,7 +175,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
         memset(s_pinInfo, 0xFF, sizeof(s_pinInfo));
         if (packet->memConnection.instance == 1)
         {
-            if (packet->unittestEn.option.B.dataLow4bit)
+            if (packet->pintestEn.option.B.dataLow4bit)
             {
                 switch (packet->memConnection.dataLow4bit)
                 {
@@ -154,7 +207,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.ss_b)
+            if (packet->pintestEn.option.B.ss_b)
             {
                 switch (packet->memConnection.ss_b)
                 {
@@ -178,7 +231,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.sclk)
+            if (packet->pintestEn.option.B.sclk)
             {
                 switch (packet->memConnection.sclk)
                 {
@@ -198,7 +251,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs0)
+            if (packet->pintestEn.option.B.dqs0)
             {
                 switch (packet->memConnection.dqs0)
                 {
@@ -235,10 +288,10 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_09_FLEXSPI1_A_DATA01, 1U);
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_10_FLEXSPI1_A_DATA02, 1U);
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_11_FLEXSPI1_A_DATA03, 1U);
-                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_08_FLEXSPI1_A_DATA00, 0x0AU);
-                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_09_FLEXSPI1_A_DATA01, 0x0AU);
-                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_10_FLEXSPI1_A_DATA02, 0x0AU);
-                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_11_FLEXSPI1_A_DATA03, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_08_FLEXSPI1_A_DATA00, pad_config);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_09_FLEXSPI1_A_DATA01, pad_config);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_10_FLEXSPI1_A_DATA02, pad_config);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_11_FLEXSPI1_A_DATA03, pad_config);
                     break;
                 case kFlexspi1_DataA_GPIO_AD_23_20:
                     break;
@@ -252,18 +305,24 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
             switch (packet->memConnection.ss_b)
             {
                 case kFlexspi1_Ss0A_GPIO_SD_B2_06:
+                    MTU_USE_FSPI1_PORTA1
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_06_FLEXSPI1_A_SS0_B, 1U);
-                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_06_FLEXSPI1_A_SS0_B, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_06_FLEXSPI1_A_SS0_B, pad_config);
                     break;
                 case kFlexspi1_Ss0A_GPIO_AD_18:
+                    MTU_USE_FSPI1_PORTA1
                     break;
                 case kFlexspi1_Ss1A_GPIO_SD_B1_02:
+                    MTU_USE_FSPI1_PORTA2
                     break;
                 case kFlexspi1_Ss0B_GPIO_SD_B1_04:
+                    MTU_USE_FSPI1_PORTB1
                     break;
                 case kFlexspi1_Ss1B_GPIO_AD_35:
+                    MTU_USE_FSPI1_PORTB2
                     break;
                 case kFlexspi1_Ss1B_GPIO_SD_B1_03:
+                    MTU_USE_FSPI1_PORTB2
                     break;
                 default:
                     break;
@@ -272,7 +331,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
             {
                 case kFlexspi1_SclkA_GPIO_SD_B2_07:
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_07_FLEXSPI1_A_SCLK, 1U);
-                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_07_FLEXSPI1_A_SCLK, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_07_FLEXSPI1_A_SCLK, pad_config);
                     break;
                 case kFlexspi1_SclkA_GPIO_AD_19:
                     break;
@@ -287,7 +346,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
             {
                 case kFlexspi1_DqsA_GPIO_SD_B2_05:
                     IOMUXC_SetPinMux(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS, 1U);
-                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS, 0x0AU);
+                    IOMUXC_SetPinConfig(IOMUXC_GPIO_SD_B2_05_FLEXSPI1_A_DQS, pad_config);
                     break;
                 case kFlexspi1_DqsA_GPIO_AD_17:
                     break;
@@ -305,9 +364,9 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
     }
 }
 
-void bsp_flexspi_gpios_toggle(void)
+void bsp_mixspi_gpios_toggle(void)
 {
-    if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+    if (s_pinUnittestPacket.pintestEn.enableAdcSample)
     {
         uint8_t convValue = bsp_adc_get_conv_value();
         mtu_uart_sendhex(&convValue, sizeof(convValue));
@@ -323,10 +382,291 @@ void bsp_flexspi_gpios_toggle(void)
     }
 }
 
-void bsp_flexspi_clock_init(void)
+void bsp_mixspi_clock_init(void *config)
 {
-    /*Clock setting for flexspi1*/
-    CLOCK_SetRootClockDiv(kCLOCK_Root_Flexspi1, 2);
-    CLOCK_SetRootClockMux(kCLOCK_Root_Flexspi1, 0);
+    clock_root_config_t rootCfg = {0};
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    mixspi_root_clk_freq_t clkFreq = userConfig->mixspiRootClkFreq;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        userConfig->instance = 1;
+        // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 12-35.
+        if (clkFreq == kMixspiRootClkFreq_30MHz)
+        {
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc48MDiv2;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_50MHz)
+        {
+            /* Init System Pll2 (528MHz) pfd2. */
+            // 528*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            // CLOCK_InitPfd(kCLOCK_PllSys2, kCLOCK_Pfd2, 24);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd2;
+            rootCfg.div = 8;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_60MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 18);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 8;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_80MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 18);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 6;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_100MHz)
+        {
+            /* Init System Pll2 (528MHz) pfd2. */
+            // 528*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            // CLOCK_InitPfd(kCLOCK_PllSys2, kCLOCK_Pfd2, 24);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd2;
+            rootCfg.div = 4;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_120MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 18);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 4;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_133MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            //CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 13);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 5;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_166MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            //CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 13);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 4;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_200MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 22);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_240MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 18);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_266MHz)
+        {
+            /* Init System Pll2 (528MHz) pfd2. */
+            // 528*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            CLOCK_InitPfd(kCLOCK_PllSys2, kCLOCK_Pfd2, 18);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd2;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_332MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            //CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 13);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 2;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else if (clkFreq == kMixspiRootClkFreq_400MHz)
+        {
+            /* Init System Pll3 (480MHz) pfd0. */
+            // 480*18/PFDx_FRAC where PFDx_FRAC is in the range 13-35.
+            CLOCK_InitPfd(kCLOCK_PllSys3, kCLOCK_Pfd0, 22);
+            rootCfg.mux = kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0;
+            rootCfg.div = 1;
+            CLOCK_SetRootClock(kCLOCK_Root_Flexspi1, &rootCfg);
+        }
+        else
+        {
+            printf("FLEXSPI1 clock freq is not set.\r\n");
+        }
+
+        uint32_t flexspiClk = CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi1);
+        if (flexspiClk > 166000000U)
+        {
+            __NOP();
+        }
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        userConfig->instance = 2;
+    }
+    else
+    {
+    }
 }
 
+uint32_t bsp_mixspi_get_clock(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        return CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi1);
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        return CLOCK_GetRootClockFreq(kCLOCK_Root_Flexspi2);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void bsp_mixspi_clock_source(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    uint32_t index = 0;
+    clock_root_t root;
+    uint32_t clkSel;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        root = kCLOCK_Root_Flexspi1;
+        clkSel = CLOCK_GetRootClockMux(root);
+        switch (clkSel)
+        {
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc48MDiv2:
+                printf("FLEXSPI1 Clk Source from 3'b000 - OSC RC48M Div2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc48MDiv2));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxOsc24MOut:
+                printf("FLEXSPI1 Clk Source from 3'b001 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24MOut));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc400M:
+                printf("FLEXSPI1 Clk Source from 3'b010 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxOscRc16M:
+                printf("FLEXSPI1 Clk Source from 3'b011 - OSC RC16M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc16M));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Pfd0:
+                printf("FLEXSPI1 Clk Source from 3'b100 - Sys PLL3 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd0));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Out:
+                printf("FLEXSPI1 Clk Source from 3'b101 - Sys PLL2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll2Pfd2:
+                printf("FLEXSPI1 Clk Source from 3'b110 - Sys PLL2 PFD2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd2));
+                break;
+
+            case kCLOCK_FLEXSPI1_ClockRoot_MuxSysPll3Out:
+                printf("FLEXSPI1 Clk Source from 3'b111 - Sys PLL3 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3));
+                break;
+
+            default:
+                break;
+        }
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        root = kCLOCK_Root_Flexspi2;
+        clkSel = CLOCK_GetRootClockMux(root);
+        switch (clkSel)
+        {
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc48MDiv2:
+                printf("FLEXSPI2 Clk Source from 3'b000 - OSC RC48M Div2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc48MDiv2));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxOsc24MOut:
+                printf("FLEXSPI2 Clk Source from 3'b001 - OSC RC24M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Osc24MOut));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc400M:
+                printf("FLEXSPI2 Clk Source from 3'b010 - OSC RC400M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc400M));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxOscRc16M:
+                printf("FLEXSPI2 Clk Source from 3'b011 - OSC RC16M clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_OscRc16M));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Pfd0:
+                printf("FLEXSPI2 Clk Source from 3'b100 - Sys PLL3 PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3Pfd0));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll2Out:
+                printf("FLEXSPI2 Clk Source from 3'b101 - Sys PLL2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll2Pfd2:
+                printf("FLEXSPI2 Clk Source from 3'b110 - Sys PLL2 PFD2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll2Pfd2));
+                break;
+
+            case kCLOCK_FLEXSPI2_ClockRoot_MuxSysPll3Out:
+                printf("FLEXSPI2 Clk Source from 3'b111 - Sys PLL3 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPll3));
+                break;
+
+            default:
+                break;
+        }
+    }
+    else
+    {
+    }
+    index = (root - kCLOCK_Root_Flexspi1) + 1;
+    uint32_t clkDiv = CLOCK_GetRootClockDiv(root);
+    printf("FLEXSPI%d Clk Source Divider: %d.\r\n", index, clkDiv);
+    printf("FLEXSPI%d Clk Frequency: %dHz.\r\n", index, bsp_mixspi_get_clock(userConfig));
+}
+
+void bsp_mixspi_sw_delay_us(uint64_t us)
+{
+    uint32_t ticks_per_us = CLOCK_GetFreq(kCLOCK_CpuClk) / 1000000;
+    while (us--)
+    {
+        register uint32_t ticks = 1 + ticks_per_us / 4;
+        while (ticks--)
+        {
+            __NOP();
+        }
+    }
+}
+
+uint32_t bsp_mixspi_get_amba_base(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    if (userConfig->mixspiBase == FLEXSPI1)
+    {
+        return FlexSPI1_AMBA_BASE;
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        return FlexSPI2_AMBA_BASE;
+    }
+    else
+    {
+        return 0;
+    }
+}

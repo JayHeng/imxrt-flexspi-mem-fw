@@ -80,6 +80,8 @@ typedef struct _flash_reg_access
 
 typedef struct _mixspi_cache_status
 {
+    volatile bool DCacheEnableFlag;
+    volatile bool ICacheEnableFlag;
     volatile bool codeCacheEnableFlag;
     volatile bool systemCacheEnableFlag;
 } mixspi_cache_status_t;

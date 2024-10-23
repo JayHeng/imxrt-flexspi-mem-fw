@@ -65,17 +65,24 @@ define region CSTACK_region = mem:[from m_data_end-__size_cstack__+1 to m_data_e
 
 define block CSTACK    with alignment = 8, size = __size_cstack__   { };
 define block HEAP      with alignment = 8, size = __size_heap__     { };
-define block RW        { readwrite };
-define block ZI        { zi };
-define block NCACHE_VAR    { section NonCacheable , section NonCacheable.init };
-define block QACCESS_CODE  { section CodeQuickAccess };
-define block QACCESS_DATA  { section DataQuickAccess };
+//define block RW        { readwrite };
+//define block ZI        { zi };
+//define block NCACHE_VAR    { section NonCacheable , section NonCacheable.init };
+//define block QACCESS_CODE  { section CodeQuickAccess };
+//define block QACCESS_DATA  { section DataQuickAccess };
 
 initialize by copy { readwrite, section .textrw, section CodeQuickAccess, section DataQuickAccess };
 do not initialize  { section .noinit };
 
-place at address mem: m_interrupts_start    { readonly section .intvec };
+define block CodeRelocate { section .textrw_init };
+define block CodeRelocateRam { section .textrw };
+define block ApplicationFlash { readonly, block CodeRelocate, readonly section .noinit };
+define block ApplicationRam { readwrite, block CodeRelocateRam, block CSTACK, block HEAP};
 
+place at address mem: m_interrupts_start    { readonly section .intvec };
+place in TEXT_region { block ApplicationFlash };
+place in DATA_region { block ApplicationRam };
+/*
 place in TEXT_region                        { readonly };
 place in DATA_region                        { block RW };
 place in DATA_region                        { block ZI };
@@ -84,3 +91,4 @@ place in DATA_region                        { block NCACHE_VAR };
 place in TEXT_region                        { block QACCESS_CODE };
 place in DATA_region                        { block QACCESS_DATA };
 place in CSTACK_region                      { block CSTACK };
+*/

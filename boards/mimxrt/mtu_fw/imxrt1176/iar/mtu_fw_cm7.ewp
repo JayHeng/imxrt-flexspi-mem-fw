@@ -229,9 +229,9 @@
                     <name>CCDefines</name>
                     <state>DEBUG</state>
                     <state>CPU_MIMXRT1176DVMAA_cm7</state>
-                    <state>PRINTF_FLOAT_ENABLE=0</state>
+                    <state>PRINTF_FLOAT_ENABLE=1</state>
                     <state>SCANF_FLOAT_ENABLE=0</state>
-                    <state>PRINTF_ADVANCED_ENABLE=0</state>
+                    <state>PRINTF_ADVANCED_ENABLE=1</state>
                     <state>SCANF_ADVANCED_ENABLE=0</state>
                     <state>FSL_SDK_DRIVER_QUICK_ACCESS_ENABLE=1</state>
                     <state>MCUXPRESSO_SDK</state>
@@ -366,6 +366,8 @@
                     <state>$PROJ_DIR$/../../../xip</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT1176/drivers/cm7</state>
                     <state>$PROJ_DIR$/../../../../../CMSIS/Core/Include</state>
+                    <state>$PROJ_DIR$/../../../../../middleware/mbw</state>
+                    <state>$PROJ_DIR$/../../../../../middleware/memtester</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -1331,9 +1333,9 @@
                     <name>CCDefines</name>
                     <state>NDEBUG</state>
                     <state>CPU_MIMXRT1176DVMAA_cm7</state>
-                    <state>PRINTF_FLOAT_ENABLE=0</state>
+                    <state>PRINTF_FLOAT_ENABLE=1</state>
                     <state>SCANF_FLOAT_ENABLE=0</state>
-                    <state>PRINTF_ADVANCED_ENABLE=0</state>
+                    <state>PRINTF_ADVANCED_ENABLE=1</state>
                     <state>SCANF_ADVANCED_ENABLE=0</state>
                     <state>FSL_SDK_DRIVER_QUICK_ACCESS_ENABLE=1</state>
                     <state>MCUXPRESSO_SDK</state>
@@ -1468,6 +1470,8 @@
                     <state>$PROJ_DIR$/../../../xip</state>
                     <state>$PROJ_DIR$/../../../../../devices/MIMXRT1176/drivers/cm7</state>
                     <state>$PROJ_DIR$/../../../../../CMSIS/Core/Include</state>
+                    <state>$PROJ_DIR$/../../../../../middleware/mbw</state>
+                    <state>$PROJ_DIR$/../../../../../middleware/memtester</state>
                 </option>
                 <option>
                     <name>CCStdIncCheck</name>
@@ -2231,6 +2235,9 @@
         <file>
             <name>$PROJ_DIR$\..\port_flexspi_info.c</name>
         </file>
+        <file>
+            <name>$PROJ_DIR$\..\port_platform_info.c</name>
+        </file>
     </group>
     <group>
         <name>CMSIS</name>
@@ -2367,11 +2374,53 @@
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_lpuart.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_pit.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_pit.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_pmu.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\..\..\..\devices\MIMXRT1176\drivers\fsl_pmu.h</name>
         </file>
+    </group>
+    <group>
+        <name>middleware</name>
+        <group>
+            <name>mbw</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\mbw\mbw.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\mbw\mbw.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\mbw\mbw_utils.c</name>
+            </file>
+        </group>
+        <group>
+            <name>memtester</name>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\memtester.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\memtester.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\sizes.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\tests.c</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\tests.h</name>
+            </file>
+            <file>
+                <name>$PROJ_DIR$\..\..\..\..\..\middleware\memtester\types.h</name>
+            </file>
+        </group>
     </group>
     <group>
         <name>source</name>
@@ -2383,6 +2432,9 @@
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_adapter.h</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_bsp.h</name>
@@ -2418,7 +2470,22 @@
             <name>$PROJ_DIR$\..\..\src\mtu_mem_nor_ops.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\..\..\src\mtu_timer.c</name>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_device.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_device.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_ops.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_mem_ram_ops.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_pit.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\..\..\src\mtu_systick.c</name>
         </file>
         <file>
             <name>$PROJ_DIR$\..\..\src\mtu_timer.h</name>
