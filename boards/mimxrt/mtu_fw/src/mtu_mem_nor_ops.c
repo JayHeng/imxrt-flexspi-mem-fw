@@ -326,11 +326,18 @@ status_t mtu_mixspi_nor_read_register(mixspi_user_config_t *userConfig, flash_re
 
 status_t mtu_mixspi_nor_enable_quad_mode(mixspi_user_config_t *userConfig)
 {
-    flash_reg_access_t regAccess;
-    regAccess.regNum = s_configSystemPacket.memProperty.flashQuadEnableBytes;
-    regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_ENABLEQE;
-    regAccess.regValue.U = s_configSystemPacket.memProperty.flashQuadEnableCfg;
-    return mtu_mixspi_nor_write_register(userConfig, &regAccess);
+    if (s_configSystemPacket.memProperty.flashQuadEnableBytes)
+    {
+        flash_reg_access_t regAccess;
+        regAccess.regNum = s_configSystemPacket.memProperty.flashQuadEnableBytes;
+        regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_ENABLEQE;
+        regAccess.regValue.U = s_configSystemPacket.memProperty.flashQuadEnableCfg;
+        return mtu_mixspi_nor_write_register(userConfig, &regAccess);
+    }
+    else
+    {
+        return kStatus_Success;
+    }
 }
 
 status_t mtu_mixspi_nor_get_jedec_id(mixspi_user_config_t *userConfig, uint32_t *vendorId)
