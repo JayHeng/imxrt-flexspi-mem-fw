@@ -145,6 +145,8 @@ status_t mtu_memory_init(void)
     s_userConfig.mixspiCustomLUTVendor = s_customLUTCommonMode;
     if (s_configSystemPacket.memProperty.type <= kMemType_FlashMaxIdx)
     {
+        s_userConfig.flashBusyStatusOffset = 0;
+        s_userConfig.flashBusyStatusPol = 1;
         s_userConfig.mixspiReadSampleClock = kFLEXSPI_ReadSampleClkLoopbackFromDqsPad;
         mtu_mixspi_mem_init(&s_userConfig, &s_nordeviceconfig);
     }
@@ -196,9 +198,6 @@ status_t mtu_memory_get_info(void)
         bsp_rt_system_srams_print();
         return kStatus_Success;
     }
-
-    s_userConfig.flashBusyStatusOffset = 0;
-    s_userConfig.flashBusyStatusPol = 1;
 
     flash_reg_access_t regAccess;
     regAccess.regNum = 1;
