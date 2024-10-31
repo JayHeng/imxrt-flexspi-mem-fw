@@ -125,6 +125,22 @@ enum _mem_types
     kInvalidMemType          = 0xFF,
 };
 
+#define DEFAULT_PAD_CTRL_MAGIC (0xFFFFFFFFUL)
+
+//! @brief Flexspi pin pad ctrl.
+typedef struct _flexspi_padctrl
+{
+    uint32_t dataLow4bit;
+    uint32_t dataHigh4bit;
+    uint32_t dataTop8bit;
+    uint32_t ss_b;
+    uint32_t sclk;
+    uint32_t sclk_n;
+    uint32_t dqs0;
+    uint32_t dqs1;
+    uint32_t rst_b;
+} flexspi_padctrl_t;
+
 //! @brief Flexspi memory property option.
 typedef struct _memory_property
 {
@@ -149,6 +165,7 @@ typedef struct _config_system_packet
     uint16_t prefetchBufSizeInByte;
     uint8_t reserved0[2];
     flexspi_connection_t memConnection;
+    flexspi_padctrl_t padCtrl;
     memory_property_t memProperty;
     uint16_t crcCheckSum;
     uint8_t reserved1[2];
