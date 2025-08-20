@@ -233,9 +233,9 @@
                     <name>CCDefines</name>
                     <state>DEBUG</state>
                     <state>CPU_MIMXRT1062DVL6A</state>
-                    <state>PRINTF_FLOAT_ENABLE=0</state>
+                    <state>PRINTF_FLOAT_ENABLE=1</state>
                     <state>SCANF_FLOAT_ENABLE=0</state>
-                    <state>PRINTF_ADVANCED_ENABLE=0</state>
+                    <state>PRINTF_ADVANCED_ENABLE=1</state>
                     <state>SCANF_ADVANCED_ENABLE=0</state>
                     <state>MCUXPRESSO_SDK</state>
                 </option>
@@ -1366,9 +1366,9 @@
                     <name>CCDefines</name>
                     <state>NDEBUG</state>
                     <state>CPU_MIMXRT1062DVL6A</state>
-                    <state>PRINTF_FLOAT_ENABLE=0</state>
+                    <state>PRINTF_FLOAT_ENABLE=1</state>
                     <state>SCANF_FLOAT_ENABLE=0</state>
-                    <state>PRINTF_ADVANCED_ENABLE=0</state>
+                    <state>PRINTF_ADVANCED_ENABLE=1</state>
                     <state>SCANF_ADVANCED_ENABLE=0</state>
                     <state>MCUXPRESSO_SDK</state>
                 </option>

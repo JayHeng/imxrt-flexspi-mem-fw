@@ -54,10 +54,10 @@
 void bsp_rt_system_clocks_print(void)
 {
     printf("Platform clock roots frequency (MHz):\n");
-    printf("CPU Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_CpuClk) / 1000000.0);
-    printf("AHB Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_AhbClk) / 1000000.0);
-    printf("IPG Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_IpgClk) / 1000000.0);
-    printf("PER Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_PerClk) / 1000000.0);
+    printf("CPU Clock: %d\n", CLOCK_GetFreq(kCLOCK_CpuClk)/1000000);
+    printf("AHB Clock: %d\n", CLOCK_GetFreq(kCLOCK_AhbClk)/1000000);
+    printf("IPG Clock: %d\n", CLOCK_GetFreq(kCLOCK_IpgClk)/1000000);
+    printf("PER Clock: %d\n", CLOCK_GetFreq(kCLOCK_PerClk)/1000000);
 }
 
 void bsp_rt_system_srams_print(void)
