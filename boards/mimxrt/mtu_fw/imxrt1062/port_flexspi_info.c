@@ -10,6 +10,7 @@
 #include "fsl_iomuxc.h"
 #include "pin_mux.h"
 #include "fsl_gpio.h"
+#include "clock_config.h"
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
@@ -62,14 +63,14 @@ enum _flexspi1_rst_b_sel
  * Variables
  ******************************************************************************/
 
-pin_info_t s_pinInfo[13];
+pin_info_t s_pinInfo[MTU_MAX_PINS];
 
 
 /*******************************************************************************
  * Code
  ******************************************************************************/
 
-void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
+void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
 {
     CLOCK_EnableClock(kCLOCK_Iomuxc);
     if (isPintest)
@@ -79,7 +80,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
         memset(s_pinInfo, 0xFF, sizeof(s_pinInfo));
         if (packet->memConnection.instance == 1)
         {
-            if (packet->unittestEn.option.B.dataLow4bit)
+            if (packet->pintestEn.option.B.dataLow4bit)
             {
                 switch (packet->memConnection.dataLow4bit)
                 {
@@ -107,7 +108,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.ss_b)
+            if (packet->pintestEn.option.B.ss_b)
             {
                 switch (packet->memConnection.ss_b)
                 {
@@ -127,7 +128,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.sclk)
+            if (packet->pintestEn.option.B.sclk)
             {
                 switch (packet->memConnection.sclk)
                 {
@@ -143,7 +144,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.dqs0)
+            if (packet->pintestEn.option.B.dqs0)
             {
                 switch (packet->memConnection.dqs0)
                 {
@@ -159,7 +160,7 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
                         break;
                 }
             }
-            if (packet->unittestEn.option.B.rst_b)
+            if (packet->pintestEn.option.B.rst_b)
             {
                 switch (packet->memConnection.rst_b)
                 {
@@ -245,9 +246,9 @@ void bsp_flexspi_pinmux_config(void *configPacket, bool isPintest)
     }
 }
 
-void bsp_flexspi_gpios_toggle(void)
+void bsp_mixspi_gpios_toggle(void)
 {
-    if (s_pinUnittestPacket.unittestEn.enableAdcSample)
+    if (s_pinUnittestPacket.pintestEn.enableAdcSample)
     {
         uint8_t convValue = bsp_adc_get_conv_value();
         mtu_uart_sendhex(&convValue, sizeof(convValue));
@@ -263,8 +264,122 @@ void bsp_flexspi_gpios_toggle(void)
     }
 }
 
-void bsp_flexspi_clock_init(void)
+void bsp_mixspi_clock_init(void *config)
 {
 
+}
+
+uint32_t bsp_mixspi_get_clock(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    if (userConfig->mixspiBase == FLEXSPI)
+    {
+        return CLOCK_GetClockRootFreq(kCLOCK_FlexspiClkRoot);
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        return CLOCK_GetClockRootFreq(kCLOCK_Flexspi2ClkRoot);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void bsp_mixspi_clock_source(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    uint32_t index = 0;
+    uint32_t clkSel;
+    uint32_t clkDiv;
+    if (userConfig->mixspiBase == FLEXSPI)
+    {
+        index = 0;
+        clkSel = CCM->CSCMR1 & CCM_CSCMR1_FLEXSPI_CLK_SEL_MASK;
+        clkDiv = (CCM->CSCMR1 & CCM_CSCMR1_FLEXSPI_PODF_MASK) >> CCM_CSCMR1_FLEXSPI_PODF_SHIFT;
+        switch (clkSel)
+        {
+            case CCM_CSCMR1_FLEXSPI_CLK_SEL(0):
+                printf("MFB: FLEXSPI0 Clk Source from 2'b00 - semc_clk_root_pre clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SemcClk));
+                break;
+
+            case CCM_CSCMR1_FLEXSPI_CLK_SEL(1):
+                printf("MFB: FLEXSPI0 Clk Source from 2'b01 - PLL3(USB1 PLL) sw_clk %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Usb1PllClk));
+                break;
+
+            case CCM_CSCMR1_FLEXSPI_CLK_SEL(2):
+                printf("MFB: FLEXSPI0 Clk Source from 2'b10 - PLL2(System PLL) PFD2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPllPfd2Clk));
+                break;
+
+            case CCM_CSCMR1_FLEXSPI_CLK_SEL(3):
+                printf("MFB: FLEXSPI0 Clk Source from 2'b11 - PLL3(USB1 PLL) PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Usb1PllPfd0Clk));
+                break;
+
+            default:
+                break;
+        }
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        index = 2;
+        clkSel = CCM->CBCMR & CCM_CBCMR_FLEXSPI2_CLK_SEL_MASK;
+        clkDiv = (CCM->CBCMR & CCM_CBCMR_FLEXSPI2_PODF_MASK) >> CCM_CBCMR_FLEXSPI2_PODF_SHIFT;
+        switch (clkSel)
+        {
+            case CCM_CBCMR_FLEXSPI2_CLK_SEL(0):
+                printf("MFB: FLEXSPI2 Clk Source from 2'b00 - PLL2(System PLL) PFD2 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPllPfd2Clk));
+                break;
+
+            case CCM_CBCMR_FLEXSPI2_CLK_SEL(1):
+                printf("MFB: FLEXSPI2 Clk Source from 2'b01 - PLL3(USB1 PLL) PFD0 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Usb1PllPfd0Clk));
+                break;
+
+            case CCM_CBCMR_FLEXSPI2_CLK_SEL(2):
+                printf("MFB: FLEXSPI2 Clk Source from 2'b10 - PLL3(USB1 PLL) PFD1 clock %dHz.\r\n", CLOCK_GetFreq(kCLOCK_Usb1PllPfd1Clk));
+                break;
+
+            case CCM_CBCMR_FLEXSPI2_CLK_SEL(3):
+                printf("MFB: FLEXSPI2 Clk Source from 2'b11 - PLL2(System PLL) main_clk %dHz.\r\n", CLOCK_GetFreq(kCLOCK_SysPllClk));
+                break;
+
+            default:
+                break;
+        }
+    }
+    else
+    {
+    }
+    printf("FLEXSPI%d Clk Source Divider: %d.\r\n", index, clkDiv+1U);
+    printf("FLEXSPI%d Clk Frequency: %dHz.\r\n", index, bsp_mixspi_get_clock(userConfig));
+}
+
+void bsp_mixspi_sw_delay_us(uint64_t us)
+{
+    uint32_t ticks_per_us = CLOCK_GetFreq(kCLOCK_CpuClk) / 1000000;
+    while (us--)
+    {
+        register uint32_t ticks = 1 + ticks_per_us / 4;
+        while (ticks--)
+        {
+            __NOP();
+        }
+    }
+}
+
+uint32_t bsp_mixspi_get_amba_base(void *config)
+{
+    mixspi_user_config_t *userConfig = (mixspi_user_config_t *)config;
+    if (userConfig->mixspiBase == FLEXSPI)
+    {
+        return FlexSPI_AMBA_BASE;
+    }
+    else if (userConfig->mixspiBase == FLEXSPI2)
+    {
+        return FlexSPI2_AMBA_BASE;
+    }
+    else
+    {
+        return 0;
+    }
 }
 

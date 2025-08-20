@@ -13,8 +13,10 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-
+#if !defined(PIT)
 #define PIT PIT1
+#define kCLOCK_Pit kCLOCK_Pit1
+#endif
 
 /*******************************************************************************
  * Prototypes
@@ -28,7 +30,7 @@
 void mtu_life_timer_init(void)
 {
     // PIT clock gate control ON
-    CLOCK_EnableClock(kCLOCK_Pit1);
+    CLOCK_EnableClock(kCLOCK_Pit);
 
     pit_config_t pitConfig;
     PIT_GetDefaultConfig(&pitConfig);

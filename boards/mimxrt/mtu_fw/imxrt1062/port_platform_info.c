@@ -54,27 +54,19 @@
 void bsp_rt_system_clocks_print(void)
 {
     printf("Platform clock roots frequency (MHz):\n");
-    for(uint32_t i=0; i<4; i++)
-    {
-        float freq = CLOCK_GetRootClockFreq((clock_root_t)i);
-        freq /= 1000000;
-        char name[5] = {0};
-        *(uint32_t *)name = *(uint32_t *)(CCM->CLOCK_ROOT[i].RESERVED_1);
-        printf("%4s: %6.2f\n", name, freq);
-    }
+    printf("CPU Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_CpuClk) / 1000000.0);
+    printf("AHB Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_AhbClk) / 1000000.0);
+    printf("IPG Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_IpgClk) / 1000000.0);
+    printf("PER Clock: %6.2f\n", CLOCK_GetFreq(kCLOCK_PerClk) / 1000000.0);
 }
 
 void bsp_rt_system_srams_print(void)
 {
     printf("Platform Default SRAM regions(NS):\n");
-    printf("   [0x00000000 - 0x0003FFFF], 256KB, M7 ITCM\n");
-    printf("   [0x20000000 - 0x2003FFFF], 256KB, M7 DTCM\n");
-    printf("   [0x20200000 - 0x2023FFFF], 256KB, OCRAM M4\n");
-    printf("   [0x20240000 - 0x202BFFFF], 512KB, OCRAM1\n");
-    printf("   [0x202C0000 - 0x2033FFFF], 512KB, OCRAM2\n");
-    printf("   [0x20340000 - 0x2034FFFF], 64KB,  OCRAM1 ECC\n");
-    printf("   [0x20350000 - 0x2035FFFF], 64KB,  OCRAM2 ECC\n");
-    printf("   [0x20360000 - 0x2037FFFF], 128KB, M7 OCRAM\n");
+    printf("   [0x00000000 - 0x0001FFFF], 128KB, M7 ITCM\n");
+    printf("   [0x20000000 - 0x2001FFFF], 128KB, M7 DTCM\n");
+    printf("   [0x20200000 - 0x2027FFFF], 512KB, OCRAM2\n");
+    printf("   [0x20280000 - 0x202BFFFF], 256KB, M7 OCRAM\n");
     printf("SRAM regions reserved by FW:\n");
     uint32_t codeStart = __ROM_START;
     uint32_t codeEnd   = __ROM_END;
@@ -87,6 +79,6 @@ void bsp_rt_system_srams_print(void)
 
 uint32_t bsp_life_timer_clocks_per_sec(void)
 {
-    return CLOCK_GetRootClockFreq(kCLOCK_Root_Bus);
+    return CLOCK_GetFreq(kCLOCK_PerClk);
 }
 

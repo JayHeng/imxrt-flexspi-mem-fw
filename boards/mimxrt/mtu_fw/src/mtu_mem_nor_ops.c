@@ -571,9 +571,11 @@ void mtu_mixspi_mem_init(mixspi_user_config_t *userConfig,
 #endif
     FLEXSPI_Init(userConfig->mixspiBase, &config);
 
+#if defined(FLEXSPI_AHBCR_ALIGNMENT_MASK)
     /* Set alignment, otherwise the prefetch burst may cross die boundary. */
     userConfig->mixspiBase->AHBCR &= ~FLEXSPI_AHBCR_ALIGNMENT_MASK;
     userConfig->mixspiBase->AHBCR |= FLEXSPI_AHBCR_ALIGNMENT(1);/* 1KB */
+#endif
 
     /* Configure flash settings according to serial flash feature. */
     FLEXSPI_SetFlashConfig(userConfig->mixspiBase, deviceconfig, userConfig->mixspiPort);
