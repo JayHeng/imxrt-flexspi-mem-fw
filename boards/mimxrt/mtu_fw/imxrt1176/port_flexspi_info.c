@@ -161,6 +161,8 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
         pin_unittest_packet_t *packet = (pin_unittest_packet_t *)configPacket;
         gpio_pin_config_t do_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
         memset(s_pinInfo, 0xFF, sizeof(s_pinInfo));
+        ///////////////////////////////////////////////////////////////
+        // Pin test INST=1
         if (packet->memConnection.instance == 1)
         {
             if (packet->pintestEn.option.B.dataLow4bit)
@@ -436,6 +438,8 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
             {
             }
         }
+        ///////////////////////////////////////////////////////////////
+        // Pin test INST=2
         else if (packet->memConnection.instance == 2)
         {
             if (packet->pintestEn.option.B.dataLow4bit)
@@ -667,6 +671,8 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
     else
     {
         config_system_packet_t *packet = (config_system_packet_t *)configPacket;
+         ///////////////////////////////////////////////////////////////
+        // Peri cfg INST=1
         if (packet->memConnection.instance == 1)
         {
             switch (packet->memConnection.dataLow4bit)
@@ -908,6 +914,8 @@ void bsp_mixspi_pinmux_config(void *configPacket, bool isPintest)
                     break;
             }
         }
+        ///////////////////////////////////////////////////////////////
+        // Peri cfg INST=2
         else if (packet->memConnection.instance == 2)
         {
             switch (packet->memConnection.dataLow4bit)
