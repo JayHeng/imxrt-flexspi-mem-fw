@@ -204,13 +204,13 @@ status_t mtu_memory_get_info(void)
     regAccess.regAddr = 0x0;
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READSTATUS;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("Flash Status Register: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("Flash Status Register: 0x%02x\r\n", regAccess.regValue.B.reg1);
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG1;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("Flash Custom Register1: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("Flash Custom Register1: 0x%02x\r\n", regAccess.regValue.B.reg1);
     regAccess.regSeqIdx = NOR_CMD_LUT_SEQ_IDX_READREG2;
     mtu_mixspi_nor_read_register(&s_userConfig, &regAccess);
-    printf("Flash Custom Register2: 0x%x\r\n", regAccess.regValue.B.reg1);
+    printf("Flash Custom Register2: 0x%02x\r\n", regAccess.regValue.B.reg1);
     
     return kStatus_Success;
 }
